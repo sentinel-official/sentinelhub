@@ -12,7 +12,6 @@ import (
 	providerkeeper "github.com/sentinel-official/hub/v12/x/provider/keeper"
 	sessionkeeper "github.com/sentinel-official/hub/v12/x/session/keeper"
 	subscriptionkeeper "github.com/sentinel-official/hub/v12/x/subscription/keeper"
-	"github.com/sentinel-official/hub/v12/x/vpn/expected"
 )
 
 type Keeper struct {
@@ -26,15 +25,15 @@ type Keeper struct {
 }
 
 func NewKeeper(
-	cdc codec.BinaryCodec, key storetypes.StoreKey, accountKeeper expected.AccountKeeper,
-	bankKeeper expected.BankKeeper, distributionKeeper expected.DistributionKeeper, oracleKeeper expected.OracleKeeper,
+	cdc codec.BinaryCodec, key storetypes.StoreKey, accountKeeper AccountKeeper,
+	bankKeeper BankKeeper, distributionKeeper DistributionKeeper, oracleKeeper OracleKeeper,
 	router *baseapp.MsgServiceRouter, authority, feeCollectorName string,
 ) Keeper {
 	k := Keeper{
 		Deposit:      depositkeeper.NewKeeper(cdc, key),
 		Lease:        leasekeeper.NewKeeper(cdc, key, router, authority, feeCollectorName),
 		Node:         nodekeeper.NewKeeper(cdc, key, router, authority, feeCollectorName),
-		Plan:         plankeeper.NewKeeper(cdc, key),
+		Plan:         plankeeper.NewKeeper(cdc, key, router),
 		Provider:     providerkeeper.NewKeeper(cdc, key, router, authority),
 		Session:      sessionkeeper.NewKeeper(cdc, key, router, authority, feeCollectorName),
 		Subscription: subscriptionkeeper.NewKeeper(cdc, key, router, authority, feeCollectorName),
@@ -73,7 +72,6 @@ func NewKeeper(
 	k.Subscription.WithNodeKeeper(&k.Node)
 	k.Subscription.WithOracleKeeper(oracleKeeper)
 	k.Subscription.WithPlanKeeper(&k.Plan)
-	k.Subscription.WithProviderKeeper(&k.Provider)
 	k.Subscription.WithSessionKeeper(&k.Session)
 
 	return k

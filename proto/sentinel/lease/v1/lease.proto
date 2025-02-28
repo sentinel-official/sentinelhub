@@ -18,11 +18,7 @@ message Lease {
   int64 hours = 5;
   int64 max_hours = 6;
   sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 7;
-  google.protobuf.Timestamp inactive_at = 8 [
-    (gogoproto.nullable) = false,
-    (gogoproto.stdtime) = true
-  ];
-  google.protobuf.Timestamp payout_at = 9 [
+  google.protobuf.Timestamp start_at = 8 [
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];

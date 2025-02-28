@@ -16,6 +16,26 @@ func (m *Lease) DepositAmount() sdk.Coin {
 	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
 }
 
+func (m *Lease) GetHours() time.Duration {
+	return time.Duration(m.Hours) * time.Hour
+}
+
+func (m *Lease) GetMaxHours() time.Duration {
+	return time.Duration(m.MaxHours) * time.Hour
+}
+
+func (m *Lease) InactiveAt() time.Time {
+	return m.StartAt.Add(m.GetMaxHours())
+}
+
+func (m *Lease) PayoutAt() time.Time {
+	if m.Hours < m.MaxHours {
+		return m.StartAt.Add(m.GetHours())
+	}
+
+	return time.Time{}
+}
+
 func (m *Lease) RefundAmount() sdk.Coin {
 	amount := m.Price.QuoteValue.MulRaw(m.MaxHours - m.Hours)
 	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
@@ -26,7 +46,7 @@ func (m *Lease) RenewalAt() time.Time {
 		return time.Time{}
 	}
 
-	return m.InactiveAt
+	return m.InactiveAt()
 }
 
 func (m *Lease) ValidateRenewalPolicies(price v1base.Price) error {
@@ -64,12 +84,6 @@ func (m *Lease) Validate() error {
 	}
 	if m.MaxHours < m.Hours {
 		return fmt.Errorf("max_hours cannot be less than hours")
-	}
-	if m.PayoutAt.IsZero() {
-		return fmt.Errorf("payout_at cannot be zero")
-	}
-	if m.InactiveAt.IsZero() {
-		return fmt.Errorf("inactive_at cannot be zero")
 	}
 
 	return nil

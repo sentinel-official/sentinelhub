@@ -22,7 +22,11 @@ message Subscription {
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  google.protobuf.Timestamp status_at = 8 [
+  google.protobuf.Timestamp start_at = 8 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Timestamp status_at = 9 [
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];

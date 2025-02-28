@@ -7,19 +7,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (m *Allocation) GetAddress() sdk.AccAddress {
-	if m.Address == "" {
-		return nil
-	}
-
-	addr, err := sdk.AccAddressFromBech32(m.Address)
-	if err != nil {
-		panic(err)
-	}
-
-	return addr
-}
-
 func (m *Allocation) Validate() error {
 	if m.Address == "" {
 		return fmt.Errorf("address cannot be empty")

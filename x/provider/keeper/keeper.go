@@ -10,7 +10,6 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/v12/x/provider/expected"
 	"github.com/sentinel-official/hub/v12/x/provider/types"
 )
 
@@ -20,9 +19,9 @@ type Keeper struct {
 	key       storetypes.StoreKey
 	router    *baseapp.MsgServiceRouter
 
-	distribution expected.DistributionKeeper
-	plan         expected.PlanKeeper
-	lease        expected.LeaseKeeper
+	distribution DistributionKeeper
+	plan         PlanKeeper
+	lease        LeaseKeeper
 }
 
 func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter, authority string) Keeper {
@@ -34,15 +33,15 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.M
 	}
 }
 
-func (k *Keeper) WithDistributionKeeper(keeper expected.DistributionKeeper) {
+func (k *Keeper) WithDistributionKeeper(keeper DistributionKeeper) {
 	k.distribution = keeper
 }
 
-func (k *Keeper) WithPlanKeeper(keeper expected.PlanKeeper) {
+func (k *Keeper) WithPlanKeeper(keeper PlanKeeper) {
 	k.plan = keeper
 }
 
-func (k *Keeper) WithLeaseKeeper(keeper expected.LeaseKeeper) {
+func (k *Keeper) WithLeaseKeeper(keeper LeaseKeeper) {
 	k.lease = keeper
 }
 

@@ -46,6 +46,6 @@ message EventCreateSession {
   string acc_address = 2;
   string node_address = 3;
   string price = 4;
-  int64 max_gigabytes = 5;
-  int64 max_hours = 6;
+  string max_bytes = 5;
+  string max_duration = 6;
 }

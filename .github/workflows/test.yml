@@ -1,4 +1,4 @@
-name: Tests and Code coverage
+name: Tests and Code Coverage
 
 on:
   pull_request:
@@ -12,15 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Set up Go
+
+      - name: Set Up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
-      - name: Generate coverage report
+
+      - name: Generate Coverage Report
         run: |
           make test-coverage
+          filepaths=""
           filepaths+=" $(find ./ -type f -name '*.go' -exec grep -l 'DO NOT COVER' {} \;)"
           filepaths+=" $(find ./ -type f -name '*.pb.go')"
           filepaths+=" $(find ./ -type f -name '*.pb.gw.go')"
@@ -28,11 +31,12 @@ jobs:
           filepaths+=" $(find ./ -type f -path '*/expected/*')"
           filepaths+=" $(find ./ -type f -path '*/services/*')"
           for filepath in ${filepaths}; do
-            filepath=$(echo ${filepath} | sed 's@^.@github.com/sentinel-official/hub/v[0-9]*@g')
+            filepath=$(echo "${filepath}" | sed 's@^.@github.com/sentinel-official/hub/v[0-9]*@g')
             echo "Excluding file ${filepath} from coverage report..."
-            sed -i "/$(echo ${filepath} | sed 's@/@\\/@g')/d" ./coverage.txt
+            sed -i "/$(echo "${filepath}" | sed 's@/@\\/@g')/d" ./coverage.txt
           done
-      - name: Upload coverage to Codecov
+
+      - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           file: ./coverage.txt

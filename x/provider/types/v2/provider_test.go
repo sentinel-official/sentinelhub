@@ -1,57 +1,12 @@
 package v2
 
 import (
-	"reflect"
 	"strings"
 	"testing"
 
 	base "github.com/sentinel-official/hub/v12/types"
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
-
-func TestProvider_GetAddress(t *testing.T) {
-	type fields struct {
-		Address     string
-		Name        string
-		Identity    string
-		Website     string
-		Description string
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   base.ProvAddress
-	}{
-		{
-			"empty",
-			fields{
-				Address: base.TestAddrEmpty,
-			},
-			nil,
-		},
-		{
-			"20 bytes",
-			fields{
-				Address: base.TestBech32ProvAddr20Bytes,
-			},
-			base.ProvAddress{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x20},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			p := &Provider{
-				Address:     tt.fields.Address,
-				Name:        tt.fields.Name,
-				Identity:    tt.fields.Identity,
-				Website:     tt.fields.Website,
-				Description: tt.fields.Description,
-			}
-			if got := p.GetAddress(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetAddress() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
 
 func TestProvider_Validate(t *testing.T) {
 	type fields struct {

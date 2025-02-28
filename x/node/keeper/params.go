@@ -3,7 +3,6 @@ package keeper
 import (
 	"time"
 
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
@@ -30,14 +29,14 @@ func (k *Keeper) GetParams(ctx sdk.Context) (v v3.Params) {
 	return v
 }
 
-// Deposit retrieves the deposit parameter from the module's parameters.
-func (k *Keeper) Deposit(ctx sdk.Context) sdk.Coin {
-	return k.GetParams(ctx).Deposit
-}
-
 // ActiveDuration retrieves the active duration parameter from the module's parameters.
 func (k *Keeper) ActiveDuration(ctx sdk.Context) time.Duration {
 	return k.GetParams(ctx).ActiveDuration
+}
+
+// Deposit retrieves the deposit parameter from the module's parameters.
+func (k *Keeper) Deposit(ctx sdk.Context) sdk.Coin {
+	return k.GetParams(ctx).Deposit
 }
 
 // MinGigabytePrices retrieves the minimum gigabyte prices parameter from the module's parameters.
@@ -48,31 +47,6 @@ func (k *Keeper) MinGigabytePrices(ctx sdk.Context) v1base.Prices {
 // MinHourlyPrices retrieves the minimum hourly prices parameter from the module's parameters.
 func (k *Keeper) MinHourlyPrices(ctx sdk.Context) v1base.Prices {
 	return k.GetParams(ctx).MinHourlyPrices
-}
-
-// MaxSessionGigabytes retrieves the maximum session gigabytes parameter from the module's parameters.
-func (k *Keeper) MaxSessionGigabytes(ctx sdk.Context) int64 {
-	return k.GetParams(ctx).MaxSessionGigabytes
-}
-
-// MinSessionGigabytes retrieves the minimum session gigabytes parameter from the module's parameters.
-func (k *Keeper) MinSessionGigabytes(ctx sdk.Context) int64 {
-	return k.GetParams(ctx).MinSessionGigabytes
-}
-
-// MaxSessionHours retrieves the maximum session hours parameter from the module's parameters.
-func (k *Keeper) MaxSessionHours(ctx sdk.Context) int64 {
-	return k.GetParams(ctx).MaxSessionHours
-}
-
-// MinSessionHours retrieves the minimum session hours parameter from the module's parameters.
-func (k *Keeper) MinSessionHours(ctx sdk.Context) int64 {
-	return k.GetParams(ctx).MinSessionHours
-}
-
-// StakingShare retrieves the staking share parameter from the module's parameters.
-func (k *Keeper) StakingShare(ctx sdk.Context) sdkmath.LegacyDec {
-	return k.GetParams(ctx).StakingShare
 }
 
 // IsValidGigabytePrices checks if the provided gigabyte prices are valid based on the minimum prices defined in the module's parameters.
@@ -110,30 +84,6 @@ func (k *Keeper) IsValidHourlyPrices(ctx sdk.Context, prices v1base.Prices) bool
 		if !quoteValue.IsZero() && quoteValue.LT(price.QuoteValue) {
 			return false
 		}
-	}
-
-	return true
-}
-
-// IsValidSessionGigabytes checks if the provided session gigabytes are within the valid range defined by the module's parameters.
-func (k *Keeper) IsValidSessionGigabytes(ctx sdk.Context, gigabytes int64) bool {
-	if gigabytes < k.MinSessionGigabytes(ctx) {
-		return false
-	}
-	if gigabytes > k.MaxSessionGigabytes(ctx) {
-		return false
-	}
-
-	return true
-}
-
-// IsValidSessionHours checks if the provided session hours are within the valid range defined by the module's parameters.
-func (k *Keeper) IsValidSessionHours(ctx sdk.Context, hours int64) bool {
-	if hours < k.MinSessionHours(ctx) {
-		return false
-	}
-	if hours > k.MaxSessionHours(ctx) {
-		return false
 	}
 
 	return true

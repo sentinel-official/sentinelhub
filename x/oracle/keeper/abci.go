@@ -53,7 +53,7 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) {
 		// Send the GetProtoRevPool query packet over IBC.
 		sequence, err := k.SendQueryPacket(ctx, channelCap, portID, channelID, uint64(timeout), req)
 		if err != nil {
-			k.Logger(ctx).Error("Failed to send query packet", "asset", item.Denom, "message", err)
+			k.Logger(ctx).Error("Failed to send query packet", "asset", item.Denom, "msg", err)
 			return false
 		}
 

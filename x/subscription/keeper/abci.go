@@ -116,7 +116,7 @@ func (k *Keeper) handleSubscriptionRenewals(ctx sdk.Context) {
 		// Execute the handler to process the subscription renewal
 		resp, err := handler(cc, msg)
 		if err != nil {
-			k.Logger(cc).Error("Failed to handle subscription renewal", "id", item.ID, "message", err)
+			k.Logger(cc).Error("Failed to handle subscription renewal", "id", item.ID, "msg", err)
 			return false
 		}
 

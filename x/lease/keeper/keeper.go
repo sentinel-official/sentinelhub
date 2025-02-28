@@ -10,7 +10,6 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/v12/x/lease/expected"
 	"github.com/sentinel-official/hub/v12/x/lease/types"
 )
 
@@ -21,11 +20,11 @@ type Keeper struct {
 	key              storetypes.StoreKey
 	router           *baseapp.MsgServiceRouter
 
-	deposit  expected.DepositKeeper
-	node     expected.NodeKeeper
-	oracle   expected.OracleKeeper
-	plan     expected.PlanKeeper
-	provider expected.ProviderKeeper
+	deposit  DepositKeeper
+	node     NodeKeeper
+	oracle   OracleKeeper
+	plan     PlanKeeper
+	provider ProviderKeeper
 }
 
 func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter, authority, feeCollectorName string) Keeper {
@@ -38,23 +37,23 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.M
 	}
 }
 
-func (k *Keeper) WithDepositKeeper(keeper expected.DepositKeeper) {
+func (k *Keeper) WithDepositKeeper(keeper DepositKeeper) {
 	k.deposit = keeper
 }
 
-func (k *Keeper) WithNodeKeeper(keeper expected.NodeKeeper) {
+func (k *Keeper) WithNodeKeeper(keeper NodeKeeper) {
 	k.node = keeper
 }
 
-func (k *Keeper) WithOracleKeeper(keeper expected.OracleKeeper) {
+func (k *Keeper) WithOracleKeeper(keeper OracleKeeper) {
 	k.oracle = keeper
 }
 
-func (k *Keeper) WithPlanKeeper(keeper expected.PlanKeeper) {
+func (k *Keeper) WithPlanKeeper(keeper PlanKeeper) {
 	k.plan = keeper
 }
 
-func (k *Keeper) WithProviderKeeper(keeper expected.ProviderKeeper) {
+func (k *Keeper) WithProviderKeeper(keeper ProviderKeeper) {
 	k.provider = keeper
 }
 

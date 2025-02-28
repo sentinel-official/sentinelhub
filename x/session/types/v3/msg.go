@@ -9,7 +9,6 @@ import (
 
 	base "github.com/sentinel-official/hub/v12/types"
 	"github.com/sentinel-official/hub/v12/x/session/types"
-	"github.com/sentinel-official/hub/v12/x/session/types/v2"
 )
 
 var (
@@ -57,6 +56,10 @@ func NewMsgUpdateSessionRequest(from base.NodeAddress, id uint64, downloadBytes,
 		Duration:      duration,
 		Signature:     signature,
 	}
+}
+
+func (m *MsgUpdateSessionRequest) Bytes() sdkmath.Int {
+	return m.DownloadBytes.Add(m.UploadBytes)
 }
 
 func (m *MsgUpdateSessionRequest) Proof() *Proof {
@@ -111,7 +114,7 @@ func (m *MsgUpdateSessionRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
-func NewMsgUpdateParamsRequest(from sdk.AccAddress, params v2.Params) *MsgUpdateParamsRequest {
+func NewMsgUpdateParamsRequest(from sdk.AccAddress, params Params) *MsgUpdateParamsRequest {
 	return &MsgUpdateParamsRequest{
 		From:   from.String(),
 		Params: params,

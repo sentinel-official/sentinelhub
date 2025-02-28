@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
-	tmcfg "github.com/cometbft/cometbft/config"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client"
 	clientconfig "github.com/cosmos/cosmos-sdk/client/config"
@@ -13,39 +12,20 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/server"
-	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	authcli "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/sentinel-official/hub/v12/app"
 )
 
-func initAppConfig() (string, interface{}) {
-	type Config struct {
-		*serverconfig.Config
-	}
-
-	cfg := Config{Config: serverconfig.DefaultConfig()}
-	cfg.BaseConfig.MinGasPrices = "0.1udvpn"
-	cfg.StateSync.SnapshotInterval = 1000
-
-	cfgTemplate := serverconfig.DefaultConfigTemplate
-
-	return cfgTemplate, cfg
-}
-
-func initTendermintConfig() *tmcfg.Config {
-	cfg := tmcfg.DefaultConfig()
-
-	return cfg
-}
-
 func moduleInitFlags(cmd *cobra.Command) {
 	crisis.AddModuleInitFlags(cmd)
 	wasm.AddModuleInitFlags(cmd)
+	cmd.Flags().Bool(flagOverwriteConfigWithDefaults, true, "If set to true, recommended default values will overwrite any existing settings in config.toml and app.toml.")
 }
 
 func queryCommand() *cobra.Command {
@@ -100,9 +80,19 @@ func txCommand() *cobra.Command {
 func NewRootCmd(homeDir string) *cobra.Command {
 	encCfg := app.DefaultEncodingConfig()
 	cmd := &cobra.Command{
-		Use:   "sentinelhub",
-		Short: "Sentinel Hub application",
+		Use:          "sentinelhub",
+		Short:        "Sentinel Hub application",
+		SilenceUsage: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) (err error) {
+			if viper.GetBool(flagOverwriteConfigWithDefaults) {
+				if err := overwriteTendermintConfig(); err != nil {
+					return err
+				}
+				if err := overwriteAppConfig(); err != nil {
+					return err
+				}
+			}
+
 			clientCtx := client.Context{}.
 				WithAccountRetriever(authtypes.AccountRetriever{}).
 				WithCodec(encCfg.Codec).

@@ -13,9 +13,14 @@ import (
 type QuotePriceFunc func(ctx sdk.Context, basePrice sdk.DecCoin) (sdk.Coin, error)
 
 func NewPriceFromString(s string) (Price, error) {
+	s = strings.TrimSpace(s)
+	if len(s) == 0 {
+		return Price{}, errors.New("empty string")
+	}
+
 	parts := strings.Split(s, ";")
 	if len(parts) != 3 {
-		return Price{}, errors.New("invalid format: expected BaseValue;QuoteValue;Denom")
+		return Price{}, errors.New("invalid format")
 	}
 
 	baseValue, err := sdkmath.LegacyNewDecFromStr(parts[0])
@@ -28,16 +33,25 @@ func NewPriceFromString(s string) (Price, error) {
 		return Price{}, errors.New("invalid quote value")
 	}
 
-	denom := parts[2]
-	if err := sdk.ValidateDenom(denom); err != nil {
-		return Price{}, fmt.Errorf("invalid denomination: %w", err)
-	}
-
-	return Price{
-		Denom:      denom,
+	price := Price{
+		Denom:      parts[2],
 		BaseValue:  baseValue,
 		QuoteValue: quoteValue,
-	}, nil
+	}
+
+	if err := price.Validate(); err != nil {
+		return Price{}, fmt.Errorf("invalid price: %w", err)
+	}
+
+	return price, nil
+}
+
+func NewPriceFromCoin(coin sdk.Coin) Price {
+	return Price{
+		Denom:      coin.Denom,
+		BaseValue:  sdkmath.LegacyZeroDec(),
+		QuoteValue: coin.Amount,
+	}
 }
 
 func ZeroPrice(denom string) Price {
@@ -71,7 +85,7 @@ func (p Price) Copy() Price {
 }
 
 func (p Price) String() string {
-	return fmt.Sprintf("%s;%s;%s", p.BaseValue.String(), p.QuoteValue.String(), p.Denom)
+	return fmt.Sprintf("%s;%s;%s", p.BaseValue, p.QuoteValue, p.Denom)
 }
 
 func (p Price) IsEqual(v Price) bool {
@@ -80,15 +94,22 @@ func (p Price) IsEqual(v Price) bool {
 		p.QuoteValue.Equal(v.QuoteValue)
 }
 
-func (p Price) IsValid() bool {
-	if sdk.ValidateDenom(p.Denom) != nil {
-		return false
+func (p Price) Validate() error {
+	if err := sdk.ValidateDenom(p.Denom); err != nil {
+		return fmt.Errorf("invalid denom: %w", err)
 	}
-	if p.BaseValue.IsNegative() || p.QuoteValue.IsNegative() {
-		return false
+	if p.BaseValue.IsNegative() {
+		return errors.New("base value cannot be negative")
+	}
+	if p.QuoteValue.IsNegative() {
+		return errors.New("quote value cannot be negative")
 	}
 
-	return true
+	return nil
+}
+
+func (p Price) IsValid() bool {
+	return p.Validate() == nil
 }
 
 func (p Price) negative() Price {
@@ -101,7 +122,7 @@ func (p Price) negative() Price {
 
 func (p Price) Add(v Price) Price {
 	if p.Denom != v.Denom {
-		panic(errors.New("denominations do not match"))
+		panic(errors.New("denoms do not match"))
 	}
 
 	return Price{
@@ -113,7 +134,7 @@ func (p Price) Add(v Price) Price {
 
 func (p Price) Sub(v Price) Price {
 	if p.Denom != v.Denom {
-		panic(errors.New("denominations do not match"))
+		panic(errors.New("denoms do not match"))
 	}
 
 	return Price{
@@ -149,6 +170,11 @@ func (p Price) UpdateQuoteValue(ctx sdk.Context, fn QuotePriceFunc) (Price, erro
 type Prices []Price
 
 func NewPricesFromString(s string) (Prices, error) {
+	s = strings.TrimSpace(s)
+	if len(s) == 0 {
+		return nil, nil
+	}
+
 	parts := strings.Split(s, ",")
 
 	prices := make(Prices, len(parts))
@@ -162,6 +188,15 @@ func NewPricesFromString(s string) (Prices, error) {
 	}
 
 	return prices.Sort(), nil
+}
+
+func NewPricesFromCoins(coins ...sdk.Coin) Prices {
+	prices := make(Prices, len(coins))
+	for i, coin := range coins {
+		prices[i] = NewPriceFromCoin(coin)
+	}
+
+	return prices.Sort()
 }
 
 func (p Prices) Copy() Prices {
@@ -206,17 +241,21 @@ func (p Prices) IsSorted() bool {
 	return true
 }
 
-func (p Prices) IsValid() bool {
+func (p Prices) Validate() error {
 	for i := 0; i < len(p); i++ {
 		if i > 0 && p[i].Denom <= p[i-1].Denom {
-			return false
+			return errors.New("denoms must be sorted")
 		}
-		if !p[i].IsValid() {
-			return false
+		if err := p[i].Validate(); err != nil {
+			return fmt.Errorf("invalid price: %w", err)
 		}
 	}
 
-	return true
+	return nil
+}
+
+func (p Prices) IsValid() bool {
+	return p.Validate() == nil
 }
 
 func (p Prices) Len() int {

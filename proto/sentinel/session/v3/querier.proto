@@ -5,6 +5,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/any.proto";
+import "sentinel/session/v3/params.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/session/types/v3";
 option (gogoproto.equal_all) = false;
@@ -39,6 +40,8 @@ message QuerySessionRequest {
   uint64 id = 1;
 }
 
+message QueryParamsRequest {}
+
 message QuerySessionsResponse {
   repeated google.protobuf.Any sessions = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
@@ -68,6 +71,10 @@ message QuerySessionResponse {
   google.protobuf.Any session = 1;
 }
 
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
 service QueryService {
   rpc QuerySessions(QuerySessionsRequest) returns (QuerySessionsResponse) {
     option (google.api.http).get = "/sentinel/session/v3/sessions";
@@ -86,5 +93,8 @@ service QueryService {
   }
   rpc QuerySession(QuerySessionRequest) returns (QuerySessionResponse) {
     option (google.api.http).get = "/sentinel/session/v3/sessions/{id}";
+  }
+  rpc QueryParams(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sentinel/session/v3/params";
   }
 }

@@ -8,6 +8,7 @@ import (
 	base "github.com/sentinel-official/hub/v12/types"
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 	baseutils "github.com/sentinel-official/hub/v12/utils"
+	sessiontypes "github.com/sentinel-official/hub/v12/x/session/types/v3"
 	"github.com/sentinel-official/hub/v12/x/subscription/types"
 	"github.com/sentinel-official/hub/v12/x/subscription/types/v2"
 	"github.com/sentinel-official/hub/v12/x/subscription/types/v3"
@@ -86,13 +87,13 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	}
 
 	if err := subscription.ValidateRenewalPolicies(price); err != nil {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidRenewalPolicy, err.Error())
+		return nil, sdkerrors.Wrap(types.ErrInvalidRenewalPolicy, err.Error())
 	}
 
 	k.DeleteSubscriptionForInactiveAt(ctx, subscription.InactiveAt, subscription.ID)
 	k.DeleteSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
 
-	share := k.ProviderStakingShare(ctx)
+	share := k.StakingShare(ctx)
 	totalPayment := price.QuotePrice()
 
 	accAddr, err := sdk.AccAddressFromBech32(msg.From)
@@ -122,7 +123,8 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		Price:              price,
 		RenewalPricePolicy: subscription.RenewalPricePolicy,
 		Status:             v1base.StatusActive,
-		InactiveAt:         ctx.BlockTime().Add(plan.GetDuration()),
+		InactiveAt:         ctx.BlockTime().Add(plan.GetHours()),
+		StartAt:            ctx.BlockTime(),
 		StatusAt:           ctx.BlockTime(),
 	}
 
@@ -253,17 +255,26 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		return nil, types.NewErrorInvalidPlanStatus(plan.ID, plan.Status)
 	}
 
+	accAddr, err := sdk.AccAddressFromBech32(msg.From)
+	if err != nil {
+		return nil, err
+	}
+
+	provAddr, err := base.ProvAddressFromBech32(plan.ProvAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	if plan.IsPrivate() && !accAddr.Equals(provAddr) {
+		return nil, types.NewErrorUnauthorized(msg.From)
+	}
+
 	price, found := plan.Price(msg.Denom)
 	if !found {
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	price, err := price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
-	if err != nil {
-		return nil, err
-	}
-
-	accAddr, err := sdk.AccAddressFromBech32(msg.From)
+	price, err = price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
 	if err != nil {
 		return nil, err
 	}
@@ -276,20 +287,16 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		Price:              price,
 		RenewalPricePolicy: msg.RenewalPricePolicy,
 		Status:             v1base.StatusActive,
-		InactiveAt:         ctx.BlockTime().Add(plan.GetDuration()),
+		InactiveAt:         ctx.BlockTime().Add(plan.GetHours()),
+		StartAt:            ctx.BlockTime(),
 		StatusAt:           ctx.BlockTime(),
 	}
 
-	share := k.ProviderStakingShare(ctx)
+	share := k.StakingShare(ctx)
 	totalPayment := price.QuotePrice()
 
 	reward := baseutils.GetProportionOfCoin(totalPayment, share)
 	if err := k.SendCoinFromAccountToModule(ctx, accAddr, k.feeCollectorName, reward); err != nil {
-		return nil, err
-	}
-
-	provAddr, err := base.ProvAddressFromBech32(plan.ProvAddress)
-	if err != nil {
 		return nil, err
 	}
 
@@ -326,7 +333,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 	alloc := v2.Allocation{
 		ID:            subscription.ID,
 		Address:       subscription.AccAddress,
-		GrantedBytes:  plan.GetBytes(),
+		GrantedBytes:  plan.GetGigabytes(),
 		UtilisedBytes: sdkmath.ZeroInt(),
 	}
 
@@ -398,6 +405,10 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
 
+	if !k.HasNodeForPlan(ctx, subscription.PlanID, nodeAddr) {
+		return nil, types.NewErrorNodeForPlanNotFound(subscription.PlanID, nodeAddr)
+	}
+
 	accAddr, err := sdk.AccAddressFromBech32(msg.From)
 	if err != nil {
 		return nil, err
@@ -414,16 +425,21 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	count := k.GetSessionCount(ctx)
 	inactiveAt := k.GetSessionInactiveAt(ctx)
 	session := &v3.Session{
-		ID:             count + 1,
-		AccAddress:     accAddr.String(),
-		NodeAddress:    nodeAddr.String(),
+		BaseSession: &sessiontypes.BaseSession{
+			ID:            count + 1,
+			AccAddress:    accAddr.String(),
+			NodeAddress:   nodeAddr.String(),
+			DownloadBytes: sdkmath.ZeroInt(),
+			UploadBytes:   sdkmath.ZeroInt(),
+			MaxBytes:      sdkmath.ZeroInt(),
+			Duration:      0,
+			MaxDuration:   0,
+			Status:        v1base.StatusActive,
+			InactiveAt:    inactiveAt,
+			StartAt:       ctx.BlockTime(),
+			StatusAt:      ctx.BlockTime(),
+		},
 		SubscriptionID: subscription.ID,
-		DownloadBytes:  sdkmath.ZeroInt(),
-		UploadBytes:    sdkmath.ZeroInt(),
-		Duration:       0,
-		Status:         v1base.StatusActive,
-		InactiveAt:     inactiveAt,
-		StatusAt:       ctx.BlockTime(),
 	}
 
 	k.SetSessionCount(ctx, count+1)

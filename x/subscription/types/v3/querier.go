@@ -30,3 +30,7 @@ func NewQuerySubscriptionsForPlanRequest(id uint64, pagination *sdkquery.PageReq
 		Pagination: pagination,
 	}
 }
+
+func NewQueryParamsRequest() *QueryParamsRequest {
+	return &QueryParamsRequest{}
+}

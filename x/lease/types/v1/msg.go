@@ -1,8 +1,6 @@
 package v1
 
 import (
-	"time"
-
 	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -58,10 +56,6 @@ func NewMsgRenewLeaseRequest(from base.ProvAddress, id uint64, hours int64, deno
 	}
 }
 
-func (m *MsgRenewLeaseRequest) GetHours() time.Duration {
-	return time.Duration(m.Hours) * time.Hour
-}
-
 func (m *MsgRenewLeaseRequest) ValidateBasic() error {
 	if m.From == "" {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
@@ -104,10 +98,6 @@ func NewMsgStartLeaseRequest(from base.ProvAddress, nodeAddr base.NodeAddress, h
 		Denom:              denom,
 		RenewalPricePolicy: renewalPricePolicy,
 	}
-}
-
-func (m *MsgStartLeaseRequest) GetHours() time.Duration {
-	return time.Duration(m.Hours) * time.Hour
 }
 
 func (m *MsgStartLeaseRequest) ValidateBasic() error {

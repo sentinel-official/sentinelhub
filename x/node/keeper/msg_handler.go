@@ -10,6 +10,7 @@ import (
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 	"github.com/sentinel-official/hub/v12/x/node/types"
 	"github.com/sentinel-official/hub/v12/x/node/types/v3"
+	sessiontypes "github.com/sentinel-official/hub/v12/x/session/types/v3"
 )
 
 func (k *Keeper) HandleMsgRegisterNode(ctx sdk.Context, msg *v3.MsgRegisterNodeRequest) (*v3.MsgRegisterNodeResponse, error) {
@@ -200,18 +201,21 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	count := k.GetSessionCount(ctx)
 	inactiveAt := k.GetSessionInactiveAt(ctx)
 	session := &v3.Session{
-		ID:            count + 1,
-		AccAddress:    accAddr.String(),
-		NodeAddress:   nodeAddr.String(),
-		Price:         price,
-		DownloadBytes: sdkmath.ZeroInt(),
-		UploadBytes:   sdkmath.ZeroInt(),
-		MaxGigabytes:  msg.Gigabytes,
-		Duration:      0,
-		MaxHours:      msg.Hours,
-		Status:        v1base.StatusActive,
-		InactiveAt:    inactiveAt,
-		StatusAt:      ctx.BlockTime(),
+		BaseSession: &sessiontypes.BaseSession{
+			ID:            count + 1,
+			AccAddress:    accAddr.String(),
+			NodeAddress:   nodeAddr.String(),
+			DownloadBytes: sdkmath.ZeroInt(),
+			UploadBytes:   sdkmath.ZeroInt(),
+			MaxBytes:      msg.GetGigabytes(),
+			Duration:      0,
+			MaxDuration:   msg.GetHours(),
+			Status:        v1base.StatusActive,
+			InactiveAt:    inactiveAt,
+			StartAt:       ctx.BlockTime(),
+			StatusAt:      ctx.BlockTime(),
+		},
+		Price: price,
 	}
 
 	deposit := session.DepositAmount()
@@ -227,12 +231,12 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventCreateSession{
-			ID:           session.ID,
-			AccAddress:   session.AccAddress,
-			NodeAddress:  session.NodeAddress,
-			Price:        session.Price.String(),
-			MaxGigabytes: session.MaxGigabytes,
-			MaxHours:     session.MaxHours,
+			ID:          session.ID,
+			AccAddress:  session.AccAddress,
+			NodeAddress: session.NodeAddress,
+			Price:       session.Price.String(),
+			MaxBytes:    session.MaxBytes.String(),
+			MaxDuration: session.MaxDuration.String(),
 		},
 	)
 

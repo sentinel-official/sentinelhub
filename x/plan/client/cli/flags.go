@@ -7,8 +7,7 @@ import (
 )
 
 const (
-	flagPrices  = "prices"
-	flagPrivate = "private"
+	flagPrices = "prices"
 )
 
 func GetPrices(flags *pflag.FlagSet) (v1base.Prices, error) {
@@ -21,8 +20,4 @@ func GetPrices(flags *pflag.FlagSet) (v1base.Prices, error) {
 	}
 
 	return v1base.NewPricesFromString(s)
-}
-
-func GetPrivate(flags *pflag.FlagSet) (bool, error) {
-	return flags.GetBool(flagPrivate)
 }

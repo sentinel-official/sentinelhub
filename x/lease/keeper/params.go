@@ -27,14 +27,14 @@ func (k *Keeper) GetParams(ctx sdk.Context) (v v1.Params) {
 	return v
 }
 
-// MaxLeaseHours retrieves the maximum lease hours parameter from the module's parameters.
-func (k *Keeper) MaxLeaseHours(ctx sdk.Context) int64 {
-	return k.GetParams(ctx).MaxLeaseHours
+// MaxHours retrieves the maximum hours parameter from the module's parameters.
+func (k *Keeper) MaxHours(ctx sdk.Context) int64 {
+	return k.GetParams(ctx).MaxHours
 }
 
-// MinLeaseHours retrieves the minimum lease hours parameter from the module's parameters.
-func (k *Keeper) MinLeaseHours(ctx sdk.Context) int64 {
-	return k.GetParams(ctx).MinLeaseHours
+// MinHours retrieves the minimum hours parameter from the module's parameters.
+func (k *Keeper) MinHours(ctx sdk.Context) int64 {
+	return k.GetParams(ctx).MinHours
 }
 
 // StakingShare retrieves the staking share parameter from the module's parameters.
@@ -42,12 +42,12 @@ func (k *Keeper) StakingShare(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).StakingShare
 }
 
-// IsValidLeaseHours checks if the provided lease hours are within the valid range defined by the module's parameters.
-func (k *Keeper) IsValidLeaseHours(ctx sdk.Context, hours int64) bool {
-	if hours < k.MinLeaseHours(ctx) {
+// IsValidHours checks if the provided hours are within the valid range defined by the module's parameters.
+func (k *Keeper) IsValidHours(ctx sdk.Context, hours int64) bool {
+	if hours > k.MaxHours(ctx) {
 		return false
 	}
-	if hours > k.MaxLeaseHours(ctx) {
+	if hours < k.MinHours(ctx) {
 		return false
 	}
 

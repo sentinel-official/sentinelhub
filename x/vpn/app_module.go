@@ -30,8 +30,8 @@ import (
 	v2subscriptiontypes "github.com/sentinel-official/hub/v12/x/subscription/types/v2"
 	v3subscriptiontypes "github.com/sentinel-official/hub/v12/x/subscription/types/v3"
 	"github.com/sentinel-official/hub/v12/x/vpn/client/cli"
-	"github.com/sentinel-official/hub/v12/x/vpn/expected"
 	"github.com/sentinel-official/hub/v12/x/vpn/keeper"
+	"github.com/sentinel-official/hub/v12/x/vpn/migrations"
 	"github.com/sentinel-official/hub/v12/x/vpn/services"
 	"github.com/sentinel-official/hub/v12/x/vpn/types"
 	"github.com/sentinel-official/hub/v12/x/vpn/types/v1"
@@ -101,12 +101,12 @@ func (amb AppModuleBasic) ValidateGenesis(jsonCodec codec.JSONCodec, _ client.Tx
 type AppModule struct {
 	AppModuleBasic
 	cdc     codec.Codec
-	account expected.AccountKeeper
-	bank    expected.BankKeeper
+	account keeper.AccountKeeper
+	bank    keeper.BankKeeper
 	keeper  keeper.Keeper
 }
 
-func NewAppModule(cdc codec.Codec, account expected.AccountKeeper, bank expected.BankKeeper, k keeper.Keeper) AppModule {
+func NewAppModule(cdc codec.Codec, account keeper.AccountKeeper, bank keeper.BankKeeper, k keeper.Keeper) AppModule {
 	return AppModule{
 		cdc:     cdc,
 		account: account,
@@ -144,10 +144,15 @@ func (am AppModule) EndBlock(_ sdk.Context, _ abcitypes.RequestEndBlock) []abcit
 	return nil
 }
 
-func (am AppModule) ConsensusVersion() uint64 { return 3 }
+func (am AppModule) ConsensusVersion() uint64 { return 4 }
 
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 func (am AppModule) RegisterServices(configurator sdkmodule.Configurator) {
 	services.RegisterServices(configurator, am.keeper)
+
+	m := migrations.NewMigrator(am.cdc, am.keeper)
+	if err := configurator.RegisterMigration(types.ModuleName, 3, m.Migrate); err != nil {
+		panic(err)
+	}
 }

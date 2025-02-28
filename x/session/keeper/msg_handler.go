@@ -66,7 +66,17 @@ func (k *Keeper) HandleMsgUpdateSession(ctx sdk.Context, msg *v3.MsgUpdateSessio
 		return nil, types.NewErrorInvalidSessionStatus(session.GetID(), session.GetStatus())
 	}
 
-	if k.ProofVerificationEnabled(ctx) {
+	if msg.DownloadBytes.LT(session.GetDownloadBytes()) {
+		return nil, types.NewErrorInvalidDownloadBytes(msg.DownloadBytes)
+	}
+	if msg.UploadBytes.LT(session.GetUploadBytes()) {
+		return nil, types.NewErrorInvalidUploadBytes(msg.UploadBytes)
+	}
+	if msg.Duration < session.GetDuration() {
+		return nil, types.NewErrorInvalidDuration(msg.Duration)
+	}
+
+	if ok := k.ProofVerificationEnabled(ctx); ok {
 		accAddr, err := sdk.AccAddressFromBech32(session.GetAccAddress())
 		if err != nil {
 			return nil, err
@@ -75,6 +85,10 @@ func (k *Keeper) HandleMsgUpdateSession(ctx sdk.Context, msg *v3.MsgUpdateSessio
 		if err := k.VerifySignature(ctx, accAddr, msg.Proof(), msg.Signature); err != nil {
 			return nil, types.NewErrorInvalidSignature(msg.Signature)
 		}
+	}
+
+	if err := k.SessionUpdatePreHook(ctx, session.GetID(), msg.Bytes()); err != nil {
+		return nil, err
 	}
 
 	if session.GetStatus().Equal(v1base.StatusActive) {

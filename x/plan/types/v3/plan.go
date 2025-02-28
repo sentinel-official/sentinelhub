@@ -11,16 +11,20 @@ import (
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
 
-func (m *Plan) GetBytes() sdkmath.Int {
+func (m *Plan) GetGigabytes() sdkmath.Int {
 	return base.Gigabyte.MulRaw(m.Gigabytes)
 }
 
-func (m *Plan) GetDuration() time.Duration {
+func (m *Plan) GetHours() time.Duration {
 	return time.Duration(m.Hours) * time.Hour
 }
 
 func (m *Plan) GetPrices() v1base.Prices {
 	return m.Prices
+}
+
+func (m *Plan) IsPrivate() bool {
+	return m.GetPrices().Len() == 0
 }
 
 func (m *Plan) Price(denom string) (v1base.Price, bool) {

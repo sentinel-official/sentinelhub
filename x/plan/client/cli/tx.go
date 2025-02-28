@@ -39,17 +39,11 @@ func txCreatePlan() *cobra.Command {
 				return err
 			}
 
-			private, err := GetPrivate(cmd.Flags())
-			if err != nil {
-				return err
-			}
-
 			msg := v3.NewMsgCreatePlanRequest(
 				ctx.FromAddress.Bytes(),
 				gigabytes,
 				hours,
 				prices,
-				private,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -60,7 +54,6 @@ func txCreatePlan() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().Bool(flagPrivate, false, "specify if the plan is private")
 	cmd.Flags().String(flagPrices, "", "specify the list of prices (e.g., 1000token)")
 
 	return cmd

@@ -11,19 +11,11 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message Params {
-  cosmos.base.v1beta1.Coin deposit = 1 [(gogoproto.nullable) = false];
-  google.protobuf.Duration active_duration = 2 [
+  google.protobuf.Duration active_duration = 1 [
     (gogoproto.nullable) = false,
     (gogoproto.stdduration) = true
   ];
+  cosmos.base.v1beta1.Coin deposit = 2 [(gogoproto.nullable) = false];
   repeated sentinel.types.v1.Price min_gigabyte_prices = 3 [(gogoproto.nullable) = false];
   repeated sentinel.types.v1.Price min_hourly_prices = 4 [(gogoproto.nullable) = false];
-  int64 max_session_gigabytes = 5;
-  int64 min_session_gigabytes = 6;
-  int64 max_session_hours = 7;
-  int64 min_session_hours = 8;
-  string staking_share = 9 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
 }

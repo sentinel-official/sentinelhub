@@ -59,3 +59,12 @@ func (q *queryServer) QuerySubscriptionsForPlan(c context.Context, req *v3.Query
 	ctx := sdk.UnwrapSDKContext(c)
 	return q.HandleQuerySubscriptionsForPlan(ctx, req)
 }
+
+func (q *queryServer) QueryParams(c context.Context, req *v3.QueryParamsRequest) (*v3.QueryParamsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	return q.HandleQueryParams(ctx, req)
+}

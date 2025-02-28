@@ -14,7 +14,6 @@ message EventCreate {
   int64 gigabytes = 3;
   int64 hours = 4;
   string prices = 5;
-  bool private = 6;
 }
 
 message EventLinkNode {

@@ -4,25 +4,20 @@
 package v3
 
 import (
-	cosmossdk_io_math "cosmossdk.io/math"
 	fmt "fmt"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
-	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	v1 "github.com/sentinel-official/hub/v12/types/v1"
-	_ "google.golang.org/protobuf/types/known/durationpb"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
+	v3 "github.com/sentinel-official/hub/v12/x/session/types/v3"
 	io "io"
 	math "math"
 	math_bits "math/bits"
-	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
-var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -31,18 +26,8 @@ var _ = time.Kitchen
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Session struct {
-	ID            uint64                `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	AccAddress    string                `protobuf:"bytes,2,opt,name=acc_address,json=accAddress,proto3" json:"acc_address,omitempty"`
-	NodeAddress   string                `protobuf:"bytes,3,opt,name=node_address,json=nodeAddress,proto3" json:"node_address,omitempty"`
-	Price         v1.Price              `protobuf:"bytes,4,opt,name=price,proto3" json:"price"`
-	DownloadBytes cosmossdk_io_math.Int `protobuf:"bytes,5,opt,name=download_bytes,json=downloadBytes,proto3,customtype=cosmossdk.io/math.Int" json:"download_bytes"`
-	UploadBytes   cosmossdk_io_math.Int `protobuf:"bytes,6,opt,name=upload_bytes,json=uploadBytes,proto3,customtype=cosmossdk.io/math.Int" json:"upload_bytes"`
-	MaxGigabytes  int64                 `protobuf:"varint,7,opt,name=max_gigabytes,json=maxGigabytes,proto3" json:"max_gigabytes,omitempty"`
-	Duration      time.Duration         `protobuf:"bytes,8,opt,name=duration,proto3,stdduration" json:"duration"`
-	MaxHours      int64                 `protobuf:"varint,9,opt,name=max_hours,json=maxHours,proto3" json:"max_hours,omitempty"`
-	Status        v1.Status             `protobuf:"varint,10,opt,name=status,proto3,enum=sentinel.types.v1.Status" json:"status,omitempty"`
-	InactiveAt    time.Time             `protobuf:"bytes,11,opt,name=inactive_at,json=inactiveAt,proto3,stdtime" json:"inactive_at"`
-	StatusAt      time.Time             `protobuf:"bytes,12,opt,name=status_at,json=statusAt,proto3,stdtime" json:"status_at"`
+	*v3.BaseSession `protobuf:"bytes,1,opt,name=base_session,json=baseSession,proto3,embedded=base_session" json:"base_session,omitempty"`
+	Price           v1.Price `protobuf:"bytes,2,opt,name=price,proto3" json:"price"`
 }
 
 func (m *Session) Reset()         { *m = Session{} }
@@ -78,76 +63,6 @@ func (m *Session) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Session proto.InternalMessageInfo
 
-func (m *Session) GetID() uint64 {
-	if m != nil {
-		return m.ID
-	}
-	return 0
-}
-
-func (m *Session) GetAccAddress() string {
-	if m != nil {
-		return m.AccAddress
-	}
-	return ""
-}
-
-func (m *Session) GetNodeAddress() string {
-	if m != nil {
-		return m.NodeAddress
-	}
-	return ""
-}
-
-func (m *Session) GetPrice() v1.Price {
-	if m != nil {
-		return m.Price
-	}
-	return v1.Price{}
-}
-
-func (m *Session) GetMaxGigabytes() int64 {
-	if m != nil {
-		return m.MaxGigabytes
-	}
-	return 0
-}
-
-func (m *Session) GetDuration() time.Duration {
-	if m != nil {
-		return m.Duration
-	}
-	return 0
-}
-
-func (m *Session) GetMaxHours() int64 {
-	if m != nil {
-		return m.MaxHours
-	}
-	return 0
-}
-
-func (m *Session) GetStatus() v1.Status {
-	if m != nil {
-		return m.Status
-	}
-	return v1.StatusUnspecified
-}
-
-func (m *Session) GetInactiveAt() time.Time {
-	if m != nil {
-		return m.InactiveAt
-	}
-	return time.Time{}
-}
-
-func (m *Session) GetStatusAt() time.Time {
-	if m != nil {
-		return m.StatusAt
-	}
-	return time.Time{}
-}
-
 func init() {
 	proto.RegisterType((*Session)(nil), "sentinel.node.v3.Session")
 }
@@ -155,40 +70,24 @@ func init() {
 func init() { proto.RegisterFile("sentinel/node/v3/session.proto", fileDescriptor_14bb5c1dd44d5aee) }
 
 var fileDescriptor_14bb5c1dd44d5aee = []byte{
-	// 527 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x53, 0x4f, 0x6f, 0xd3, 0x3c,
-	0x18, 0x6f, 0xba, 0xae, 0x6b, 0x9d, 0x6e, 0x7a, 0x65, 0xbd, 0xa0, 0xac, 0x68, 0x49, 0x81, 0x4b,
-	0x2f, 0xd8, 0x6a, 0xbb, 0x3b, 0x34, 0x2a, 0x82, 0xdd, 0x50, 0xc6, 0x89, 0x4b, 0xe5, 0x26, 0x6e,
-	0x6a, 0xd1, 0xc4, 0x55, 0xed, 0x84, 0xee, 0x5b, 0xec, 0xc8, 0x47, 0xe0, 0xa3, 0xec, 0xb8, 0x23,
-	0xe2, 0x50, 0x50, 0xfb, 0x45, 0x90, 0xed, 0x3a, 0x42, 0x8c, 0x03, 0xdc, 0xe2, 0xe7, 0xf7, 0xe7,
-	0xf9, 0x3d, 0x7e, 0x1c, 0xe0, 0x0b, 0x9a, 0x4b, 0x96, 0xd3, 0x25, 0xce, 0x79, 0x42, 0x71, 0x39,
-	0xc2, 0x82, 0x0a, 0xc1, 0x78, 0x8e, 0x56, 0x6b, 0x2e, 0x39, 0xfc, 0xcf, 0xe2, 0x48, 0xe1, 0xa8,
-	0x1c, 0x75, 0xff, 0x4f, 0x79, 0xca, 0x35, 0x88, 0xd5, 0x97, 0xe1, 0x75, 0xfd, 0x94, 0xf3, 0x74,
-	0x49, 0xb1, 0x3e, 0xcd, 0x8a, 0x39, 0x4e, 0x8a, 0x35, 0x91, 0x95, 0x4f, 0x37, 0xf8, 0x1d, 0x97,
-	0x2c, 0xa3, 0x42, 0x92, 0x6c, 0x75, 0x20, 0x5c, 0x54, 0x41, 0xe4, 0xcd, 0x8a, 0x0a, 0x5c, 0x0e,
-	0xf0, 0x6a, 0xcd, 0x62, 0x6a, 0xfd, 0x1f, 0xc2, 0x42, 0x12, 0x59, 0x08, 0x83, 0x3f, 0xdb, 0x37,
-	0xc0, 0xc9, 0xb5, 0x49, 0x0e, 0x1f, 0x83, 0x3a, 0x4b, 0x3c, 0xa7, 0xe7, 0xf4, 0x1b, 0x61, 0x73,
-	0xb7, 0x0d, 0xea, 0x57, 0x93, 0xa8, 0xce, 0x12, 0x18, 0x00, 0x97, 0xc4, 0xf1, 0x94, 0x24, 0xc9,
-	0x9a, 0x0a, 0xe1, 0xd5, 0x7b, 0x4e, 0xbf, 0x1d, 0x01, 0x12, 0xc7, 0x63, 0x53, 0x81, 0x4f, 0x41,
-	0x47, 0x4d, 0x59, 0x31, 0x8e, 0x34, 0xc3, 0x55, 0x35, 0x4b, 0xb9, 0x04, 0xc7, 0x3a, 0x96, 0xd7,
-	0xe8, 0x39, 0x7d, 0x77, 0xe8, 0xa1, 0xea, 0x7e, 0x74, 0x2e, 0x54, 0x0e, 0xd0, 0x3b, 0x85, 0x87,
-	0x8d, 0xbb, 0x6d, 0x50, 0x8b, 0x0c, 0x19, 0x4e, 0xc0, 0x59, 0xc2, 0x3f, 0xe5, 0x4b, 0x4e, 0x92,
-	0xe9, 0xec, 0x46, 0x52, 0xe1, 0x1d, 0x2b, 0xeb, 0xf0, 0x42, 0x91, 0xbe, 0x6d, 0x83, 0x47, 0x31,
-	0x17, 0x19, 0x17, 0x22, 0xf9, 0x88, 0x18, 0xc7, 0x19, 0x91, 0x0b, 0x74, 0x95, 0xcb, 0xe8, 0xd4,
-	0x8a, 0x42, 0xa5, 0x81, 0xaf, 0x40, 0xa7, 0x58, 0xfd, 0xe2, 0xd1, 0xfc, 0x1b, 0x0f, 0xd7, 0x48,
-	0x8c, 0xc3, 0x73, 0x70, 0x9a, 0x91, 0xcd, 0x34, 0x65, 0x29, 0x31, 0x16, 0x27, 0x3d, 0xa7, 0x7f,
-	0x14, 0x75, 0x32, 0xb2, 0x79, 0x63, 0x6b, 0xf0, 0x25, 0x68, 0xd9, 0xe5, 0x79, 0x2d, 0x3d, 0xe5,
-	0x39, 0x32, 0xdb, 0x43, 0x76, 0x7b, 0x68, 0x72, 0x20, 0x84, 0x2d, 0xd5, 0xfd, 0xf3, 0xf7, 0xc0,
-	0x89, 0x2a, 0x11, 0x7c, 0x02, 0xda, 0xaa, 0xcb, 0x82, 0x17, 0x6b, 0xe1, 0xb5, 0x75, 0x87, 0x56,
-	0x46, 0x36, 0x6f, 0xd5, 0x19, 0x0e, 0x40, 0xd3, 0x2c, 0xce, 0x03, 0x3d, 0xa7, 0x7f, 0x36, 0x3c,
-	0xff, 0xc3, 0x0d, 0x5e, 0x6b, 0x42, 0x74, 0x20, 0xc2, 0xd7, 0xc0, 0x65, 0x39, 0x89, 0x25, 0x2b,
-	0xe9, 0x94, 0x48, 0xcf, 0xd5, 0x99, 0xba, 0x0f, 0x32, 0xbd, 0xb7, 0x2f, 0xca, 0x84, 0xba, 0x55,
-	0xa1, 0x80, 0x15, 0x8e, 0x25, 0x1c, 0x83, 0xb6, 0x31, 0x54, 0x26, 0x9d, 0x7f, 0x30, 0x69, 0x19,
-	0xd9, 0x58, 0x86, 0xd1, 0x97, 0x9d, 0x5f, 0xbb, 0xdb, 0xf9, 0xce, 0xfd, 0xce, 0x77, 0x7e, 0xec,
-	0x7c, 0xe7, 0x76, 0xef, 0xd7, 0xee, 0xf7, 0x7e, 0xed, 0xeb, 0xde, 0xaf, 0x7d, 0xb8, 0x4c, 0x99,
-	0x5c, 0x14, 0x33, 0x14, 0xf3, 0x0c, 0xdb, 0xa1, 0x5e, 0xf0, 0xf9, 0x9c, 0xc5, 0x8c, 0x2c, 0xf1,
-	0xa2, 0x98, 0xe1, 0x72, 0x30, 0xc4, 0x1b, 0xf3, 0xa7, 0x1d, 0x9e, 0xf1, 0x68, 0xd6, 0xd4, 0xbd,
-	0x47, 0x3f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x02, 0x14, 0x92, 0x60, 0x8a, 0x03, 0x00, 0x00,
+	// 272 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x2b, 0x4e, 0xcd, 0x2b,
+	0xc9, 0xcc, 0x4b, 0xcd, 0xd1, 0xcf, 0xcb, 0x4f, 0x49, 0xd5, 0x2f, 0x33, 0xd6, 0x2f, 0x4e, 0x2d,
+	0x2e, 0xce, 0xcc, 0xcf, 0xd3, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x80, 0xc9, 0xeb, 0x81,
+	0xe4, 0xf5, 0xca, 0x8c, 0xa5, 0x44, 0xd2, 0xf3, 0xd3, 0xf3, 0xc1, 0x92, 0xfa, 0x20, 0x16, 0x44,
+	0x9d, 0x94, 0x22, 0xdc, 0x1c, 0xa8, 0x7e, 0x0c, 0xa3, 0xa4, 0x64, 0xe1, 0x4a, 0x4a, 0x2a, 0x0b,
+	0x52, 0x8b, 0xf5, 0xcb, 0x0c, 0xf5, 0x0b, 0x8a, 0x32, 0x93, 0x53, 0x21, 0xd2, 0x4a, 0x5d, 0x8c,
+	0x5c, 0xec, 0xc1, 0x10, 0x0d, 0x42, 0x9e, 0x5c, 0x3c, 0x49, 0x89, 0xc5, 0xa9, 0xf1, 0x50, 0x03,
+	0x24, 0x18, 0x15, 0x18, 0x35, 0xb8, 0x8d, 0x14, 0xf4, 0xe0, 0x8e, 0x81, 0x99, 0x5c, 0x66, 0xac,
+	0xe7, 0x94, 0x58, 0x9c, 0x0a, 0xd5, 0xe7, 0xc4, 0x72, 0xe1, 0x9e, 0x3c, 0x63, 0x10, 0x77, 0x12,
+	0x42, 0x48, 0xc8, 0x84, 0x8b, 0x15, 0x6c, 0x8b, 0x04, 0x13, 0xd8, 0x0c, 0x09, 0x84, 0x19, 0x60,
+	0x57, 0xe8, 0x95, 0x19, 0xea, 0x05, 0x80, 0xe4, 0x9d, 0x58, 0x4e, 0xdc, 0x93, 0x67, 0x08, 0x82,
+	0x28, 0x76, 0x0a, 0x3b, 0xf1, 0x50, 0x8e, 0x61, 0xc5, 0x23, 0x39, 0x86, 0x13, 0x8f, 0xe4, 0x18,
+	0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5,
+	0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88, 0x32, 0x49, 0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2, 0x4b, 0xce,
+	0xcf, 0xd5, 0x87, 0x19, 0xa9, 0x9b, 0x9f, 0x96, 0x96, 0x99, 0x9c, 0x99, 0x98, 0xa3, 0x9f, 0x51,
+	0x9a, 0xa4, 0x5f, 0x66, 0x68, 0xa4, 0x5f, 0x01, 0x09, 0x56, 0xa8, 0x87, 0x8d, 0x93, 0xd8, 0xc0,
+	0x7e, 0x35, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0xd0, 0x6c, 0x41, 0x96, 0x77, 0x01, 0x00, 0x00,
 }
 
 func (m *Session) Marshal() (dAtA []byte, err error) {
@@ -211,65 +110,6 @@ func (m *Session) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	n1, err1 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.StatusAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StatusAt):])
-	if err1 != nil {
-		return 0, err1
-	}
-	i -= n1
-	i = encodeVarintSession(dAtA, i, uint64(n1))
-	i--
-	dAtA[i] = 0x62
-	n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.InactiveAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.InactiveAt):])
-	if err2 != nil {
-		return 0, err2
-	}
-	i -= n2
-	i = encodeVarintSession(dAtA, i, uint64(n2))
-	i--
-	dAtA[i] = 0x5a
-	if m.Status != 0 {
-		i = encodeVarintSession(dAtA, i, uint64(m.Status))
-		i--
-		dAtA[i] = 0x50
-	}
-	if m.MaxHours != 0 {
-		i = encodeVarintSession(dAtA, i, uint64(m.MaxHours))
-		i--
-		dAtA[i] = 0x48
-	}
-	n3, err3 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(m.Duration, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(m.Duration):])
-	if err3 != nil {
-		return 0, err3
-	}
-	i -= n3
-	i = encodeVarintSession(dAtA, i, uint64(n3))
-	i--
-	dAtA[i] = 0x42
-	if m.MaxGigabytes != 0 {
-		i = encodeVarintSession(dAtA, i, uint64(m.MaxGigabytes))
-		i--
-		dAtA[i] = 0x38
-	}
-	{
-		size := m.UploadBytes.Size()
-		i -= size
-		if _, err := m.UploadBytes.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintSession(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x32
-	{
-		size := m.DownloadBytes.Size()
-		i -= size
-		if _, err := m.DownloadBytes.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintSession(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x2a
 	{
 		size, err := m.Price.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -279,25 +119,18 @@ func (m *Session) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintSession(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x22
-	if len(m.NodeAddress) > 0 {
-		i -= len(m.NodeAddress)
-		copy(dAtA[i:], m.NodeAddress)
-		i = encodeVarintSession(dAtA, i, uint64(len(m.NodeAddress)))
+	dAtA[i] = 0x12
+	if m.BaseSession != nil {
+		{
+			size, err := m.BaseSession.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintSession(dAtA, i, uint64(size))
+		}
 		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.AccAddress) > 0 {
-		i -= len(m.AccAddress)
-		copy(dAtA[i:], m.AccAddress)
-		i = encodeVarintSession(dAtA, i, uint64(len(m.AccAddress)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.ID != 0 {
-		i = encodeVarintSession(dAtA, i, uint64(m.ID))
-		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -319,37 +152,11 @@ func (m *Session) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.ID != 0 {
-		n += 1 + sovSession(uint64(m.ID))
-	}
-	l = len(m.AccAddress)
-	if l > 0 {
-		n += 1 + l + sovSession(uint64(l))
-	}
-	l = len(m.NodeAddress)
-	if l > 0 {
+	if m.BaseSession != nil {
+		l = m.BaseSession.Size()
 		n += 1 + l + sovSession(uint64(l))
 	}
 	l = m.Price.Size()
-	n += 1 + l + sovSession(uint64(l))
-	l = m.DownloadBytes.Size()
-	n += 1 + l + sovSession(uint64(l))
-	l = m.UploadBytes.Size()
-	n += 1 + l + sovSession(uint64(l))
-	if m.MaxGigabytes != 0 {
-		n += 1 + sovSession(uint64(m.MaxGigabytes))
-	}
-	l = github_com_cosmos_gogoproto_types.SizeOfStdDuration(m.Duration)
-	n += 1 + l + sovSession(uint64(l))
-	if m.MaxHours != 0 {
-		n += 1 + sovSession(uint64(m.MaxHours))
-	}
-	if m.Status != 0 {
-		n += 1 + sovSession(uint64(m.Status))
-	}
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.InactiveAt)
-	n += 1 + l + sovSession(uint64(l))
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StatusAt)
 	n += 1 + l + sovSession(uint64(l))
 	return n
 }
@@ -390,10 +197,10 @@ func (m *Session) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BaseSession", wireType)
 			}
-			m.ID = 0
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowSession
@@ -403,76 +210,29 @@ func (m *Session) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ID |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			if msglen < 0 {
+				return ErrInvalidLengthSession
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthSession
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.BaseSession == nil {
+				m.BaseSession = &v3.BaseSession{}
+			}
+			if err := m.BaseSession.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccAddress", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSession
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthSession
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthSession
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AccAddress = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NodeAddress", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSession
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthSession
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthSession
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.NodeAddress = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Price", wireType)
 			}
@@ -502,230 +262,6 @@ func (m *Session) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Price.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DownloadBytes", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSession
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthSession
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthSession
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.DownloadBytes.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UploadBytes", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSession
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthSession
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthSession
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.UploadBytes.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MaxGigabytes", wireType)
-			}
-			m.MaxGigabytes = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSession
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MaxGigabytes |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Duration", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSession
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthSession
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthSession
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_cosmos_gogoproto_types.StdDurationUnmarshal(&m.Duration, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 9:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MaxHours", wireType)
-			}
-			m.MaxHours = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSession
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MaxHours |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 10:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
-			}
-			m.Status = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSession
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Status |= v1.Status(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 11:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InactiveAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSession
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthSession
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthSession
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.InactiveAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 12:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StatusAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowSession
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthSession
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthSession
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.StatusAt, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

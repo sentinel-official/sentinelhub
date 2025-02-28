@@ -2,8 +2,10 @@ package v3
 
 import (
 	"net/url"
+	"time"
 
 	sdkerrors "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
@@ -176,6 +178,14 @@ func NewMsgStartSessionRequest(from sdk.AccAddress, nodeAddr base.NodeAddress, g
 		Hours:       hours,
 		Denom:       denom,
 	}
+}
+
+func (m *MsgStartSessionRequest) GetGigabytes() sdkmath.Int {
+	return base.Gigabyte.MulRaw(m.Gigabytes)
+}
+
+func (m *MsgStartSessionRequest) GetHours() time.Duration {
+	return time.Duration(m.Hours) * time.Hour
 }
 
 func (m *MsgStartSessionRequest) ValidateBasic() error {

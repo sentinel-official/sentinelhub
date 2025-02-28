@@ -20,12 +20,13 @@ var (
 	ErrInvalidRenewalPolicy      = sdkerrors.Register(ModuleName, 206, "invalid renewal policy")
 	ErrInvalidSessionStatus      = sdkerrors.Register(ModuleName, 207, "invalid session status")
 	ErrInvalidSubscriptionStatus = sdkerrors.Register(ModuleName, 208, "invalid subscription status")
-	ErrNodeNotFound              = sdkerrors.Register(ModuleName, 209, "node not found")
-	ErrPlanNotFound              = sdkerrors.Register(ModuleName, 210, "plan not found")
-	ErrPriceNotFound             = sdkerrors.Register(ModuleName, 211, "price not found")
-	ErrSessionNotFound           = sdkerrors.Register(ModuleName, 212, "session not found")
-	ErrSubscriptionNotFound      = sdkerrors.Register(ModuleName, 213, "subscription not found")
-	ErrUnauthorized              = sdkerrors.Register(ModuleName, 214, "unauthorized")
+	ErrNodeForPlanNotFound       = sdkerrors.Register(ModuleName, 209, "node for plan not found")
+	ErrNodeNotFound              = sdkerrors.Register(ModuleName, 210, "node not found")
+	ErrPlanNotFound              = sdkerrors.Register(ModuleName, 211, "plan not found")
+	ErrPriceNotFound             = sdkerrors.Register(ModuleName, 212, "price not found")
+	ErrSessionNotFound           = sdkerrors.Register(ModuleName, 213, "session not found")
+	ErrSubscriptionNotFound      = sdkerrors.Register(ModuleName, 214, "subscription not found")
+	ErrUnauthorized              = sdkerrors.Register(ModuleName, 215, "unauthorized")
 )
 
 // NewErrorAllocationNotFound returns an error indicating that the specified allocation does not exist.
@@ -61,6 +62,11 @@ func NewErrorInvalidSessionStatus(id uint64, status v1base.Status) error {
 // NewErrorInvalidSubscriptionStatus returns an error indicating that the provided status is invalid for the subscription.
 func NewErrorInvalidSubscriptionStatus(id uint64, status v1base.Status) error {
 	return sdkerrors.Wrapf(ErrInvalidSubscriptionStatus, "invalid status %s for subscription %d", status, id)
+}
+
+// NewErrorNodeForPlanNotFound returns an error indicating that the specified node does not exist for the plan.
+func NewErrorNodeForPlanNotFound(id uint64, addr base.NodeAddress) error {
+	return sdkerrors.Wrapf(ErrNodeForPlanNotFound, "node %s for plan %d does not exist", addr, id)
 }
 
 // NewErrorNodeNotFound returns an error indicating that the specified node does not exist.

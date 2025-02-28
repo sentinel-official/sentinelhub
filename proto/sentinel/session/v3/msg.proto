@@ -3,7 +3,7 @@ package sentinel.session.v3;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
-import "sentinel/session/v2/params.proto";
+import "sentinel/session/v3/params.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/session/types/v3";
 option (gogoproto.equal_all) = false;
@@ -34,7 +34,7 @@ message MsgUpdateSessionRequest {
 
 message MsgUpdateParamsRequest {
   string from = 1;
-  sentinel.session.v2.Params params = 2 [(gogoproto.nullable) = false];
+  Params params = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgCancelSessionResponse {}

@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -87,19 +86,14 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 		)
 
 		// Remove the lease from the payout queue as it has been processed
-		k.DeleteLeaseForPayoutAt(ctx, item.PayoutAt, item.ID)
+		k.DeleteLeaseForPayoutAt(ctx, item.PayoutAt(), item.ID)
 
-		// Update lease hours and payout time if applicable
+		// Update lease hours
 		item.Hours = item.Hours + 1
-		if item.Hours < item.MaxHours {
-			item.PayoutAt = item.PayoutAt.Add(time.Hour)
-		} else {
-			item.PayoutAt = time.Time{} // Set PayoutAt to zero value if max hours reached
-		}
 
 		// Update the lease in the store with new details
 		k.SetLease(ctx, item)
-		k.SetLeaseForPayoutAt(ctx, item.PayoutAt, item.ID)
+		k.SetLeaseForPayoutAt(ctx, item.PayoutAt(), item.ID)
 
 		// Emit an event for the updated lease details
 		ctx.EventManager().EmitTypedEvent(
@@ -108,7 +102,7 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 				NodeAddress: item.NodeAddress,
 				ProvAddress: item.ProvAddress,
 				Hours:       item.Hours,
-				PayoutAt:    item.PayoutAt.String(),
+				PayoutAt:    item.PayoutAt().String(),
 			},
 		)
 
@@ -142,7 +136,7 @@ func (k *Keeper) handleLeaseRenewals(ctx sdk.Context) {
 		// Execute the handler to process the lease renewal
 		resp, err := handler(cc, msg)
 		if err != nil {
-			k.Logger(cc).Error("Failed to handle lease renewal", "id", item.ID, "message", err)
+			k.Logger(cc).Error("Failed to handle lease renewal", "id", item.ID, "msg", err)
 			return false
 		}
 

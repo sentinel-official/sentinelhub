@@ -2,40 +2,14 @@ syntax = "proto3";
 package sentinel.node.v3;
 
 import "gogoproto/gogo.proto";
-import "google/protobuf/duration.proto";
-import "google/protobuf/timestamp.proto";
+import "sentinel/session/v3/session.proto";
 import "sentinel/types/v1/price.proto";
-import "sentinel/types/v1/status.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/node/types/v3";
 option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
 
 message Session {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-  string acc_address = 2;
-  string node_address = 3;
-  sentinel.types.v1.Price price = 4 [(gogoproto.nullable) = false];
-  string download_bytes = 5 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string upload_bytes = 6 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  int64 max_gigabytes = 7;
-  google.protobuf.Duration duration = 8 [
-    (gogoproto.nullable) = false,
-    (gogoproto.stdduration) = true
-  ];
-  int64 max_hours = 9;
-  sentinel.types.v1.Status status = 10;
-  google.protobuf.Timestamp inactive_at = 11 [
-    (gogoproto.nullable) = false,
-    (gogoproto.stdtime) = true
-  ];
-  google.protobuf.Timestamp status_at = 12 [
-    (gogoproto.nullable) = false,
-    (gogoproto.stdtime) = true
-  ];
+  sentinel.session.v3.BaseSession base_session = 1 [(gogoproto.embed) = true];
+  sentinel.types.v1.Price price = 2 [(gogoproto.nullable) = false];
 }

@@ -206,11 +206,11 @@ func queryParams() *cobra.Command {
 				return err
 			}
 
-			qc := v2.NewQueryServiceClient(ctx)
+			qc := v3.NewQueryServiceClient(ctx)
 
 			res, err := qc.QueryParams(
 				cmd.Context(),
-				v2.NewQueryParamsRequest(),
+				v3.NewQueryParamsRequest(),
 			)
 			if err != nil {
 				return err

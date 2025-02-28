@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 
 	base "github.com/sentinel-official/hub/v12/types"
-	"github.com/sentinel-official/hub/v12/x/session/types/v2"
 	"github.com/sentinel-official/hub/v12/x/session/types/v3"
 )
 
@@ -148,11 +147,11 @@ func queryParams() *cobra.Command {
 				return err
 			}
 
-			qc := v2.NewQueryServiceClient(ctx)
+			qc := v3.NewQueryServiceClient(ctx)
 
 			res, err := qc.QueryParams(
 				cmd.Context(),
-				v2.NewQueryParamsRequest(),
+				v3.NewQueryParamsRequest(),
 			)
 			if err != nil {
 				return err

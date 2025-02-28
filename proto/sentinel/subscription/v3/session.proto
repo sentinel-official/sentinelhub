@@ -2,37 +2,13 @@ syntax = "proto3";
 package sentinel.subscription.v3;
 
 import "gogoproto/gogo.proto";
-import "google/protobuf/duration.proto";
-import "google/protobuf/timestamp.proto";
-import "sentinel/types/v1/status.proto";
+import "sentinel/session/v3/session.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/subscription/types/v3";
 option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
 
 message Session {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-  string acc_address = 2;
-  string node_address = 3;
-  uint64 subscription_id = 4 [(gogoproto.customname) = "SubscriptionID"];
-  string download_bytes = 5 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string upload_bytes = 6 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  google.protobuf.Duration duration = 7 [
-    (gogoproto.nullable) = false,
-    (gogoproto.stdduration) = true
-  ];
-  sentinel.types.v1.Status status = 8;
-  google.protobuf.Timestamp inactive_at = 9 [
-    (gogoproto.nullable) = false,
-    (gogoproto.stdtime) = true
-  ];
-  google.protobuf.Timestamp status_at = 10 [
-    (gogoproto.nullable) = false,
-    (gogoproto.stdtime) = true
-  ];
+  sentinel.session.v3.BaseSession base_session = 1 [(gogoproto.embed) = true];
+  uint64 subscription_id = 2 [(gogoproto.customname) = "SubscriptionID"];
 }

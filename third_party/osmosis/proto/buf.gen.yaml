@@ -1,8 +1,8 @@
-version: v1
+version: v2
 plugins:
-  - name: gocosmos
+  - local: protoc-gen-gocosmos
+    out: ..
     opt: plugins=grpc,Mgoogle/protobuf/any.proto=github.com/cosmos/cosmos-sdk/codec/types
+  - local: protoc-gen-grpc-gateway
     out: ..
-  - name: grpc-gateway
     opt: logtostderr=true
-    out: ..

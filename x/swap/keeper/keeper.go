@@ -7,7 +7,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/sentinel-official/hub/v12/x/swap/expected"
 	"github.com/sentinel-official/hub/v12/x/swap/types"
 	"github.com/sentinel-official/hub/v12/x/swap/types/v1"
 )
@@ -17,11 +16,11 @@ type Keeper struct {
 	key    storetypes.StoreKey
 	params paramstypes.Subspace
 
-	account expected.AccountKeeper
-	bank    expected.BankKeeper
+	account AccountKeeper
+	bank    BankKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, params paramstypes.Subspace, account expected.AccountKeeper, bank expected.BankKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, params paramstypes.Subspace, account AccountKeeper, bank BankKeeper) Keeper {
 	return Keeper{
 		cdc:     cdc,
 		key:     key,

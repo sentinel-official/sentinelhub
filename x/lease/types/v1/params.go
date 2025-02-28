@@ -4,30 +4,19 @@ import (
 	"fmt"
 
 	sdkmath "cosmossdk.io/math"
-	params "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 var (
-	DefaultMaxLeaseHours int64 = 10
-	DefaultMinLeaseHours int64 = 1
-	DefaultStakingShare        = sdkmath.LegacyNewDecWithPrec(1, 1)
-)
-
-var (
-	KeyMaxLeaseHours = []byte("MaxLeaseHours")
-	KeyMinLeaseHours = []byte("MinLeaseHours")
-	KeyStakingShare  = []byte("StakingShare")
-)
-
-var (
-	_ params.ParamSet = (*Params)(nil)
+	DefaultMaxHours     int64 = 10
+	DefaultMinHours     int64 = 1
+	DefaultStakingShare       = sdkmath.LegacyNewDecWithPrec(1, 1)
 )
 
 func (m *Params) Validate() error {
-	if err := validateMaxLeaseHours(m.MaxLeaseHours); err != nil {
+	if err := validateMaxHours(m.MaxHours); err != nil {
 		return err
 	}
-	if err := validateMinLeaseHours(m.MinLeaseHours); err != nil {
+	if err := validateMinHours(m.MinHours); err != nil {
 		return err
 	}
 	if err := validateStakingShare(m.StakingShare); err != nil {
@@ -37,73 +26,49 @@ func (m *Params) Validate() error {
 	return nil
 }
 
-func (m *Params) ParamSetPairs() params.ParamSetPairs {
-	return params.ParamSetPairs{
-		{
-			Key:         KeyMaxLeaseHours,
-			Value:       &m.MaxLeaseHours,
-			ValidatorFn: validateMaxLeaseHours,
-		},
-		{
-			Key:         KeyMinLeaseHours,
-			Value:       &m.MinLeaseHours,
-			ValidatorFn: validateMinLeaseHours,
-		},
-		{
-			Key:         KeyStakingShare,
-			Value:       &m.StakingShare,
-			ValidatorFn: validateStakingShare,
-		},
-	}
-}
-
-func NewParams(maxLeaseHours, minLeaseHours int64, stakingShare sdkmath.LegacyDec) Params {
+func NewParams(maxHours, minHours int64, stakingShare sdkmath.LegacyDec) Params {
 	return Params{
-		MaxLeaseHours: maxLeaseHours,
-		MinLeaseHours: minLeaseHours,
-		StakingShare:  stakingShare,
+		MaxHours:     maxHours,
+		MinHours:     minHours,
+		StakingShare: stakingShare,
 	}
 }
 
 func DefaultParams() Params {
 	return NewParams(
-		DefaultMaxLeaseHours,
-		DefaultMinLeaseHours,
+		DefaultMaxHours,
+		DefaultMinHours,
 		DefaultStakingShare,
 	)
 }
 
-func ParamsKeyTable() params.KeyTable {
-	return params.NewKeyTable().RegisterParamSet(&Params{})
-}
-
-func validateMaxLeaseHours(v interface{}) error {
+func validateMaxHours(v interface{}) error {
 	value, ok := v.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type %T", v)
 	}
 
 	if value < 0 {
-		return fmt.Errorf("max_lease_hours cannot be negative")
+		return fmt.Errorf("max_hours cannot be negative")
 	}
 	if value == 0 {
-		return fmt.Errorf("max_lease_hours cannot be zero")
+		return fmt.Errorf("max_hours cannot be zero")
 	}
 
 	return nil
 }
 
-func validateMinLeaseHours(v interface{}) error {
+func validateMinHours(v interface{}) error {
 	value, ok := v.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type %T", v)
 	}
 
 	if value < 0 {
-		return fmt.Errorf("min_lease_hours cannot be negative")
+		return fmt.Errorf("min_hours cannot be negative")
 	}
 	if value == 0 {
-		return fmt.Errorf("min_lease_hours cannot be zero")
+		return fmt.Errorf("min_hours cannot be zero")
 	}
 
 	return nil

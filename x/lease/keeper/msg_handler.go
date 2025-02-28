@@ -65,7 +65,7 @@ func (k *Keeper) HandleMsgEndLease(ctx sdk.Context, msg *v1.MsgEndLeaseRequest) 
 }
 
 func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseRequest) (*v1.MsgRenewLeaseResponse, error) {
-	if !k.IsValidLeaseHours(ctx, msg.Hours) {
+	if !k.IsValidHours(ctx, msg.Hours) {
 		return nil, types.NewErrorInvalidHours(msg.Hours)
 	}
 
@@ -169,7 +169,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 }
 
 func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseRequest) (*v1.MsgStartLeaseResponse, error) {
-	if !k.IsValidLeaseHours(ctx, msg.Hours) {
+	if !k.IsValidHours(ctx, msg.Hours) {
 		return nil, types.NewErrorInvalidHours(msg.Hours)
 	}
 

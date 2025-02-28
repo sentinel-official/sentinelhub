@@ -42,10 +42,5 @@ func (q *queryServer) QueryProviders(c context.Context, req *v2.QueryProvidersRe
 }
 
 func (q *queryServer) QueryParams(c context.Context, req *v2.QueryParamsRequest) (*v2.QueryParamsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	return q.HandleQueryParams(ctx, req)
+	return nil, status.Error(codes.Unimplemented, "")
 }

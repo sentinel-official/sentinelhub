@@ -76,3 +76,12 @@ func (q *queryServer) QuerySessionsForAllocation(c context.Context, req *v3.Quer
 	ctx := sdk.UnwrapSDKContext(c)
 	return q.HandleQuerySessionsForAllocation(ctx, req)
 }
+
+func (q *queryServer) QueryParams(c context.Context, req *v3.QueryParamsRequest) (*v3.QueryParamsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	return q.HandleQueryParams(ctx, req)
+}

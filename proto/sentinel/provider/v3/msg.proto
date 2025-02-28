@@ -2,7 +2,7 @@ syntax = "proto3";
 package sentinel.provider.v3;
 
 import "gogoproto/gogo.proto";
-import "sentinel/provider/v2/params.proto";
+import "sentinel/provider/v3/params.proto";
 import "sentinel/types/v1/status.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/provider/types/v3";
@@ -32,7 +32,7 @@ message MsgUpdateProviderStatusRequest {
 
 message MsgUpdateParamsRequest {
   string from = 1;
-  sentinel.provider.v2.Params params = 2 [(gogoproto.nullable) = false];
+  Params params = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgRegisterProviderResponse {}

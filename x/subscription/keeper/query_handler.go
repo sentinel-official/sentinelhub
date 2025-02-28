@@ -51,9 +51,9 @@ func (k *Keeper) HandleQueryAllocations(ctx sdk.Context, req *v2.QueryAllocation
 	return &v2.QueryAllocationsResponse{Allocations: items, Pagination: pagination}, nil
 }
 
-func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v2.QueryParamsRequest) (*v2.QueryParamsResponse, error) {
+func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v3.QueryParamsRequest) (*v3.QueryParamsResponse, error) {
 	params := k.GetParams(ctx)
-	return &v2.QueryParamsResponse{Params: params}, nil
+	return &v3.QueryParamsResponse{Params: params}, nil
 }
 
 func (k *Keeper) HandleQuerySubscription(ctx sdk.Context, req *v3.QuerySubscriptionRequest) (*v3.QuerySubscriptionResponse, error) {

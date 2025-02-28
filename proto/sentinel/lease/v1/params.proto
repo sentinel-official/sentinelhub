@@ -8,8 +8,8 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message Params {
-  int64 max_lease_hours = 1;
-  int64 min_lease_hours = 2;
+  int64 max_hours = 1;
+  int64 min_hours = 2;
   string staking_share = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false

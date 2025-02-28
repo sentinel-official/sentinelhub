@@ -18,7 +18,3 @@ func NewQueryAllocationsRequest(id uint64, pagination *sdkquery.PageRequest) *Qu
 		Pagination: pagination,
 	}
 }
-
-func NewQueryParamsRequest() *QueryParamsRequest {
-	return &QueryParamsRequest{}
-}

@@ -47,3 +47,7 @@ func NewQuerySessionRequest(id uint64) *QuerySessionRequest {
 		Id: id,
 	}
 }
+
+func NewQueryParamsRequest() *QueryParamsRequest {
+	return &QueryParamsRequest{}
+}

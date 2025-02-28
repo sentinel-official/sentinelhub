@@ -1,10 +1,12 @@
-package v2
+package v3
 
 import (
 	"fmt"
+
+	"github.com/sentinel-official/hub/v12/x/provider/types/v2"
 )
 
-func NewGenesisState(providers Providers, params Params) *GenesisState {
+func NewGenesisState(providers v2.Providers, params Params) *GenesisState {
 	return &GenesisState{
 		Providers: providers,
 		Params:    params,

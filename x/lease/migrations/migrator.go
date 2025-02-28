@@ -28,9 +28,9 @@ func (k *Migrator) Migrate(ctx sdk.Context) error {
 
 func (k *Migrator) setParams(ctx sdk.Context) {
 	params := v1.Params{
-		MaxLeaseHours: 720,
-		MinLeaseHours: 1,
-		StakingShare:  math.LegacyMustNewDecFromStr("0.2"),
+		MaxHours:     720,
+		MinHours:     1,
+		StakingShare: math.LegacyMustNewDecFromStr("0.2"),
 	}
 
 	k.lease.SetParams(ctx, params)

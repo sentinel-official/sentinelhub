@@ -12,7 +12,6 @@ import (
 
 	base "github.com/sentinel-official/hub/v12/types"
 	"github.com/sentinel-official/hub/v12/x/session/types"
-	"github.com/sentinel-official/hub/v12/x/session/types/v2"
 	"github.com/sentinel-official/hub/v12/x/session/types/v3"
 )
 
@@ -188,7 +187,7 @@ func (k *Keeper) HandleQuerySessionsForAllocation(ctx sdk.Context, req *v3.Query
 	return &v3.QuerySessionsForAllocationResponse{Sessions: items, Pagination: pagination}, nil
 }
 
-func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v2.QueryParamsRequest) (*v2.QueryParamsResponse, error) {
+func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v3.QueryParamsRequest) (*v3.QueryParamsResponse, error) {
 	params := k.GetParams(ctx)
-	return &v2.QueryParamsResponse{Params: params}, nil
+	return &v3.QueryParamsResponse{Params: params}, nil
 }

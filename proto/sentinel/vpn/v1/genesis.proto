@@ -6,7 +6,7 @@ import "sentinel/deposit/v1/genesis.proto";
 import "sentinel/lease/v1/genesis.proto";
 import "sentinel/node/v3/genesis.proto";
 import "sentinel/plan/v3/genesis.proto";
-import "sentinel/provider/v2/genesis.proto";
+import "sentinel/provider/v3/genesis.proto";
 import "sentinel/session/v3/genesis.proto";
 import "sentinel/subscription/v3/genesis.proto";
 
@@ -19,7 +19,7 @@ message GenesisState {
   sentinel.lease.v1.GenesisState lease = 2;
   sentinel.node.v3.GenesisState node = 3;
   sentinel.plan.v3.GenesisState plan = 4;
-  sentinel.provider.v2.GenesisState provider = 5;
+  sentinel.provider.v3.GenesisState provider = 5;
   sentinel.session.v3.GenesisState session = 6;
   sentinel.subscription.v3.GenesisState subscription = 7;
 }

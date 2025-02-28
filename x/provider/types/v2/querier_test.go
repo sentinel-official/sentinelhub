@@ -11,13 +11,6 @@ import (
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
 
-func TestNewQueryParamsRequest(t *testing.T) {
-	require.Equal(t,
-		&QueryParamsRequest{},
-		NewQueryParamsRequest(),
-	)
-}
-
 func TestNewQueryProviderRequest(t *testing.T) {
 	var (
 		address []byte

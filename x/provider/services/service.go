@@ -14,4 +14,5 @@ func RegisterServices(configurator sdkmodule.Configurator, k keeper.Keeper) {
 	v3types.RegisterMsgServiceServer(configurator.MsgServer(), v3.NewMsgServiceServer(k))
 
 	v2types.RegisterQueryServiceServer(configurator.QueryServer(), v2.NewQueryServiceServer(k))
+	v3types.RegisterQueryServiceServer(configurator.QueryServer(), v3.NewQueryServiceServer(k))
 }

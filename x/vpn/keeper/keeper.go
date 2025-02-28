@@ -72,7 +72,6 @@ func NewKeeper(
 	k.Subscription.WithNodeKeeper(&k.Node)
 	k.Subscription.WithOracleKeeper(oracleKeeper)
 	k.Subscription.WithPlanKeeper(&k.Plan)
-	k.Subscription.WithProviderKeeper(&k.Provider)
 	k.Subscription.WithSessionKeeper(&k.Session)
 
 	return k

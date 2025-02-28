@@ -3,7 +3,6 @@ package migrations
 import (
 	"time"
 
-	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -56,15 +55,10 @@ func (k *Migrator) deleteKeys(ctx sdk.Context, keyPrefix []byte) (keys [][]byte)
 
 func (k *Migrator) setParams(ctx sdk.Context) {
 	params := v3.Params{
-		Deposit:             sdk.NewInt64Coin("udvpn", 0),
-		ActiveDuration:      1 * time.Hour,
-		MinGigabytePrices:   []v1.Price{}, // TODO: set min gigabyte prices
-		MinHourlyPrices:     []v1.Price{}, // TODO: set min hourly prices
-		MaxSessionGigabytes: 1_000_000,
-		MinSessionGigabytes: 1,
-		MaxSessionHours:     720,
-		MinSessionHours:     1,
-		StakingShare:        math.LegacyMustNewDecFromStr("0.2"),
+		ActiveDuration:    1 * time.Hour,
+		Deposit:           sdk.NewInt64Coin("udvpn", 0),
+		MinGigabytePrices: []v1.Price{}, // TODO: set min gigabyte prices
+		MinHourlyPrices:   []v1.Price{}, // TODO: set min hourly prices
 	}
 
 	k.node.SetParams(ctx, params)

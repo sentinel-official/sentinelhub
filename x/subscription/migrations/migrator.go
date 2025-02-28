@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -74,7 +75,8 @@ func (k *Migrator) deleteKeys(ctx sdk.Context, keyPrefix []byte) (keys [][]byte)
 }
 
 func (k *Migrator) setParams(ctx sdk.Context) {
-	params := v2.Params{
+	params := v3.Params{
+		StakingShare:      sdkmath.LegacyMustNewDecFromStr("0.2"),
 		StatusChangeDelay: 4 * time.Hour,
 	}
 

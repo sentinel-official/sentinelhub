@@ -40,7 +40,7 @@ type SubscriptionKeeper interface {
 	GetAllocation(ctx sdk.Context, id uint64, addr sdk.AccAddress) (v2.Allocation, bool)
 	IterateAllocationsForSubscription(ctx sdk.Context, id uint64, fn func(index int, item v2.Allocation) (stop bool))
 	IterateSubscriptions(ctx sdk.Context, fn func(index int, item v3.Subscription) (stop bool))
-	SetParams(ctx sdk.Context, params v2.Params)
+	SetParams(ctx sdk.Context, params v3.Params)
 	SetSubscription(ctx sdk.Context, subscription v3.Subscription)
 	SetSubscriptionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64)
 	SetSubscriptionForInactiveAt(ctx sdk.Context, time time.Time, id uint64)

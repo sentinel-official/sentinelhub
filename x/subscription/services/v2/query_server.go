@@ -41,15 +41,6 @@ func (q *queryServer) QueryAllocations(c context.Context, req *v2.QueryAllocatio
 	return q.HandleQueryAllocations(ctx, req)
 }
 
-func (q *queryServer) QueryParams(c context.Context, req *v2.QueryParamsRequest) (*v2.QueryParamsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	return q.HandleQueryParams(ctx, req)
-}
-
 func (q *queryServer) QuerySubscriptions(_ context.Context, _ *v2.QuerySubscriptionsRequest) (*v2.QuerySubscriptionsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "")
 }
@@ -83,5 +74,9 @@ func (q *queryServer) QueryPayoutsForNode(_ context.Context, _ *v2.QueryPayoutsF
 }
 
 func (q *queryServer) QueryPayout(_ context.Context, _ *v2.QueryPayoutRequest) (*v2.QueryPayoutResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "")
+}
+
+func (q *queryServer) QueryParams(c context.Context, req *v2.QueryParamsRequest) (*v2.QueryParamsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "")
 }

@@ -3,7 +3,6 @@ package keeper
 import (
 	"time"
 
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
@@ -28,10 +27,6 @@ type DepositKeeper interface {
 	SubtractDeposit(ctx sdk.Context, address sdk.AccAddress, coins sdk.Coins) error
 	SendCoinsFromDepositToAccount(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, coins sdk.Coins) error
 	SendCoinsFromDepositToModule(ctx sdk.Context, fromAddr sdk.AccAddress, toModule string, coins sdk.Coins) error
-}
-
-type ProviderKeeper interface {
-	StakingShare(ctx sdk.Context) sdkmath.LegacyDec
 }
 
 type NodeKeeper interface {

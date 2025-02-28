@@ -3,11 +3,12 @@ package migrations
 import (
 	"time"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/v12/x/session/types/v2"
+	"github.com/sentinel-official/hub/v12/x/session/types/v3"
 )
 
 type Migrator struct {
@@ -51,9 +52,14 @@ func (k *Migrator) deleteKeys(ctx sdk.Context, keyPrefix []byte) (keys [][]byte)
 }
 
 func (k *Migrator) setParams(ctx sdk.Context) {
-	params := v2.Params{
-		StatusChangeDelay:        2 * time.Hour,
+	params := v3.Params{
+		MaxGigabytes:             1_000_000,
+		MinGigabytes:             1,
+		MaxHours:                 720,
+		MinHours:                 1,
 		ProofVerificationEnabled: false,
+		StakingShare:             sdkmath.LegacyMustNewDecFromStr("0.2"),
+		StatusChangeDelay:        2 * time.Hour,
 	}
 
 	k.session.SetParams(ctx, params)

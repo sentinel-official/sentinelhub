@@ -1,0 +1,25 @@
+syntax = "proto3";
+package sentinel.session.v3;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+
+option go_package = "github.com/sentinel-official/hub/v12/x/session/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Params {
+  int64 max_gigabytes = 1;
+  int64 min_gigabytes = 2;
+  int64 max_hours = 3;
+  int64 min_hours = 4;
+  bool proof_verification_enabled = 5;
+  string staking_share = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Duration status_change_delay = 7 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true
+  ];
+}

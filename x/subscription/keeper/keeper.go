@@ -20,12 +20,11 @@ type Keeper struct {
 	key              storetypes.StoreKey
 	router           *baseapp.MsgServiceRouter
 
-	bank     BankKeeper
-	node     NodeKeeper
-	oracle   OracleKeeper
-	plan     PlanKeeper
-	provider ProviderKeeper
-	session  SessionKeeper
+	bank    BankKeeper
+	node    NodeKeeper
+	oracle  OracleKeeper
+	plan    PlanKeeper
+	session SessionKeeper
 }
 
 func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter, authority, feeCollectorName string) Keeper {
@@ -40,10 +39,6 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.M
 
 func (k *Keeper) WithBankKeeper(keeper BankKeeper) {
 	k.bank = keeper
-}
-
-func (k *Keeper) WithProviderKeeper(keeper ProviderKeeper) {
-	k.provider = keeper
 }
 
 func (k *Keeper) WithNodeKeeper(keeper NodeKeeper) {

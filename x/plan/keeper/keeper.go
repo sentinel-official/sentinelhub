@@ -10,7 +10,6 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/v12/x/plan/expected"
 	"github.com/sentinel-official/hub/v12/x/plan/types"
 )
 
@@ -19,11 +18,11 @@ type Keeper struct {
 	key    storetypes.StoreKey
 	router *baseapp.MsgServiceRouter
 
-	lease        expected.LeaseKeeper
-	node         expected.NodeKeeper
-	provider     expected.ProviderKeeper
-	session      expected.SessionKeeper
-	subscription expected.SubscriptionKeeper
+	lease        LeaseKeeper
+	node         NodeKeeper
+	provider     ProviderKeeper
+	session      SessionKeeper
+	subscription SubscriptionKeeper
 }
 
 func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter) Keeper {
@@ -34,23 +33,23 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.M
 	}
 }
 
-func (k *Keeper) WithLeaseKeeper(keeper expected.LeaseKeeper) {
+func (k *Keeper) WithLeaseKeeper(keeper LeaseKeeper) {
 	k.lease = keeper
 }
 
-func (k *Keeper) WithNodeKeeper(keeper expected.NodeKeeper) {
+func (k *Keeper) WithNodeKeeper(keeper NodeKeeper) {
 	k.node = keeper
 }
 
-func (k *Keeper) WithProviderKeeper(keeper expected.ProviderKeeper) {
+func (k *Keeper) WithProviderKeeper(keeper ProviderKeeper) {
 	k.provider = keeper
 }
 
-func (k *Keeper) WithSessionKeeper(keeper expected.SessionKeeper) {
+func (k *Keeper) WithSessionKeeper(keeper SessionKeeper) {
 	k.session = keeper
 }
 
-func (k *Keeper) WithSubscriptionKeeper(keeper expected.SubscriptionKeeper) {
+func (k *Keeper) WithSubscriptionKeeper(keeper SubscriptionKeeper) {
 	k.subscription = keeper
 }
 

@@ -11,6 +11,7 @@ import (
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 	"github.com/sentinel-official/hub/v12/x/provider/types"
 	"github.com/sentinel-official/hub/v12/x/provider/types/v2"
+	"github.com/sentinel-official/hub/v12/x/provider/types/v3"
 )
 
 func (k *Keeper) HandleQueryProvider(ctx sdk.Context, req *v2.QueryProviderRequest) (*v2.QueryProviderResponse, error) {
@@ -60,7 +61,7 @@ func (k *Keeper) HandleQueryProviders(ctx sdk.Context, req *v2.QueryProvidersReq
 	return &v2.QueryProvidersResponse{Providers: items, Pagination: pagination}, nil
 }
 
-func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v2.QueryParamsRequest) (*v2.QueryParamsResponse, error) {
+func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v3.QueryParamsRequest) (*v3.QueryParamsResponse, error) {
 	params := k.GetParams(ctx)
-	return &v2.QueryParamsResponse{Params: params}, nil
+	return &v3.QueryParamsResponse{Params: params}, nil
 }

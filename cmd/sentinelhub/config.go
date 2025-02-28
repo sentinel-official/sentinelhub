@@ -63,7 +63,7 @@ func overwriteConfig(name string, cfg interface{}, write func(string, interface{
 
 // overwriteAppConfig updates and writes the app configuration.
 func overwriteAppConfig() error {
-	return overwriteConfig("app.toml", &serverconfig.Config{}, func(cfgPath string, cfg interface{}) error {
+	return overwriteConfig("app.toml", serverconfig.DefaultConfig(), func(cfgPath string, cfg interface{}) error {
 		serverconfig.WriteConfigFile(cfgPath, cfg.(*serverconfig.Config))
 		return nil
 	})
@@ -71,7 +71,7 @@ func overwriteAppConfig() error {
 
 // overwriteTendermintConfig updates and writes the Tendermint configuration.
 func overwriteTendermintConfig() error {
-	return overwriteConfig("config.toml", &tmcfg.Config{}, func(cfgPath string, cfg interface{}) error {
+	return overwriteConfig("config.toml", tmcfg.DefaultConfig(), func(cfgPath string, cfg interface{}) error {
 		tmcfg.WriteConfigFile(cfgPath, cfg.(*tmcfg.Config))
 		return nil
 	})

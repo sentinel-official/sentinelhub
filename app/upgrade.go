@@ -13,7 +13,10 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkmodule "github.com/cosmos/cosmos-sdk/types/module"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	authvestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
@@ -32,8 +35,6 @@ import (
 	ibctmmigrations "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint/migrations"
 
 	oracletypes "github.com/sentinel-official/hub/v12/x/oracle/types"
-	subscriptionkeeper "github.com/sentinel-official/hub/v12/x/subscription/keeper"
-	subscriptiontypes "github.com/sentinel-official/hub/v12/x/subscription/types"
 )
 
 const (
@@ -138,51 +139,12 @@ func UpgradeHandler(
 		ibcClientParams.AllowedClients = append(ibcClientParams.AllowedClients, exported.Localhost)
 		keepers.IBCKeeper.ClientKeeper.SetParams(ctx, ibcClientParams)
 
-		if err := deleteInactiveSubscriptionsForAccounts(ctx, keepers.VPNKeeper.Subscription); err != nil {
-			return nil, err
-		}
-
-		accAddr, err := sdk.AccAddressFromBech32("")
-		if err != nil {
-			return nil, err
-		}
-
-		if err := completeAllRedelegations(ctx, keepers.StakingKeeper, accAddr, ctx.BlockTime()); err != nil {
-			return nil, err
-		}
-		if err := undelegateAllDelegations(ctx, keepers.StakingKeeper, accAddr); err != nil {
-			return nil, err
-		}
-		if err := completeAllUnbondingDelegations(ctx, keepers.StakingKeeper, accAddr, ctx.BlockTime()); err != nil {
+		if err := migrateFoundationAccount(ctx, keepers.AccountKeeper, keepers.BankKeeper, keepers.StakingKeeper); err != nil {
 			return nil, err
 		}
 
 		return newVM, nil
 	}
-}
-
-func deleteInactiveSubscriptionsForAccounts(ctx sdk.Context, k subscriptionkeeper.Keeper) error {
-	var (
-		store    = k.Store(ctx)
-		iterator = sdk.KVStorePrefixIterator(store, subscriptiontypes.SubscriptionForAccountKeyPrefix)
-	)
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var (
-			accAddr = subscriptiontypes.AccAddrFromSubscriptionForAccountKey(iterator.Key())
-			id      = subscriptiontypes.IDFromSubscriptionForAccountKey(iterator.Key())
-		)
-
-		if _, found := k.GetSubscription(ctx, id); found {
-			continue
-		}
-
-		k.DeleteSubscriptionForAccount(ctx, accAddr, id)
-	}
-
-	return nil
 }
 
 func completeAllRedelegations(
@@ -283,6 +245,76 @@ func completeAllUnbondingDelegations(
 				sdk.NewAttribute(stakingtypes.AttributeKeyDelegator, item.DelegatorAddress),
 			),
 		)
+	}
+
+	return nil
+}
+func migrateFoundationAccount(
+	ctx sdk.Context, ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, sk *stakingkeeper.Keeper,
+) error {
+	// Parse Bech32 account address
+	addr, err := sdk.AccAddressFromBech32("sent1vv8kmwrs24j5emzw8dp7k8satgea62l7knegd7")
+	if err != nil {
+		return fmt.Errorf("failed to parse address: %w", err)
+	}
+
+	// Complete all redelegations
+	if err := completeAllRedelegations(ctx, sk, addr, ctx.BlockTime()); err != nil {
+		return fmt.Errorf("failed to complete redelegations: %w", err)
+	}
+
+	// Undelegate all delegations
+	if err := undelegateAllDelegations(ctx, sk, addr); err != nil {
+		return fmt.Errorf("failed to undelegate delegations: %w", err)
+	}
+
+	// Complete all unbonding delegations
+	if err := completeAllUnbondingDelegations(ctx, sk, addr, ctx.BlockTime()); err != nil {
+		return fmt.Errorf("failed to complete unbonding delegations: %w", err)
+	}
+
+	// Retrieve account
+	account := ak.GetAccount(ctx, addr)
+
+	// Ensure the account is a ContinuousVestingAccount
+	vestingAccount, ok := account.(*authvestingtypes.ContinuousVestingAccount)
+	if !ok {
+		return fmt.Errorf("invalid account type; expected ContinuousVestingAccount, got %T", account)
+	}
+
+	// Create a new ContinuousVestingAccount with updated end time
+	vestingAccount = authvestingtypes.NewContinuousVestingAccount(
+		vestingAccount.BaseAccount,
+		vestingAccount.OriginalVesting,
+		0,
+		ctx.BlockTime().Unix(),
+	)
+
+	// Get balances and calculate total bonded and unbonding amounts
+	balances := bk.GetAllBalances(ctx, addr)
+	bonded := sk.GetDelegatorBonded(ctx, addr)
+	unbonding := sk.GetDelegatorUnbonding(ctx, addr)
+
+	// Add bonded and unbonding amounts to the balance
+	amount := sdk.NewCoin("udvpn", bonded.Add(unbonding))
+	balance := balances.Add(amount)
+
+	// Track delegation and update account
+	vestingAccount.TrackDelegation(ctx.BlockTime(), balance, sdk.NewCoins(amount))
+	ak.SetAccount(ctx, vestingAccount)
+
+	// Transfer spendable coins to new address
+	toAddr, err := sdk.AccAddressFromBech32("")
+	if err != nil {
+		return err
+	}
+
+	// Retrieve the spendable balance
+	spendableCoins := bk.SpendableCoins(ctx, addr)
+
+	// Transfer spendable balance to new address
+	if err := bk.SendCoins(ctx, addr, toAddr, spendableCoins); err != nil {
+		return err
 	}
 
 	return nil

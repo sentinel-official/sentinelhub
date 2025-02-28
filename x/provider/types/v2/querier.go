@@ -19,7 +19,3 @@ func NewQueryProvidersRequest(status v1base.Status, pagination *sdkquery.PageReq
 		Pagination: pagination,
 	}
 }
-
-func NewQueryParamsRequest() *QueryParamsRequest {
-	return &QueryParamsRequest{}
-}

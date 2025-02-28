@@ -13,8 +13,13 @@ import (
 
 // SetActiveProvider stores an active provider in the module's KVStore.
 func (k *Keeper) SetActiveProvider(ctx sdk.Context, v v2.Provider) {
+	addr, err := base.ProvAddressFromBech32(v.Address)
+	if err != nil {
+		panic(err)
+	}
+
 	store := k.Store(ctx)
-	key := types.ActiveProviderKey(v.GetAddress())
+	key := types.ActiveProviderKey(addr)
 	value := k.cdc.MustMarshal(&v)
 
 	store.Set(key, value)
@@ -53,8 +58,13 @@ func (k *Keeper) DeleteActiveProvider(ctx sdk.Context, addr base.ProvAddress) {
 
 // SetInactiveProvider stores an inactive provider in the module's KVStore.
 func (k *Keeper) SetInactiveProvider(ctx sdk.Context, v v2.Provider) {
+	addr, err := base.ProvAddressFromBech32(v.Address)
+	if err != nil {
+		panic(err)
+	}
+
 	store := k.Store(ctx)
-	key := types.InactiveProviderKey(v.GetAddress())
+	key := types.InactiveProviderKey(addr)
 	value := k.cdc.MustMarshal(&v)
 
 	store.Set(key, value)

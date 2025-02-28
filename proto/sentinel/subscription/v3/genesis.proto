@@ -3,7 +3,7 @@ package sentinel.subscription.v3;
 
 import "gogoproto/gogo.proto";
 import "sentinel/subscription/v2/allocation.proto";
-import "sentinel/subscription/v2/params.proto";
+import "sentinel/subscription/v3/params.proto";
 import "sentinel/subscription/v3/subscription.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/subscription/types/v3";
@@ -13,5 +13,5 @@ option (gogoproto.goproto_getters_all) = false;
 message GenesisState {
   repeated sentinel.subscription.v2.Allocation allocations = 1 [(gogoproto.nullable) = false];
   repeated Subscription subscriptions = 2 [(gogoproto.nullable) = false];
-  sentinel.subscription.v2.Params params = 3 [(gogoproto.nullable) = false];
+  Params params = 3 [(gogoproto.nullable) = false];
 }

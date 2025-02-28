@@ -46,6 +46,14 @@ func NewPriceFromString(s string) (Price, error) {
 	return price, nil
 }
 
+func NewPriceFromCoin(coin sdk.Coin) Price {
+	return Price{
+		Denom:      coin.Denom,
+		BaseValue:  sdkmath.LegacyZeroDec(),
+		QuoteValue: coin.Amount,
+	}
+}
+
 func ZeroPrice(denom string) Price {
 	return Price{
 		Denom:      denom,
@@ -180,6 +188,15 @@ func NewPricesFromString(s string) (Prices, error) {
 	}
 
 	return prices.Sort(), nil
+}
+
+func NewPricesFromCoins(coins ...sdk.Coin) Prices {
+	prices := make(Prices, len(coins))
+	for i, coin := range coins {
+		prices[i] = NewPriceFromCoin(coin)
+	}
+
+	return prices.Sort()
 }
 
 func (p Prices) Copy() Prices {

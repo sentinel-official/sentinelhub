@@ -3,6 +3,7 @@ package keeper
 import (
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
@@ -65,6 +66,14 @@ func (k *Keeper) DeleteSessionForNode(ctx sdk.Context, addr base.NodeAddress, id
 	k.session.DeleteSessionForNode(ctx, addr, id)
 }
 
+func (k *Keeper) IsValidSessionGigabytes(ctx sdk.Context, gigabytes int64) bool {
+	return k.session.IsValidGigabytes(ctx, gigabytes)
+}
+
+func (k *Keeper) IsValidSessionHours(ctx sdk.Context, hours int64) bool {
+	return k.session.IsValidHours(ctx, hours)
+}
+
 func (k *Keeper) GetSessionCount(ctx sdk.Context) uint64 {
 	return k.session.GetSessionCount(ctx)
 }
@@ -75,6 +84,10 @@ func (k *Keeper) GetSessionInactiveAt(ctx sdk.Context) time.Time {
 
 func (k *Keeper) GetSession(ctx sdk.Context, id uint64) (sessiontypes.Session, bool) {
 	return k.session.GetSession(ctx, id)
+}
+
+func (k *Keeper) SessionStakingShare(ctx sdk.Context) math.LegacyDec {
+	return k.session.StakingShare(ctx)
 }
 
 func (k *Keeper) SetSessionCount(ctx sdk.Context, count uint64) {

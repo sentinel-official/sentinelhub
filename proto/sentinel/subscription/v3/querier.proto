@@ -4,6 +4,7 @@ package sentinel.subscription.v3;
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "sentinel/subscription/v3/params.proto";
 import "sentinel/subscription/v3/subscription.proto";
 
 option go_package = "github.com/sentinel-official/hub/v12/x/subscription/types/v3";
@@ -28,6 +29,8 @@ message QuerySubscriptionRequest {
   uint64 id = 1;
 }
 
+message QueryParamsRequest {}
+
 message QuerySubscriptionsResponse {
   repeated Subscription subscriptions = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
@@ -47,6 +50,10 @@ message QuerySubscriptionResponse {
   Subscription subscription = 1 [(gogoproto.nullable) = false];
 }
 
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
 service QueryService {
   rpc QuerySubscriptions(QuerySubscriptionsRequest) returns (QuerySubscriptionsResponse) {
     option (google.api.http).get = "/sentinel/subscription/v3/subscriptions";
@@ -59,5 +66,8 @@ service QueryService {
   }
   rpc QuerySubscription(QuerySubscriptionRequest) returns (QuerySubscriptionResponse) {
     option (google.api.http).get = "/sentinel/subscription/v3/subscriptions/{id}";
+  }
+  rpc QueryParams(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v3/params";
   }
 }

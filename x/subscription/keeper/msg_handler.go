@@ -93,7 +93,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	k.DeleteSubscriptionForInactiveAt(ctx, subscription.InactiveAt, subscription.ID)
 	k.DeleteSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
 
-	share := k.ProviderStakingShare(ctx)
+	share := k.StakingShare(ctx)
 	totalPayment := price.QuotePrice()
 
 	accAddr, err := sdk.AccAddressFromBech32(msg.From)
@@ -292,7 +292,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		StatusAt:           ctx.BlockTime(),
 	}
 
-	share := k.ProviderStakingShare(ctx)
+	share := k.StakingShare(ctx)
 	totalPayment := price.QuotePrice()
 
 	reward := baseutils.GetProportionOfCoin(totalPayment, share)

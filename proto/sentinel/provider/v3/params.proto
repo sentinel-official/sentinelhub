@@ -1,0 +1,13 @@
+syntax = "proto3";
+package sentinel.provider.v3;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sentinel-official/hub/v12/x/provider/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Params {
+  cosmos.base.v1beta1.Coin deposit = 1 [(gogoproto.nullable) = false];
+}

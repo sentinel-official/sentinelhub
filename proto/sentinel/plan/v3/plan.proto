@@ -16,9 +16,8 @@ message Plan {
   int64 gigabytes = 3;
   int64 hours = 4;
   repeated sentinel.types.v1.Price prices = 5 [(gogoproto.nullable) = false];
-  bool private = 6;
-  sentinel.types.v1.Status status = 7;
-  google.protobuf.Timestamp status_at = 8 [
+  sentinel.types.v1.Status status = 6;
+  google.protobuf.Timestamp status_at = 7 [
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];

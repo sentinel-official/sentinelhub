@@ -9,8 +9,13 @@ import (
 
 // SetAllocation sets the allocation for a given ID and address in the KVStore.
 func (k *Keeper) SetAllocation(ctx sdk.Context, alloc v2.Allocation) {
+	addr, err := sdk.AccAddressFromBech32(alloc.Address)
+	if err != nil {
+		panic(err)
+	}
+
 	store := k.Store(ctx)
-	key := types.AllocationKey(alloc.ID, alloc.GetAddress())
+	key := types.AllocationKey(alloc.ID, addr)
 	value := k.cdc.MustMarshal(&alloc)
 
 	store.Set(key, value)

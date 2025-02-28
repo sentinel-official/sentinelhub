@@ -17,13 +17,12 @@ var (
 	_ sdk.Msg = (*MsgStartSessionRequest)(nil)
 )
 
-func NewMsgCreatePlanRequest(from base.ProvAddress, gigabytes, hours int64, prices v1base.Prices, private bool) *MsgCreatePlanRequest {
+func NewMsgCreatePlanRequest(from base.ProvAddress, gigabytes, hours int64, prices v1base.Prices) *MsgCreatePlanRequest {
 	return &MsgCreatePlanRequest{
 		From:      from.String(),
 		Gigabytes: gigabytes,
 		Hours:     hours,
 		Prices:    prices,
-		Private:   private,
 	}
 }
 

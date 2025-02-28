@@ -9,8 +9,19 @@ import (
 
 // SetDeposit stores a deposit in the module's KVStore.
 func (k *Keeper) SetDeposit(ctx sdk.Context, deposit v1.Deposit) {
+	addr, err := sdk.AccAddressFromBech32(deposit.Address)
+	if err != nil {
+		panic(err)
+	}
+
+	deposit.Coins = sdk.NewCoins(deposit.Coins...)
+	if deposit.Coins.IsZero() {
+		k.DeleteDeposit(ctx, addr)
+		return
+	}
+
 	store := k.Store(ctx)
-	key := types.DepositKey(deposit.GetAddress())
+	key := types.DepositKey(addr)
 	value := k.cdc.MustMarshal(&deposit)
 
 	store.Set(key, value)
@@ -46,6 +57,14 @@ func (k *Keeper) GetDeposits(ctx sdk.Context) (items v1.Deposits) {
 	}
 
 	return items
+}
+
+// DeleteDeposit removes a deposit from the module's KVStore based on the address.
+func (k *Keeper) DeleteDeposit(ctx sdk.Context, addr sdk.AccAddress) {
+	store := k.Store(ctx)
+	key := types.DepositKey(addr)
+
+	store.Delete(key)
 }
 
 // IterateDeposits iterates over all deposits stored in the module's KVStore and calls the provided function for each deposit.

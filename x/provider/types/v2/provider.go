@@ -10,19 +10,6 @@ import (
 	v1base "github.com/sentinel-official/hub/v12/types/v1"
 )
 
-func (m *Provider) GetAddress() base.ProvAddress {
-	if m.Address == "" {
-		return nil
-	}
-
-	addr, err := base.ProvAddressFromBech32(m.Address)
-	if err != nil {
-		panic(err)
-	}
-
-	return addr
-}
-
 func (m *Provider) Validate() error {
 	if m.Address == "" {
 		return fmt.Errorf("address cannot be empty")

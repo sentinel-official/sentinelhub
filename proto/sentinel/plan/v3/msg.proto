@@ -15,7 +15,6 @@ message MsgCreatePlanRequest {
   int64 gigabytes = 2;
   int64 hours = 3;
   repeated sentinel.types.v1.Price prices = 4 [(gogoproto.nullable) = false];
-  bool private = 5;
 }
 
 message MsgLinkNodeRequest {

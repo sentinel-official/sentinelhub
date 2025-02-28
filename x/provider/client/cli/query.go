@@ -7,6 +7,7 @@ import (
 
 	base "github.com/sentinel-official/hub/v12/types"
 	"github.com/sentinel-official/hub/v12/x/provider/types/v2"
+	"github.com/sentinel-official/hub/v12/x/provider/types/v3"
 )
 
 func queryProvider() *cobra.Command {
@@ -96,11 +97,11 @@ func queryParams() *cobra.Command {
 				return err
 			}
 
-			qc := v2.NewQueryServiceClient(ctx)
+			qc := v3.NewQueryServiceClient(ctx)
 
 			res, err := qc.QueryParams(
 				cmd.Context(),
-				v2.NewQueryParamsRequest(),
+				v3.NewQueryParamsRequest(),
 			)
 			if err != nil {
 				return err

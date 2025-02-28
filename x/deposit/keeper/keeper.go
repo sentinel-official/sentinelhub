@@ -9,7 +9,6 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/v12/x/deposit/expected"
 	"github.com/sentinel-official/hub/v12/x/deposit/types"
 )
 
@@ -17,7 +16,7 @@ type Keeper struct {
 	key storetypes.StoreKey
 	cdc codec.BinaryCodec
 
-	bank expected.BankKeeper
+	bank BankKeeper
 }
 
 func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey) Keeper {
@@ -27,7 +26,7 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey) Keeper {
 	}
 }
 
-func (k *Keeper) WithBankKeeper(keeper expected.BankKeeper) {
+func (k *Keeper) WithBankKeeper(keeper BankKeeper) {
 	k.bank = keeper
 }
 

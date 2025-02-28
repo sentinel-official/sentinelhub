@@ -3,7 +3,6 @@ package keeper
 import (
 	"time"
 
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/hub/v12/types"
@@ -26,10 +25,6 @@ func (k *Keeper) SendCoinFromAccountToModule(ctx sdk.Context, from sdk.AccAddres
 	}
 
 	return k.bank.SendCoinsFromAccountToModule(ctx, from, to, sdk.NewCoins(coin))
-}
-
-func (k *Keeper) ProviderStakingShare(ctx sdk.Context) sdkmath.LegacyDec {
-	return k.provider.StakingShare(ctx)
 }
 
 func (k *Keeper) GetNode(ctx sdk.Context, addr base.NodeAddress) (nodetypes.Node, bool) {

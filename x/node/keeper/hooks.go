@@ -38,7 +38,7 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 	}
 
 	// Retrieve the staking share and compute the total payment amount for the session.
-	share := k.StakingShare(ctx)
+	share := k.SessionStakingShare(ctx)
 	totalPayment := session.PaymentAmount()
 
 	// Calculate the staking reward and transfer it to the fee collector module.

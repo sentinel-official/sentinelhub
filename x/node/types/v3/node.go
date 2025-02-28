@@ -19,19 +19,6 @@ func (m *Node) GetHourlyPrices() v1base.Prices {
 	return m.HourlyPrices
 }
 
-func (m *Node) GetAddress() base.NodeAddress {
-	if m.Address == "" {
-		return nil
-	}
-
-	addr, err := base.NodeAddressFromBech32(m.Address)
-	if err != nil {
-		panic(err)
-	}
-
-	return addr
-}
-
 func (m *Node) Validate() error {
 	if m.Address == "" {
 		return fmt.Errorf("address cannot be empty")

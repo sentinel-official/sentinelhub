@@ -23,6 +23,10 @@ func (m *Plan) GetPrices() v1base.Prices {
 	return m.Prices
 }
 
+func (m *Plan) IsPrivate() bool {
+	return m.GetPrices().Len() == 0
+}
+
 func (m *Plan) Price(denom string) (v1base.Price, bool) {
 	prices := m.GetPrices()
 	if prices.Len() == 0 {

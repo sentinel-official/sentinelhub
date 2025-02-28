@@ -93,7 +93,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	k.DeleteSubscriptionForInactiveAt(ctx, subscription.InactiveAt, subscription.ID)
 	k.DeleteSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
 
-	share := k.ProviderStakingShare(ctx)
+	share := k.StakingShare(ctx)
 	totalPayment := price.QuotePrice()
 
 	accAddr, err := sdk.AccAddressFromBech32(msg.From)
@@ -255,17 +255,26 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		return nil, types.NewErrorInvalidPlanStatus(plan.ID, plan.Status)
 	}
 
+	accAddr, err := sdk.AccAddressFromBech32(msg.From)
+	if err != nil {
+		return nil, err
+	}
+
+	provAddr, err := base.ProvAddressFromBech32(plan.ProvAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	if plan.IsPrivate() && !accAddr.Equals(provAddr) {
+		return nil, types.NewErrorUnauthorized(msg.From)
+	}
+
 	price, found := plan.Price(msg.Denom)
 	if !found {
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	price, err := price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
-	if err != nil {
-		return nil, err
-	}
-
-	accAddr, err := sdk.AccAddressFromBech32(msg.From)
+	price, err = price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
 	if err != nil {
 		return nil, err
 	}
@@ -283,16 +292,11 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		StatusAt:           ctx.BlockTime(),
 	}
 
-	share := k.ProviderStakingShare(ctx)
+	share := k.StakingShare(ctx)
 	totalPayment := price.QuotePrice()
 
 	reward := baseutils.GetProportionOfCoin(totalPayment, share)
 	if err := k.SendCoinFromAccountToModule(ctx, accAddr, k.feeCollectorName, reward); err != nil {
-		return nil, err
-	}
-
-	provAddr, err := base.ProvAddressFromBech32(plan.ProvAddress)
-	if err != nil {
 		return nil, err
 	}
 

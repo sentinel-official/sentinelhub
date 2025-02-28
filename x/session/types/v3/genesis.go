@@ -1,10 +1,6 @@
 package v3
 
-import (
-	"github.com/sentinel-official/hub/v12/x/session/types/v2"
-)
-
-func NewGenesisState(_ []Session, params v2.Params) *GenesisState {
+func NewGenesisState(_ []Session, params Params) *GenesisState {
 	return &GenesisState{
 		Sessions: nil,
 		Params:   params,
@@ -12,7 +8,7 @@ func NewGenesisState(_ []Session, params v2.Params) *GenesisState {
 }
 
 func DefaultGenesisState() *GenesisState {
-	return NewGenesisState(nil, v2.DefaultParams())
+	return NewGenesisState(nil, DefaultParams())
 }
 
 func ValidateGenesis(state *GenesisState) error {

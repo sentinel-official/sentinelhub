@@ -28,7 +28,6 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 		Gigabytes:   msg.Gigabytes,
 		Hours:       msg.Hours,
 		Prices:      msg.Prices,
-		Private:     msg.Private,
 		Status:      v1base.StatusInactive,
 		StatusAt:    ctx.BlockTime(),
 	}
@@ -43,7 +42,6 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 			ProvAddress: plan.ProvAddress,
 			Gigabytes:   plan.Gigabytes,
 			Hours:       plan.Hours,
-			Private:     plan.Private,
 			Prices:      plan.GetPrices().String(),
 		},
 	)

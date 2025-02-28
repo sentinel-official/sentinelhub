@@ -6,7 +6,7 @@ import (
 	"github.com/sentinel-official/hub/v12/x/subscription/types/v2"
 )
 
-func NewGenesisState(allocations []v2.Allocation, subscriptions []Subscription, params v2.Params) *GenesisState {
+func NewGenesisState(allocations []v2.Allocation, subscriptions []Subscription, params Params) *GenesisState {
 	return &GenesisState{
 		Allocations:   allocations,
 		Subscriptions: subscriptions,
@@ -15,7 +15,7 @@ func NewGenesisState(allocations []v2.Allocation, subscriptions []Subscription, 
 }
 
 func DefaultGenesisState() *GenesisState {
-	return NewGenesisState(nil, nil, v2.DefaultParams())
+	return NewGenesisState(nil, nil, DefaultParams())
 }
 
 func ValidateGenesis(state *GenesisState) error {

@@ -6,7 +6,6 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/v12/x/mint/expected"
 	"github.com/sentinel-official/hub/v12/x/mint/types"
 )
 
@@ -14,10 +13,10 @@ type Keeper struct {
 	cdc codec.BinaryCodec
 	key storetypes.StoreKey
 
-	mint expected.MintKeeper
+	mint MintKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, mint expected.MintKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, mint MintKeeper) Keeper {
 	return Keeper{
 		cdc:  cdc,
 		key:  key,

@@ -13,7 +13,7 @@ require (
 	cosmossdk.io/errors v1.0.1
 	cosmossdk.io/math v1.4.0
 	github.com/CosmWasm/wasmd v0.46.0
-	github.com/cometbft/cometbft v0.37.13
+	github.com/cometbft/cometbft v0.37.15
 	github.com/cometbft/cometbft-db v0.12.0
 	github.com/cosmos/cosmos-sdk v0.47.16
 	github.com/cosmos/gogoproto v1.7.0
@@ -28,8 +28,8 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20240814211410-ddb44dafa142
-	google.golang.org/grpc v1.67.0
+	google.golang.org/genproto/googleapis/api v0.0.0-20240903143218-8af14fe29dc1
+	google.golang.org/grpc v1.68.0
 	google.golang.org/protobuf v1.36.5
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -75,10 +75,10 @@ require (
 	github.com/cosmos/ics23/go v0.10.0 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.12.4 // indirect
 	github.com/cosmos/rosetta-sdk-go v0.10.0 // indirect
-	github.com/creachadair/taskgroup v0.10.0 // indirect
+	github.com/creachadair/taskgroup v0.13.0 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
-	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0 // indirect
+	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/dgraph-io/badger/v4 v4.2.0 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
@@ -180,7 +180,7 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
-	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa // indirect
+	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
 	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/oauth2 v0.24.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect

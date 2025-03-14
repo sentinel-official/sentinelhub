@@ -15,7 +15,7 @@ require (
 	github.com/CosmWasm/wasmd v0.46.0
 	github.com/cometbft/cometbft v0.37.15
 	github.com/cometbft/cometbft-db v0.12.0
-	github.com/cosmos/cosmos-sdk v0.47.16
+	github.com/cosmos/cosmos-sdk v0.47.17
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-apps/modules/async-icq/v7 v7.1.1
 	github.com/cosmos/ibc-go/v7 v7.10.0

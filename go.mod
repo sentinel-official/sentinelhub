@@ -1,6 +1,6 @@
 module github.com/sentinel-official/hub/v12
 
-go 1.22.9
+go 1.22.12
 
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0

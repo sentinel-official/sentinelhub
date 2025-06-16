@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	"github.com/sentinel-official/hub/v12/x/plan/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
 )
 
 func (k *Keeper) InitGenesis(ctx sdk.Context, state *v3.GenesisState) {

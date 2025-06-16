@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	sessiontypes "github.com/sentinel-official/hub/v12/x/session/types/v3"
-	"github.com/sentinel-official/hub/v12/x/subscription/types/v3"
+	sessiontypes "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
 )
 
 // UpdateSessionMaxValues calculates and updates the maximum allowable duration and bytes for a session.

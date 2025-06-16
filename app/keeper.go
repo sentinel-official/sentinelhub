@@ -61,14 +61,14 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 
-	custommintkeeper "github.com/sentinel-official/hub/v12/x/mint/keeper"
-	customminttypes "github.com/sentinel-official/hub/v12/x/mint/types"
-	oraclekeeper "github.com/sentinel-official/hub/v12/x/oracle/keeper"
-	oracletypes "github.com/sentinel-official/hub/v12/x/oracle/types"
-	swapkeeper "github.com/sentinel-official/hub/v12/x/swap/keeper"
-	swaptypes "github.com/sentinel-official/hub/v12/x/swap/types"
-	vpnkeeper "github.com/sentinel-official/hub/v12/x/vpn/keeper"
-	vpntypes "github.com/sentinel-official/hub/v12/x/vpn/types"
+	custommintkeeper "github.com/sentinel-official/sentinelhub/v12/x/mint/keeper"
+	customminttypes "github.com/sentinel-official/sentinelhub/v12/x/mint/types"
+	oraclekeeper "github.com/sentinel-official/sentinelhub/v12/x/oracle/keeper"
+	oracletypes "github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
+	swapkeeper "github.com/sentinel-official/sentinelhub/v12/x/swap/keeper"
+	swaptypes "github.com/sentinel-official/sentinelhub/v12/x/swap/types"
+	vpnkeeper "github.com/sentinel-official/sentinelhub/v12/x/vpn/keeper"
+	vpntypes "github.com/sentinel-official/sentinelhub/v12/x/vpn/types"
 )
 
 type Keepers struct {

@@ -7,8 +7,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/sentinel-official/hub/v12/x/deposit/types"
-	"github.com/sentinel-official/hub/v12/x/deposit/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/deposit/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/deposit/types/v1"
 )
 
 func (k *Keeper) HandleQueryDeposit(ctx sdk.Context, req *v1.QueryDepositRequest) (*v1.QueryDepositResponse, error) {

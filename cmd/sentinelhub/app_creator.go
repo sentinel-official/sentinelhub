@@ -19,8 +19,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 
-	"github.com/sentinel-official/hub/v12/app"
-	base "github.com/sentinel-official/hub/v12/types"
+	"github.com/sentinel-official/sentinelhub/v12/app"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
 )
 
 type appCreator struct {

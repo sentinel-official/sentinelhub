@@ -8,7 +8,7 @@ import "sentinel/node/v3/node.proto";
 import "sentinel/node/v3/params.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/hub/v12/x/node/types/v3";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 

@@ -3,9 +3,9 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	nodetypes "github.com/sentinel-official/hub/v12/x/node/types/v3"
-	providertypes "github.com/sentinel-official/hub/v12/x/provider/types/v2"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	nodetypes "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
+	providertypes "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
 )
 
 func (k *Keeper) AddDeposit(ctx sdk.Context, addr sdk.AccAddress, coin sdk.Coin) error {

@@ -3,7 +3,7 @@ package v3
 import (
 	"fmt"
 
-	"github.com/sentinel-official/hub/v12/x/provider/types/v2"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
 )
 
 func NewGenesisState(providers v2.Providers, params Params) *GenesisState {

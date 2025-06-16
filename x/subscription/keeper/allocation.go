@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/v12/x/subscription/types"
-	"github.com/sentinel-official/hub/v12/x/subscription/types/v2"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2"
 )
 
 // SetAllocation sets the allocation for a given ID and address in the KVStore.

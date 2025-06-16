@@ -8,8 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	"github.com/sentinel-official/hub/v12/x/lease/types/v1"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
 )
 
 func txEndLease() *cobra.Command {

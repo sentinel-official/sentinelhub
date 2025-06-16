@@ -3,7 +3,7 @@ package osmosis.protorev.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/sentinel-official/hub/v12/third_party/osmosis/x/protorev/types";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/protorev/types";
 
 message QueryGetProtoRevPoolRequest {
   string base_denom = 1 [(gogoproto.moretags) = "yaml:\"base_denom\""];

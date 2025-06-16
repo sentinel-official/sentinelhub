@@ -7,7 +7,7 @@ import (
 	sdkquery "github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/stretchr/testify/require"
 
-	"github.com/sentinel-official/hub/v12/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/swap/types"
 )
 
 func TestNewQueryParamsRequest(t *testing.T) {

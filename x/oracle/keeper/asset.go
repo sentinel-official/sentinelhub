@@ -5,8 +5,8 @@ import (
 	ibchost "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 	protobuf "github.com/gogo/protobuf/types"
 
-	"github.com/sentinel-official/hub/v12/x/oracle/types"
-	"github.com/sentinel-official/hub/v12/x/oracle/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1"
 )
 
 // SetAsset stores an asset in the module's KVStore.

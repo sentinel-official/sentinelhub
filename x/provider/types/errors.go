@@ -3,7 +3,7 @@ package types
 import (
 	sdkerrors "cosmossdk.io/errors"
 
-	base "github.com/sentinel-official/hub/v12/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
 )
 
 var (

@@ -5,10 +5,10 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
-	"github.com/sentinel-official/hub/v12/x/provider/types"
-	"github.com/sentinel-official/hub/v12/x/provider/types/v2"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
 )
 
 // SetActiveProvider stores an active provider in the module's KVStore.

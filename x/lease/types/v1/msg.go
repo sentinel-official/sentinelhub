@@ -4,9 +4,9 @@ import (
 	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
-	"github.com/sentinel-official/hub/v12/x/lease/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/lease/types"
 )
 
 var (

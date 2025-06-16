@@ -7,8 +7,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/sentinel-official/hub/v12/x/swap/types"
-	"github.com/sentinel-official/hub/v12/x/swap/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/swap/types/v1"
 )
 
 func (k *Keeper) HandleQuerySwap(ctx sdk.Context, req *v1.QuerySwapRequest) (*v1.QuerySwapResponse, error) {

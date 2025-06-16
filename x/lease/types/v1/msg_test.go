@@ -7,8 +7,8 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
 
 func TestMsgEndLeaseRequest_ValidateBasic(t *testing.T) {

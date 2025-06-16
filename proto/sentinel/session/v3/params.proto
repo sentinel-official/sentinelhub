@@ -4,7 +4,7 @@ package sentinel.session.v3;
 import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
 
-option go_package = "github.com/sentinel-official/hub/v12/x/session/types/v3";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 

@@ -6,8 +6,8 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/v12/x/subscription/types"
-	"github.com/sentinel-official/hub/v12/x/subscription/types/v3"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
 )
 
 // SetParams stores the given parameters in the module's KVStore.

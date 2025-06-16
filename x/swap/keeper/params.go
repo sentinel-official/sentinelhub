@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/v12/x/swap/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/swap/types/v1"
 )
 
 func (k *Keeper) SwapEnabled(ctx sdk.Context) (yes bool) {

@@ -9,9 +9,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	"github.com/sentinel-official/hub/v12/x/lease/types"
-	"github.com/sentinel-official/hub/v12/x/lease/types/v1"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/lease/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
 )
 
 func (k *Keeper) HandleQueryLease(ctx sdk.Context, req *v1.QueryLeaseRequest) (*v1.QueryLeaseResponse, error) {

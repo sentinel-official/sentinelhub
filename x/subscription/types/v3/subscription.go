@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
 
 func (m *Subscription) RenewalAt() time.Time {

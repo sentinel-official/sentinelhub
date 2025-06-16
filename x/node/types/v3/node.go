@@ -7,8 +7,8 @@ import (
 
 	sdkerrors "cosmossdk.io/errors"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
 
 func (m *Node) GetGigabytePrices() v1base.Prices {

@@ -7,8 +7,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/sentinel-official/hub/v12/x/oracle/types"
-	"github.com/sentinel-official/hub/v12/x/oracle/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1"
 )
 
 func (k *Keeper) HandleQueryAssets(ctx sdk.Context, req *v1.QueryAssetsRequest) (res *v1.QueryAssetsResponse, err error) {

@@ -4,7 +4,7 @@ package sentinel.provider.v2;
 import "gogoproto/gogo.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/hub/v12/x/provider/types/v2";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 

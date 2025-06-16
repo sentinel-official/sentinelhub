@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkmsgservice "github.com/cosmos/cosmos-sdk/types/msgservice"
 
-	sessiontypes "github.com/sentinel-official/hub/v12/x/session/types/v3"
+	sessiontypes "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
 )
 
 func RegisterInterfaces(registry codectypes.InterfaceRegistry) {

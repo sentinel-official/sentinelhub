@@ -3,7 +3,7 @@ package osmosis.poolmanager.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/sentinel-official/hub/v12/third_party/osmosis/x/poolmanager/client/queryproto";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/poolmanager/client/queryproto";
 
 message SpotPriceRequest {
   uint64 pool_id = 1 [(gogoproto.moretags) = "yaml:\"pool_id\""];

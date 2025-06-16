@@ -3,7 +3,7 @@ package v1
 import (
 	sdkquery "github.com/cosmos/cosmos-sdk/types/query"
 
-	base "github.com/sentinel-official/hub/v12/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
 )
 
 func NewQueryLeaseRequest(id uint64) *QueryLeaseRequest {

@@ -9,9 +9,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/sentinel-official/hub/v12/x/subscription/types"
-	"github.com/sentinel-official/hub/v12/x/subscription/types/v2"
-	"github.com/sentinel-official/hub/v12/x/subscription/types/v3"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
 )
 
 func (k *Keeper) HandleQueryAllocation(ctx sdk.Context, req *v2.QueryAllocationRequest) (*v2.QueryAllocationResponse, error) {

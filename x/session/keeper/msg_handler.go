@@ -3,9 +3,9 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
-	"github.com/sentinel-official/hub/v12/x/session/types"
-	"github.com/sentinel-official/hub/v12/x/session/types/v3"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/session/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
 )
 
 func (k *Keeper) HandleMsgCancelSession(ctx sdk.Context, msg *v3.MsgCancelSessionRequest) (*v3.MsgCancelSessionResponse, error) {

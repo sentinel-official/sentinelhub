@@ -3,7 +3,7 @@ package sentinel.swap.v1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/sentinel-official/hub/v12/x/swap/types/v1";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/swap/types/v1";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 

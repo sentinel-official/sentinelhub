@@ -10,9 +10,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	"github.com/sentinel-official/hub/v12/x/session/types"
-	"github.com/sentinel-official/hub/v12/x/session/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/session/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
 )
 
 func (k *Keeper) HandleQuerySession(ctx sdk.Context, req *v3.QuerySessionRequest) (*v3.QuerySessionResponse, error) {

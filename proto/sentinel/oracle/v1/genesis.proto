@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "sentinel/oracle/v1/asset.proto";
 import "sentinel/oracle/v1/params.proto";
 
-option go_package = "github.com/sentinel-official/hub/v12/x/oracle/types/v1";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 

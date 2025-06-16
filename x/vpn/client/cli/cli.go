@@ -3,13 +3,13 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	depositcli "github.com/sentinel-official/hub/v12/x/deposit/client/cli"
-	leasecli "github.com/sentinel-official/hub/v12/x/lease/client/cli"
-	nodecli "github.com/sentinel-official/hub/v12/x/node/client/cli"
-	plancli "github.com/sentinel-official/hub/v12/x/plan/client/cli"
-	providercli "github.com/sentinel-official/hub/v12/x/provider/client/cli"
-	sessioncli "github.com/sentinel-official/hub/v12/x/session/client/cli"
-	subscriptioncli "github.com/sentinel-official/hub/v12/x/subscription/client/cli"
+	depositcli "github.com/sentinel-official/sentinelhub/v12/x/deposit/client/cli"
+	leasecli "github.com/sentinel-official/sentinelhub/v12/x/lease/client/cli"
+	nodecli "github.com/sentinel-official/sentinelhub/v12/x/node/client/cli"
+	plancli "github.com/sentinel-official/sentinelhub/v12/x/plan/client/cli"
+	providercli "github.com/sentinel-official/sentinelhub/v12/x/provider/client/cli"
+	sessioncli "github.com/sentinel-official/sentinelhub/v12/x/session/client/cli"
+	subscriptioncli "github.com/sentinel-official/sentinelhub/v12/x/subscription/client/cli"
 )
 
 func GetQueryCmd() *cobra.Command {

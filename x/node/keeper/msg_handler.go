@@ -6,11 +6,11 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
-	"github.com/sentinel-official/hub/v12/x/node/types"
-	"github.com/sentinel-official/hub/v12/x/node/types/v3"
-	sessiontypes "github.com/sentinel-official/hub/v12/x/session/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/node/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
+	sessiontypes "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
 )
 
 func (k *Keeper) HandleMsgRegisterNode(ctx sdk.Context, msg *v3.MsgRegisterNodeRequest) (*v3.MsgRegisterNodeResponse, error) {

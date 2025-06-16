@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/v12/x/oracle/types"
-	"github.com/sentinel-official/hub/v12/x/oracle/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1"
 )
 
 // SetParams stores the oracle module parameters in the module's KVStore.

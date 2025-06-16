@@ -7,11 +7,11 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
-	"github.com/sentinel-official/hub/v12/x/provider/types"
-	"github.com/sentinel-official/hub/v12/x/provider/types/v2"
-	"github.com/sentinel-official/hub/v12/x/provider/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v3"
 )
 
 func (k *Keeper) HandleQueryProvider(ctx sdk.Context, req *v2.QueryProviderRequest) (*v2.QueryProviderResponse, error) {

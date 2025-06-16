@@ -8,9 +8,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	"github.com/sentinel-official/hub/v12/x/subscription/types/v2"
-	"github.com/sentinel-official/hub/v12/x/subscription/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
 )
 
 func querySubscription() *cobra.Command {

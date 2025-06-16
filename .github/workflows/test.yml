@@ -31,7 +31,7 @@ jobs:
           filepaths+=" $(find ./ -type f -path '*/expected/*')"
           filepaths+=" $(find ./ -type f -path '*/services/*')"
           for filepath in ${filepaths}; do
-            filepath=$(echo "${filepath}" | sed 's@^.@github.com/sentinel-official/hub/v[0-9]*@g')
+            filepath=$(echo "${filepath}" | sed 's@^.@github.com/sentinel-official/sentinelhub/v[0-9]*@g')
             echo "Excluding file ${filepath} from coverage report..."
             sed -i "/$(echo "${filepath}" | sed 's@/@\\/@g')/d" ./coverage.txt
           done

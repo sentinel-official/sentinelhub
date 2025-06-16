@@ -9,10 +9,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
-	"github.com/sentinel-official/hub/v12/x/node/types"
-	"github.com/sentinel-official/hub/v12/x/node/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/node/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
 )
 
 func (k *Keeper) HandleQueryNode(ctx sdk.Context, req *v3.QueryNodeRequest) (*v3.QueryNodeResponse, error) {

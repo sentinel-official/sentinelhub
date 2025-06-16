@@ -5,11 +5,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/v12/types"
-	"github.com/sentinel-official/hub/v12/x/lease/types/v1"
-	v3plan "github.com/sentinel-official/hub/v12/x/plan/types/v3"
-	"github.com/sentinel-official/hub/v12/x/subscription/types/v2"
-	"github.com/sentinel-official/hub/v12/x/subscription/types/v3"
+	"github.com/sentinel-official/sentinelhub/v12/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
+	v3plan "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
 )
 
 type DepositKeeper interface {

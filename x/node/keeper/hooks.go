@@ -3,11 +3,11 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
-	baseutils "github.com/sentinel-official/hub/v12/utils"
-	"github.com/sentinel-official/hub/v12/x/node/types"
-	"github.com/sentinel-official/hub/v12/x/node/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	baseutils "github.com/sentinel-official/sentinelhub/v12/utils"
+	"github.com/sentinel-official/sentinelhub/v12/x/node/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
 )
 
 // SessionInactivePreHook handles operations when a session transitions to the inactive state.

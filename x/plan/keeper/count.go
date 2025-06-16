@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
-	"github.com/sentinel-official/hub/v12/x/plan/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/plan/types"
 )
 
 // SetPlanCount stores the count of plans in the module's KVStore.

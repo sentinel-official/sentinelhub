@@ -3,11 +3,11 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
-	"github.com/sentinel-official/hub/v12/x/provider/types"
-	"github.com/sentinel-official/hub/v12/x/provider/types/v2"
-	"github.com/sentinel-official/hub/v12/x/provider/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v3"
 )
 
 func (k *Keeper) HandleMsgRegisterProvider(ctx sdk.Context, msg *v3.MsgRegisterProviderRequest) (*v3.MsgRegisterProviderResponse, error) {

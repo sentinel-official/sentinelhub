@@ -5,10 +5,10 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/hub/v12/types"
-	v1base "github.com/sentinel-official/hub/v12/types/v1"
-	"github.com/sentinel-official/hub/v12/x/plan/types"
-	"github.com/sentinel-official/hub/v12/x/plan/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/plan/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
 )
 
 // LeaseInactivePreHook handles the necessary operations when a lease becomes inactive.

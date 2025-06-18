@@ -34,7 +34,7 @@ message MsgStartSessionRequest {
   string node_address = 2;
   int64 gigabytes = 3;
   int64 hours = 4;
-  string denom = 5;
+  sentinel.types.v1.Price max_price = 5 [(gogoproto.nullable) = false];
 }
 
 message MsgUpdateParamsRequest {

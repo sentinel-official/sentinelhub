@@ -7,9 +7,21 @@ import (
 )
 
 const (
-	flagDenom              = "denom"
+	flagMaxPrice           = "max-price"
 	flagRenewalPricePolicy = "renewal-price-policy"
 )
+
+func GetMaxPrice(flags *pflag.FlagSet) (v1base.Price, error) {
+	s, err := flags.GetString(flagMaxPrice)
+	if err != nil {
+		return v1base.Price{}, err
+	}
+	if s == "" {
+		return v1base.ZeroPrice(""), nil
+	}
+
+	return v1base.NewPriceFromString(s)
+}
 
 func GetRenewalPricePolicy(flags *pflag.FlagSet) (v1base.RenewalPricePolicy, error) {
 	s, err := flags.GetString(flagRenewalPricePolicy)

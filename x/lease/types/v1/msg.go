@@ -47,12 +47,12 @@ func (m *MsgEndLeaseRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
-func NewMsgRenewLeaseRequest(from base.ProvAddress, id uint64, hours int64, denom string) *MsgRenewLeaseRequest {
+func NewMsgRenewLeaseRequest(from base.ProvAddress, id uint64, hours int64, maxPrice v1base.Price) *MsgRenewLeaseRequest {
 	return &MsgRenewLeaseRequest{
-		From:  from.String(),
-		ID:    id,
-		Hours: hours,
-		Denom: denom,
+		From:     from.String(),
+		ID:       id,
+		Hours:    hours,
+		MaxPrice: maxPrice,
 	}
 }
 
@@ -72,8 +72,8 @@ func (m *MsgRenewLeaseRequest) ValidateBasic() error {
 	if m.Hours < 0 {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
 	}
-	if m.Denom != "" {
-		if err := sdk.ValidateDenom(m.Denom); err != nil {
+	if m.MaxPrice.Denom != "" {
+		if err := m.MaxPrice.Validate(); err != nil {
 			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 		}
 	}
@@ -90,12 +90,12 @@ func (m *MsgRenewLeaseRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
-func NewMsgStartLeaseRequest(from base.ProvAddress, nodeAddr base.NodeAddress, hours int64, denom string, renewalPricePolicy v1base.RenewalPricePolicy) *MsgStartLeaseRequest {
+func NewMsgStartLeaseRequest(from base.ProvAddress, nodeAddr base.NodeAddress, hours int64, maxPrice v1base.Price, renewalPricePolicy v1base.RenewalPricePolicy) *MsgStartLeaseRequest {
 	return &MsgStartLeaseRequest{
 		From:               from.String(),
 		NodeAddress:        nodeAddr.String(),
 		Hours:              hours,
-		Denom:              denom,
+		MaxPrice:           maxPrice,
 		RenewalPricePolicy: renewalPricePolicy,
 	}
 }
@@ -119,8 +119,8 @@ func (m *MsgStartLeaseRequest) ValidateBasic() error {
 	if m.Hours < 0 {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
 	}
-	if m.Denom != "" {
-		if err := sdk.ValidateDenom(m.Denom); err != nil {
+	if m.MaxPrice.Denom != "" {
+		if err := m.MaxPrice.Validate(); err != nil {
 			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 		}
 	}

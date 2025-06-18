@@ -174,23 +174,26 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
 
-	price := v1base.ZeroPrice(msg.Denom)
+	price := v1base.ZeroPrice(msg.MaxPrice.Denom)
 	if msg.Gigabytes != 0 {
-		price, found = node.GigabytePrice(msg.Denom)
+		price, found = node.GigabytePrice(msg.MaxPrice.Denom)
 		if !found {
-			return nil, types.NewErrorPriceNotFound(msg.Denom)
+			return nil, types.NewErrorPriceNotFound(msg.MaxPrice.Denom)
 		}
 	}
 	if msg.Hours != 0 {
-		price, found = node.HourlyPrice(msg.Denom)
+		price, found = node.HourlyPrice(msg.MaxPrice.Denom)
 		if !found {
-			return nil, types.NewErrorPriceNotFound(msg.Denom)
+			return nil, types.NewErrorPriceNotFound(msg.MaxPrice.Denom)
 		}
 	}
 
 	price, err = price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
 	if err != nil {
 		return nil, err
+	}
+	if price.IsGT(msg.MaxPrice) {
+		return nil, types.NewErrorInvalidPrice(price)
 	}
 
 	accAddr, err := sdk.AccAddressFromBech32(msg.From)

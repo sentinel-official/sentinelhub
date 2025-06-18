@@ -19,7 +19,7 @@ message EventPay {
   uint64 id = 1 [(gogoproto.customname) = "ID"];
   string acc_address = 2;
   string node_address = 3;
-  string payment = 4;
+  string amount = 4;
   string staking_reward = 5;
 }
 

@@ -65,7 +65,7 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 			ID:            session.ID,
 			AccAddress:    session.AccAddress,
 			NodeAddress:   session.NodeAddress,
-			Payment:       payment.String(),
+			Amount:        payment.String(),
 			StakingReward: reward.String(),
 		},
 	)

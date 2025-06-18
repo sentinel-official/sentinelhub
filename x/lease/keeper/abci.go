@@ -80,7 +80,7 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 				ID:            item.ID,
 				NodeAddress:   item.NodeAddress,
 				ProvAddress:   item.ProvAddress,
-				Payment:       payment.String(),
+				Amount:        payment.String(),
 				StakingReward: reward.String(),
 			},
 		)
@@ -118,10 +118,10 @@ func (k *Keeper) handleLeaseRenewals(ctx sdk.Context) {
 
 		// Create a message to renew the lease
 		msg := &v1.MsgRenewLeaseRequest{
-			From:  item.ProvAddress,
-			ID:    item.ID,
-			Hours: item.MaxHours,
-			Denom: item.Price.Denom,
+			From:     item.ProvAddress,
+			ID:       item.ID,
+			Hours:    item.MaxHours,
+			MaxPrice: item.Price,
 		}
 
 		// Get the appropriate handler for processing the renewal message

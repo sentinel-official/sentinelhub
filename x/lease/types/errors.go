@@ -13,13 +13,14 @@ var (
 	ErrDuplicateLease        = sdkerrors.Register(ModuleName, 201, "duplicate lease")
 	ErrInvalidHours          = sdkerrors.Register(ModuleName, 202, "invalid hours")
 	ErrInvalidNodeStatus     = sdkerrors.Register(ModuleName, 203, "invalid node status")
-	ErrInvalidProviderStatus = sdkerrors.Register(ModuleName, 204, "invalid provider status")
-	ErrInvalidRenewalPolicy  = sdkerrors.Register(ModuleName, 205, "invalid renewal policy")
-	ErrLeaseNotFound         = sdkerrors.Register(ModuleName, 206, "lease not found")
-	ErrNodeNotFound          = sdkerrors.Register(ModuleName, 207, "node not found")
-	ErrPriceNotFound         = sdkerrors.Register(ModuleName, 208, "price not found")
-	ErrProviderNotFound      = sdkerrors.Register(ModuleName, 209, "provider not found")
-	ErrUnauthorized          = sdkerrors.Register(ModuleName, 210, "unauthorized")
+	ErrInvalidPrice          = sdkerrors.Register(ModuleName, 204, "invalid price")
+	ErrInvalidProviderStatus = sdkerrors.Register(ModuleName, 205, "invalid provider status")
+	ErrInvalidRenewalPolicy  = sdkerrors.Register(ModuleName, 206, "invalid renewal policy")
+	ErrLeaseNotFound         = sdkerrors.Register(ModuleName, 207, "lease not found")
+	ErrNodeNotFound          = sdkerrors.Register(ModuleName, 208, "node not found")
+	ErrPriceNotFound         = sdkerrors.Register(ModuleName, 209, "price not found")
+	ErrProviderNotFound      = sdkerrors.Register(ModuleName, 210, "provider not found")
+	ErrUnauthorized          = sdkerrors.Register(ModuleName, 211, "unauthorized")
 )
 
 // NewErrorDuplicateLease returns an error indicating that a lease for the specified node and provider already exists.
@@ -35,6 +36,11 @@ func NewErrorInvalidHours(hours int64) error {
 // NewErrorInvalidNodeStatus returns an error indicating that the provided status is invalid for the given node.
 func NewErrorInvalidNodeStatus(addr base.NodeAddress, status v1base.Status) error {
 	return sdkerrors.Wrapf(ErrInvalidNodeStatus, "invalid status %s for node %s", status, addr)
+}
+
+// NewErrorInvalidPrice returns an error indicating that the price is invalid.
+func NewErrorInvalidPrice(price v1base.Price) error {
+	return sdkerrors.Wrapf(ErrInvalidPrice, "invalid price %s", price)
 }
 
 // NewErrorInvalidProviderStatus returns an error indicating that the provided status is invalid for the given provider.

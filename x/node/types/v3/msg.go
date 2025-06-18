@@ -170,13 +170,13 @@ func (m *MsgUpdateNodeStatusRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
-func NewMsgStartSessionRequest(from sdk.AccAddress, nodeAddr base.NodeAddress, gigabytes, hours int64, denom string) *MsgStartSessionRequest {
+func NewMsgStartSessionRequest(from sdk.AccAddress, nodeAddr base.NodeAddress, gigabytes, hours int64, maxPrice v1base.Price) *MsgStartSessionRequest {
 	return &MsgStartSessionRequest{
 		From:        from.String(),
 		NodeAddress: nodeAddr.String(),
 		Gigabytes:   gigabytes,
 		Hours:       hours,
-		Denom:       denom,
+		MaxPrice:    maxPrice,
 	}
 }
 
@@ -213,8 +213,8 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 	if m.Hours < 0 {
 		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
 	}
-	if m.Denom != "" {
-		if err := sdk.ValidateDenom(m.Denom); err != nil {
+	if m.MaxPrice.Denom != "" {
+		if err := m.MaxPrice.Validate(); err != nil {
 			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
 		}
 	}

@@ -103,14 +103,17 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
 
-	price, found := node.HourlyPrice(msg.Denom)
+	price, found := node.HourlyPrice(msg.MaxPrice.Denom)
 	if !found {
-		return nil, types.NewErrorPriceNotFound(msg.Denom)
+		return nil, types.NewErrorPriceNotFound(msg.MaxPrice.Denom)
 	}
 
 	price, err = price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
 	if err != nil {
 		return nil, err
+	}
+	if price.IsGT(msg.MaxPrice) {
+		return nil, types.NewErrorInvalidPrice(price)
 	}
 
 	if err := lease.ValidateRenewalPolicies(price); err != nil {
@@ -199,14 +202,17 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
 
-	price, found := node.HourlyPrice(msg.Denom)
+	price, found := node.HourlyPrice(msg.MaxPrice.Denom)
 	if !found {
-		return nil, types.NewErrorPriceNotFound(msg.Denom)
+		return nil, types.NewErrorPriceNotFound(msg.MaxPrice.Denom)
 	}
 
 	price, err = price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
 	if err != nil {
 		return nil, err
+	}
+	if price.IsGT(msg.MaxPrice) {
+		return nil, types.NewErrorInvalidPrice(price)
 	}
 
 	leaseExists := false

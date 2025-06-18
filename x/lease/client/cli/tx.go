@@ -66,7 +66,7 @@ func txRenewLease() *cobra.Command {
 				return err
 			}
 
-			denom, err := cmd.Flags().GetString(flagDenom)
+			maxPrice, err := GetMaxPrice(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -75,7 +75,7 @@ func txRenewLease() *cobra.Command {
 				ctx.FromAddress.Bytes(),
 				id,
 				hours,
-				denom,
+				maxPrice,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -86,7 +86,7 @@ func txRenewLease() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(flagDenom, "", "Specify the payment denomination for the lease")
+	cmd.Flags().String(flagMaxPrice, "", "Specify the maximum hourly price for the lease")
 
 	return cmd
 }
@@ -112,7 +112,7 @@ func txStartLease() *cobra.Command {
 				return err
 			}
 
-			denom, err := cmd.Flags().GetString(flagDenom)
+			maxPrice, err := GetMaxPrice(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -126,7 +126,7 @@ func txStartLease() *cobra.Command {
 				ctx.FromAddress.Bytes(),
 				nodeAddr,
 				hours,
-				denom,
+				maxPrice,
 				renewalPricePolicy,
 			)
 			if err = msg.ValidateBasic(); err != nil {
@@ -138,7 +138,7 @@ func txStartLease() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(flagDenom, "", "Specify the payment denomination for the lease")
+	cmd.Flags().String(flagMaxPrice, "", "Specify the maximum hourly price for the lease")
 	cmd.Flags().String(flagRenewalPricePolicy, "", "Specify the lease renewal price policy")
 
 	return cmd

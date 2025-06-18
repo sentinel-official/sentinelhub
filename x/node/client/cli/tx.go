@@ -154,7 +154,7 @@ func txStartSession() *cobra.Command {
 				return err
 			}
 
-			denom, err := cmd.Flags().GetString(flagDenom)
+			maxPrice, err := GetMaxPrice(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -164,7 +164,7 @@ func txStartSession() *cobra.Command {
 				nodeAddr,
 				gigabytes,
 				hours,
-				denom,
+				maxPrice,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -177,7 +177,7 @@ func txStartSession() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().Int64(flagGigabytes, 0, "Specify the number of gigabytes to purchase for the session")
 	cmd.Flags().Int64(flagHours, 0, "Specify the number of hours to purchase for the session")
-	cmd.Flags().String(flagDenom, "", "Specify the token denomination to be used for payment")
+	cmd.Flags().String(flagMaxPrice, "", "Specify the maximum hourly or gigabyte price for the session")
 
 	return cmd
 }

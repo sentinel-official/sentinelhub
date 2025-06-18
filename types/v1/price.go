@@ -89,9 +89,55 @@ func (p Price) String() string {
 }
 
 func (p Price) IsEqual(v Price) bool {
-	return p.Denom == v.Denom &&
-		p.BaseValue.Equal(v.BaseValue) &&
-		p.QuoteValue.Equal(v.QuoteValue)
+	if p.Denom != v.Denom {
+		return false
+	}
+
+	if !p.BaseValue.IsZero() || !v.BaseValue.IsZero() {
+		return p.BaseValue.Equal(v.BaseValue)
+	}
+
+	return p.QuoteValue.Equal(v.QuoteValue)
+}
+
+func (p Price) IsGT(v Price) bool {
+	if p.Denom != v.Denom {
+		return false
+	}
+
+	if !p.BaseValue.IsZero() || !v.BaseValue.IsZero() {
+		return p.BaseValue.GT(v.BaseValue)
+	}
+
+	return p.QuoteValue.GT(v.QuoteValue)
+}
+
+func (p Price) IsGTE(v Price) bool {
+	if p.Denom != v.Denom {
+		return false
+	}
+
+	return !p.IsLT(v)
+}
+
+func (p Price) IsLT(v Price) bool {
+	if p.Denom != v.Denom {
+		return false
+	}
+
+	if !p.BaseValue.IsZero() || !v.BaseValue.IsZero() {
+		return p.BaseValue.LT(v.BaseValue)
+	}
+
+	return p.QuoteValue.LT(v.QuoteValue)
+}
+
+func (p Price) IsLTE(v Price) bool {
+	if p.Denom != v.Denom {
+		return false
+	}
+
+	return !p.IsGT(v)
 }
 
 func (p Price) Validate() error {

@@ -12,6 +12,7 @@ const (
 	flagGigabytes      = "gigabytes"
 	flagHourlyPrices   = "hourly-prices"
 	flagHours          = "hours"
+	flagMaxPrice       = "max-price"
 	flagRemoteURL      = "remote-url"
 )
 
@@ -37,4 +38,16 @@ func GetHourlyPrices(flags *pflag.FlagSet) (v1base.Prices, error) {
 	}
 
 	return v1base.NewPricesFromString(s)
+}
+
+func GetMaxPrice(flags *pflag.FlagSet) (v1base.Price, error) {
+	s, err := flags.GetString(flagMaxPrice)
+	if err != nil {
+		return v1base.Price{}, err
+	}
+	if s == "" {
+		return v1base.ZeroPrice(""), nil
+	}
+
+	return v1base.NewPriceFromString(s)
 }

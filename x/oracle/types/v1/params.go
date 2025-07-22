@@ -7,7 +7,7 @@ import (
 
 // Default parameter values for the Params struct
 var (
-	DefaultBlockInterval int64 = 10              // Default block interval in block numbers
+	DefaultBlockInterval int64 = 100             // Default block interval in block numbers
 	DefaultChannelID           = ""              // Default IBC channel ID
 	DefaultPortID              = ""              // Default IBC port ID
 	DefaultTimeout             = 1 * time.Minute // Default timeout duration

@@ -1,15 +1,15 @@
 package v1
 
-func NewGenesisState() *GenesisState {
+func NewGenesisState(params Params) *GenesisState {
 	return &GenesisState{
-		Params: Params{
-			BlockInterval: 50,
-		},
+		Params: params,
 	}
 }
 
 func DefaultGenesisState() *GenesisState {
-	return NewGenesisState()
+	return NewGenesisState(
+		DefaultParams(),
+	)
 }
 
 func (m *GenesisState) Validate() error {

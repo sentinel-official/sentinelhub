@@ -4,7 +4,6 @@ import (
 	"net/url"
 	"time"
 
-	sdkerrors "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -13,6 +12,7 @@ import (
 	"github.com/sentinel-official/sentinelhub/v12/x/node/types"
 )
 
+// Ensure the message types implement sdk.Msg interface
 var (
 	_ sdk.Msg = (*MsgRegisterNodeRequest)(nil)
 	_ sdk.Msg = (*MsgUpdateNodeDetailsRequest)(nil)
@@ -21,6 +21,7 @@ var (
 	_ sdk.Msg = (*MsgUpdateParamsRequest)(nil)
 )
 
+// NewMsgRegisterNodeRequest creates a MsgRegisterNodeRequest with pricing and remote URL for a new node registration
 func NewMsgRegisterNodeRequest(from sdk.AccAddress, gigabytePrices, hourlyPrices v1base.Prices, remoteURL string) *MsgRegisterNodeRequest {
 	return &MsgRegisterNodeRequest{
 		From:           from.String(),
@@ -30,48 +31,52 @@ func NewMsgRegisterNodeRequest(from sdk.AccAddress, gigabytePrices, hourlyPrices
 	}
 }
 
+// GetGigabytePrices returns the gigabyte pricing from the MsgRegisterNodeRequest
 func (m *MsgRegisterNodeRequest) GetGigabytePrices() v1base.Prices {
 	return m.GigabytePrices
 }
 
+// GetHourlyPrices returns the hourly pricing from the MsgRegisterNodeRequest
 func (m *MsgRegisterNodeRequest) GetHourlyPrices() v1base.Prices {
 	return m.HourlyPrices
 }
 
+// ValidateBasic performs basic validation of MsgRegisterNodeRequest fields such as address, pricing, and URL formatting
 func (m *MsgRegisterNodeRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if prices := m.GetGigabytePrices(); !prices.IsValid() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices must be valid")
+		return types.NewErrorInvalidMessage("gigabyte_prices must be valid")
 	}
 	if prices := m.GetHourlyPrices(); !prices.IsValid() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices must be valid")
+		return types.NewErrorInvalidMessage("hourly_prices must be valid")
 	}
 	if m.RemoteURL == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url cannot be empty")
+		return types.NewErrorInvalidMessage("remote_url cannot be empty")
 	}
 	if len(m.RemoteURL) > 64 {
-		return sdkerrors.Wrapf(types.ErrInvalidMessage, "remote_url length cannot be greater than %d chars", 64)
+		return types.NewErrorInvalidMessage("remote_url length cannot be greater than 64 chars")
 	}
 
 	s, err := url.ParseRequestURI(m.RemoteURL)
 	if err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if s.Scheme != "https" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url scheme must be https")
+		return types.NewErrorInvalidMessage("remote_url scheme must be https")
 	}
 	if s.Port() == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url port cannot be empty")
+		return types.NewErrorInvalidMessage("remote_url port cannot be empty")
 	}
 
 	return nil
 }
 
+// GetSigners returns the account address that must sign the MsgRegisterNodeRequest
 func (m *MsgRegisterNodeRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {
@@ -81,6 +86,7 @@ func (m *MsgRegisterNodeRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgUpdateNodeDetailsRequest creates a MsgUpdateNodeDetailsRequest for updating a node’s prices or remote URL
 func NewMsgUpdateNodeDetailsRequest(from base.NodeAddress, gigabytePrices, hourlyPrices v1base.Prices, remoteURL string) *MsgUpdateNodeDetailsRequest {
 	return &MsgUpdateNodeDetailsRequest{
 		From:           from.String(),
@@ -90,47 +96,51 @@ func NewMsgUpdateNodeDetailsRequest(from base.NodeAddress, gigabytePrices, hourl
 	}
 }
 
+// GetGigabytePrices returns the updated gigabyte pricing in MsgUpdateNodeDetailsRequest
 func (m *MsgUpdateNodeDetailsRequest) GetGigabytePrices() v1base.Prices {
 	return m.GigabytePrices
 }
 
+// GetHourlyPrices returns the updated hourly pricing in MsgUpdateNodeDetailsRequest
 func (m *MsgUpdateNodeDetailsRequest) GetHourlyPrices() v1base.Prices {
 	return m.HourlyPrices
 }
 
+// ValidateBasic performs basic validation for MsgUpdateNodeDetailsRequest including address, pricing, and remote URL if set
 func (m *MsgUpdateNodeDetailsRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if prices := m.GetGigabytePrices(); !prices.IsValid() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabyte_prices must be valid")
+		return types.NewErrorInvalidMessage("gigabyte_prices must be valid")
 	}
 	if prices := m.GetHourlyPrices(); !prices.IsValid() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "hourly_prices must be valid")
+		return types.NewErrorInvalidMessage("hourly_prices must be valid")
 	}
 	if m.RemoteURL != "" {
 		if len(m.RemoteURL) > 64 {
-			return sdkerrors.Wrapf(types.ErrInvalidMessage, "remote_url length cannot be greater than %d chars", 64)
+			return types.NewErrorInvalidMessage("remote_url length cannot be greater than 64 chars")
 		}
 
 		s, err := url.ParseRequestURI(m.RemoteURL)
 		if err != nil {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+			return types.NewErrorInvalidMessage(err)
 		}
 		if s.Scheme != "https" {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url scheme must be https")
+			return types.NewErrorInvalidMessage("remote_url scheme must be https")
 		}
 		if s.Port() == "" {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, "remote_url port cannot be empty")
+			return types.NewErrorInvalidMessage("remote_url port cannot be empty")
 		}
 	}
 
 	return nil
 }
 
+// GetSigners returns the node address that must sign the MsgUpdateNodeDetailsRequest
 func (m *MsgUpdateNodeDetailsRequest) GetSigners() []sdk.AccAddress {
 	from, err := base.NodeAddressFromBech32(m.From)
 	if err != nil {
@@ -140,6 +150,7 @@ func (m *MsgUpdateNodeDetailsRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgUpdateNodeStatusRequest creates a MsgUpdateNodeStatusRequest to change a node's active/inactive status
 func NewMsgUpdateNodeStatusRequest(from base.NodeAddress, status v1base.Status) *MsgUpdateNodeStatusRequest {
 	return &MsgUpdateNodeStatusRequest{
 		From:   from.String(),
@@ -147,20 +158,22 @@ func NewMsgUpdateNodeStatusRequest(from base.NodeAddress, status v1base.Status) 
 	}
 }
 
+// ValidateBasic checks MsgUpdateNodeStatusRequest for valid address and that the status is active or inactive
 func (m *MsgUpdateNodeStatusRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "status must be one of [active, inactive]")
+		return types.NewErrorInvalidMessage("status must be one of [active, inactive]")
 	}
 
 	return nil
 }
 
+// GetSigners returns the node address that must sign the MsgUpdateNodeStatusRequest
 func (m *MsgUpdateNodeStatusRequest) GetSigners() []sdk.AccAddress {
 	from, err := base.NodeAddressFromBech32(m.From)
 	if err != nil {
@@ -170,6 +183,7 @@ func (m *MsgUpdateNodeStatusRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgStartSessionRequest creates a MsgStartSessionRequest to initiate a usage session with a node
 func NewMsgStartSessionRequest(from sdk.AccAddress, nodeAddr base.NodeAddress, gigabytes, hours int64, maxPrice v1base.Price) *MsgStartSessionRequest {
 	return &MsgStartSessionRequest{
 		From:        from.String(),
@@ -180,48 +194,52 @@ func NewMsgStartSessionRequest(from sdk.AccAddress, nodeAddr base.NodeAddress, g
 	}
 }
 
+// GetGigabytes returns the total data usage in bytes for MsgStartSessionRequest
 func (m *MsgStartSessionRequest) GetGigabytes() sdkmath.Int {
 	return base.Gigabyte.MulRaw(m.Gigabytes)
 }
 
+// GetHours returns the session duration in time.Duration from MsgStartSessionRequest
 func (m *MsgStartSessionRequest) GetHours() time.Duration {
 	return time.Duration(m.Hours) * time.Hour
 }
 
+// ValidateBasic checks MsgStartSessionRequest for valid sender, node, usage mode (hour/data), and max price constraints
 func (m *MsgStartSessionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.NodeAddress == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "node_address cannot be empty")
+		return types.NewErrorInvalidMessage("node_address cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.Gigabytes == 0 && m.Hours == 0 {
-		return sdkerrors.Wrapf(types.ErrInvalidMessage, "[gigabytes, hours] cannot be zero")
+		return types.NewErrorInvalidMessage("[gigabytes, hours] cannot be zero")
 	}
 	if m.Gigabytes != 0 && m.Hours != 0 {
-		return sdkerrors.Wrapf(types.ErrInvalidMessage, "[gigabytes, hours] cannot be non-zero")
+		return types.NewErrorInvalidMessage("[gigabytes, hours] cannot be non-zero")
 	}
 	if m.Gigabytes < 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabytes cannot be negative")
+		return types.NewErrorInvalidMessage("gigabytes cannot be negative")
 	}
 	if m.Hours < 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
+		return types.NewErrorInvalidMessage("hours cannot be negative")
 	}
 	if m.MaxPrice.Denom != "" {
 		if err := m.MaxPrice.Validate(); err != nil {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+			return types.NewErrorInvalidMessage(err)
 		}
 	}
 
 	return nil
 }
 
+// GetSigners returns the account address that must sign the MsgStartSessionRequest
 func (m *MsgStartSessionRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {
@@ -231,6 +249,7 @@ func (m *MsgStartSessionRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgUpdateParamsRequest creates a MsgUpdateParamsRequest to update module parameters by governance or admin
 func NewMsgUpdateParamsRequest(from sdk.AccAddress, params Params) *MsgUpdateParamsRequest {
 	return &MsgUpdateParamsRequest{
 		From:   from.String(),
@@ -238,20 +257,22 @@ func NewMsgUpdateParamsRequest(from sdk.AccAddress, params Params) *MsgUpdatePar
 	}
 }
 
+// ValidateBasic checks MsgUpdateParamsRequest for valid address and parameter content
 func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if err := m.Params.Validate(); err != nil {
-		return err
+		return types.NewErrorInvalidMessage(err)
 	}
 
 	return nil
 }
 
+// GetSigners returns the account address that must sign the MsgUpdateParamsRequest
 func (m *MsgUpdateParamsRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {

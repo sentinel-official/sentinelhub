@@ -67,12 +67,17 @@ func (k *Migrator) migratePlans(ctx sdk.Context) {
 		var item v2.Plan
 		k.cdc.MustUnmarshal(it.Value(), &item)
 
+		prices, err := v1.NewPricesFromCoins(item.Prices...)
+		if err != nil {
+			panic(err)
+		}
+
 		plan := v3.Plan{
 			ID:          item.ID,
 			ProvAddress: item.ProviderAddress,
 			Gigabytes:   item.Gigabytes,
 			Hours:       int64(item.Duration / time.Hour),
-			Prices:      v1.NewPricesFromCoins(item.Prices...),
+			Prices:      prices,
 			Status:      item.Status,
 			StatusAt:    item.StatusAt,
 		}

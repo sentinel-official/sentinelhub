@@ -33,10 +33,6 @@ func NewKeeper(
 	}
 }
 
-func (k *Keeper) GetAuthority() string {
-	return k.authority
-}
-
 func (k *Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+types.ModuleName)
 }

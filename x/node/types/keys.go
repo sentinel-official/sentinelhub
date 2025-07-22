@@ -40,12 +40,12 @@ func NodeForPlanKey(id uint64, addr base.NodeAddress) []byte {
 	return append(GetNodeForPlanKeyPrefix(id), sdkaddress.MustLengthPrefix(addr.Bytes())...)
 }
 
-func GetNodeForInactiveAtKeyPrefix(at time.Time) []byte {
-	return append(NodeForInactiveAtKeyPrefix, sdk.FormatTimeBytes(at)...)
+func GetNodeForInactiveAtKeyPrefix(timestamp time.Time) []byte {
+	return append(NodeForInactiveAtKeyPrefix, sdk.FormatTimeBytes(timestamp)...)
 }
 
-func NodeForInactiveAtKey(at time.Time, addr base.NodeAddress) []byte {
-	return append(GetNodeForInactiveAtKeyPrefix(at), sdkaddress.MustLengthPrefix(addr.Bytes())...)
+func NodeForInactiveAtKey(timestamp time.Time, addr base.NodeAddress) []byte {
+	return append(GetNodeForInactiveAtKeyPrefix(timestamp), sdkaddress.MustLengthPrefix(addr.Bytes())...)
 }
 
 func AddressFromNodeForPlanKey(key []byte) base.NodeAddress {
@@ -60,7 +60,7 @@ func AddressFromNodeForPlanKey(key []byte) base.NodeAddress {
 }
 
 func AddressFromNodeForInactiveAtKey(key []byte) base.NodeAddress {
-	// prefix (1 byte) | at (29 bytes) | addrLen (1 byte) | addr (addrLen bytes)
+	// prefix (1 byte) | timestamp (29 bytes) | addrLen (1 byte) | addr (addrLen bytes)
 
 	addrLen := int(key[30])
 	if len(key) != 31+addrLen {

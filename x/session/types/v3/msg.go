@@ -3,7 +3,6 @@ package v3
 import (
 	"time"
 
-	sdkerrors "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -11,12 +10,14 @@ import (
 	"github.com/sentinel-official/sentinelhub/v12/x/session/types"
 )
 
+// Ensure the message types implement sdk.Msg interface
 var (
 	_ sdk.Msg = (*MsgCancelSessionRequest)(nil)
 	_ sdk.Msg = (*MsgUpdateSessionRequest)(nil)
 	_ sdk.Msg = (*MsgUpdateParamsRequest)(nil)
 )
 
+// NewMsgCancelSessionRequest creates a new MsgCancelSessionRequest instance.
 func NewMsgCancelSessionRequest(from sdk.AccAddress, id uint64) *MsgCancelSessionRequest {
 	return &MsgCancelSessionRequest{
 		From: from.String(),
@@ -24,20 +25,22 @@ func NewMsgCancelSessionRequest(from sdk.AccAddress, id uint64) *MsgCancelSessio
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgCancelSessionRequest.
 func (m *MsgCancelSessionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgCancelSessionRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {
@@ -47,6 +50,7 @@ func (m *MsgCancelSessionRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgUpdateSessionRequest creates a new MsgUpdateSessionRequest instance.
 func NewMsgUpdateSessionRequest(from base.NodeAddress, id uint64, downloadBytes, uploadBytes sdkmath.Int, duration time.Duration, signature []byte) *MsgUpdateSessionRequest {
 	return &MsgUpdateSessionRequest{
 		From:          from.String(),
@@ -58,10 +62,12 @@ func NewMsgUpdateSessionRequest(from base.NodeAddress, id uint64, downloadBytes,
 	}
 }
 
+// Bytes returns the total transferred bytes.
 func (m *MsgUpdateSessionRequest) Bytes() sdkmath.Int {
 	return m.DownloadBytes.Add(m.UploadBytes)
 }
 
+// Proof returns a session proof object.
 func (m *MsgUpdateSessionRequest) Proof() *Proof {
 	return &Proof{
 		ID:            m.ID,
@@ -71,40 +77,42 @@ func (m *MsgUpdateSessionRequest) Proof() *Proof {
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgUpdateSessionRequest.
 func (m *MsgUpdateSessionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
 	if m.DownloadBytes.IsNil() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "download_bytes cannot be nil")
+		return types.NewErrorInvalidMessage("download_bytes cannot be nil")
 	}
 	if m.DownloadBytes.IsNegative() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "download_bytes cannot be negative")
+		return types.NewErrorInvalidMessage("download_bytes cannot be negative")
 	}
 	if m.UploadBytes.IsNil() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "upload_bytes cannot be nil")
+		return types.NewErrorInvalidMessage("upload_bytes cannot be nil")
 	}
 	if m.UploadBytes.IsNegative() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "upload_bytes cannot be negative")
+		return types.NewErrorInvalidMessage("upload_bytes cannot be negative")
 	}
 	if m.Duration < 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "duration cannot be negative")
+		return types.NewErrorInvalidMessage("duration cannot be negative")
 	}
 	if m.Signature != nil {
 		if len(m.Signature) != 64 {
-			return sdkerrors.Wrapf(types.ErrInvalidMessage, "signature length must be %d bytes", 64)
+			return types.NewErrorInvalidMessage("signature length must be 64 bytes")
 		}
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgUpdateSessionRequest) GetSigners() []sdk.AccAddress {
 	from, err := base.NodeAddressFromBech32(m.From)
 	if err != nil {
@@ -114,6 +122,7 @@ func (m *MsgUpdateSessionRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgUpdateParamsRequest creates a new MsgUpdateParamsRequest instance.
 func NewMsgUpdateParamsRequest(from sdk.AccAddress, params Params) *MsgUpdateParamsRequest {
 	return &MsgUpdateParamsRequest{
 		From:   from.String(),
@@ -121,20 +130,22 @@ func NewMsgUpdateParamsRequest(from sdk.AccAddress, params Params) *MsgUpdatePar
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgUpdateParamsRequest.
 func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if err := m.Params.Validate(); err != nil {
-		return err
+		return types.NewErrorInvalidMessage(err)
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgUpdateParamsRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {

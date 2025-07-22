@@ -1,7 +1,6 @@
 package v3
 
 import (
-	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/sentinelhub/v12/types"
@@ -9,6 +8,7 @@ import (
 	"github.com/sentinel-official/sentinelhub/v12/x/plan/types"
 )
 
+// Ensure the message types implement sdk.Msg interface
 var (
 	_ sdk.Msg = (*MsgCreatePlanRequest)(nil)
 	_ sdk.Msg = (*MsgLinkNodeRequest)(nil)
@@ -17,6 +17,7 @@ var (
 	_ sdk.Msg = (*MsgStartSessionRequest)(nil)
 )
 
+// NewMsgCreatePlanRequest creates a new MsgCreatePlanRequest instance.
 func NewMsgCreatePlanRequest(from base.ProvAddress, gigabytes, hours int64, prices v1base.Prices) *MsgCreatePlanRequest {
 	return &MsgCreatePlanRequest{
 		From:      from.String(),
@@ -26,36 +27,33 @@ func NewMsgCreatePlanRequest(from base.ProvAddress, gigabytes, hours int64, pric
 	}
 }
 
+// GetPrices returns the plan prices.
 func (m *MsgCreatePlanRequest) GetPrices() v1base.Prices {
 	return m.Prices
 }
 
+// ValidateBasic performs basic validation checks on the MsgCreatePlanRequest.
 func (m *MsgCreatePlanRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
-	if m.Gigabytes < 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabytes cannot be negative")
+	if m.Gigabytes <= 0 {
+		return types.NewErrorInvalidMessage("gigabytes must be positive")
 	}
-	if m.Gigabytes == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "gigabytes cannot be zero")
+	if m.Hours <= 0 {
+		return types.NewErrorInvalidMessage("hours must be positive")
 	}
-	if m.Hours < 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be negative")
-	}
-	if m.Hours == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "hours cannot be zero")
-	}
-	if prices := m.GetPrices(); !prices.IsValid() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "prices must be valid")
+	if !m.GetPrices().IsValid() {
+		return types.NewErrorInvalidMessage("prices must be valid")
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgCreatePlanRequest) GetSigners() []sdk.AccAddress {
 	from, err := base.ProvAddressFromBech32(m.From)
 	if err != nil {
@@ -65,6 +63,7 @@ func (m *MsgCreatePlanRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgLinkNodeRequest creates a new MsgLinkNodeRequest instance.
 func NewMsgLinkNodeRequest(from base.ProvAddress, id uint64, addr base.NodeAddress) *MsgLinkNodeRequest {
 	return &MsgLinkNodeRequest{
 		From:        from.String(),
@@ -73,26 +72,28 @@ func NewMsgLinkNodeRequest(from base.ProvAddress, id uint64, addr base.NodeAddre
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgLinkNodeRequest.
 func (m *MsgLinkNodeRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
 	if m.NodeAddress == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "node_address cannot be empty")
+		return types.NewErrorInvalidMessage("node_address cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgLinkNodeRequest) GetSigners() []sdk.AccAddress {
 	from, err := base.ProvAddressFromBech32(m.From)
 	if err != nil {
@@ -102,6 +103,7 @@ func (m *MsgLinkNodeRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgUnlinkNodeRequest creates a new MsgUnlinkNodeRequest instance.
 func NewMsgUnlinkNodeRequest(from base.ProvAddress, id uint64, addr base.NodeAddress) *MsgUnlinkNodeRequest {
 	return &MsgUnlinkNodeRequest{
 		From:        from.String(),
@@ -110,26 +112,28 @@ func NewMsgUnlinkNodeRequest(from base.ProvAddress, id uint64, addr base.NodeAdd
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgUnlinkNodeRequest.
 func (m *MsgUnlinkNodeRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
 	if m.NodeAddress == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "node_address cannot be empty")
+		return types.NewErrorInvalidMessage("node_address cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgUnlinkNodeRequest) GetSigners() []sdk.AccAddress {
 	from, err := base.ProvAddressFromBech32(m.From)
 	if err != nil {
@@ -139,6 +143,7 @@ func (m *MsgUnlinkNodeRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgUpdatePlanStatusRequest creates a new MsgUpdatePlanStatusRequest instance.
 func NewMsgUpdatePlanStatusRequest(from base.ProvAddress, id uint64, status v1base.Status) *MsgUpdatePlanStatusRequest {
 	return &MsgUpdatePlanStatusRequest{
 		From:   from.String(),
@@ -147,23 +152,25 @@ func NewMsgUpdatePlanStatusRequest(from base.ProvAddress, id uint64, status v1ba
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgUpdatePlanStatusRequest.
 func (m *MsgUpdatePlanStatusRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "status must be one of [active, inactive]")
+		return types.NewErrorInvalidMessage("status must be one of [active, inactive]")
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgUpdatePlanStatusRequest) GetSigners() []sdk.AccAddress {
 	from, err := base.ProvAddressFromBech32(m.From)
 	if err != nil {
@@ -173,6 +180,7 @@ func (m *MsgUpdatePlanStatusRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgStartSessionRequest creates a new MsgStartSessionRequest instance.
 func NewMsgStartSessionRequest(from sdk.AccAddress, id uint64, denom string, renewalPricePolicy v1base.RenewalPricePolicy, nodeAddr base.NodeAddress) *MsgStartSessionRequest {
 	return &MsgStartSessionRequest{
 		From:               from.String(),
@@ -183,34 +191,36 @@ func NewMsgStartSessionRequest(from sdk.AccAddress, id uint64, denom string, ren
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgStartSessionRequest.
 func (m *MsgStartSessionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
 	if m.Denom != "" {
 		if err := sdk.ValidateDenom(m.Denom); err != nil {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+			return types.NewErrorInvalidMessage(err)
 		}
 	}
 	if !m.RenewalPricePolicy.IsValid() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "renewal_price_policy must be valid")
+		return types.NewErrorInvalidMessage("renewal_price_policy must be valid")
 	}
 	if m.NodeAddress == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "node_address cannot be empty")
+		return types.NewErrorInvalidMessage("node_address cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgStartSessionRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {

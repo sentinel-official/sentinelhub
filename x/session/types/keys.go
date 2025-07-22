@@ -75,12 +75,12 @@ func SessionForAllocationKey(subscriptionID uint64, addr sdk.AccAddress, session
 	return append(GetSessionForAllocationKeyPrefix(subscriptionID, addr), sdk.Uint64ToBigEndian(sessionID)...)
 }
 
-func GetSessionForInactiveAtKeyPrefix(at time.Time) []byte {
-	return append(SessionForInactiveAtKeyPrefix, sdk.FormatTimeBytes(at)...)
+func GetSessionForInactiveAtKeyPrefix(timestamp time.Time) []byte {
+	return append(SessionForInactiveAtKeyPrefix, sdk.FormatTimeBytes(timestamp)...)
 }
 
-func SessionForInactiveAtKey(at time.Time, id uint64) []byte {
-	return append(GetSessionForInactiveAtKeyPrefix(at), sdk.Uint64ToBigEndian(id)...)
+func SessionForInactiveAtKey(timestamp time.Time, id uint64) []byte {
+	return append(GetSessionForInactiveAtKeyPrefix(timestamp), sdk.Uint64ToBigEndian(id)...)
 }
 
 func IDFromSessionForAccountKey(key []byte) uint64 {
@@ -138,7 +138,7 @@ func IDFromSessionForAllocationKey(key []byte) uint64 {
 }
 
 func IDFromSessionForInactiveAtKey(key []byte) uint64 {
-	// prefix (1 byte) | at (29 bytes) | session (8 bytes)
+	// prefix (1 byte) | timestamp (29 bytes) | session (8 bytes)
 
 	if len(key) != 38 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 38))

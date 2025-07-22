@@ -6,12 +6,14 @@ import (
 	sdkmath "cosmossdk.io/math"
 )
 
+// Default parameter values for the Params struct
 var (
-	DefaultMaxHours     int64 = 10
-	DefaultMinHours     int64 = 1
-	DefaultStakingShare       = sdkmath.LegacyNewDecWithPrec(1, 1)
+	DefaultMaxHours     int64 = 10                                     // Default value for maximum hours
+	DefaultMinHours     int64 = 1                                      // Default value for minimum hours
+	DefaultStakingShare       = sdkmath.LegacyMustNewDecFromStr("0.1") // Default staking share: 0.1
 )
 
+// Validate checks whether the Params fields are valid according to defined rules.
 func (m *Params) Validate() error {
 	if err := validateMaxHours(m.MaxHours); err != nil {
 		return err
@@ -23,9 +25,14 @@ func (m *Params) Validate() error {
 		return err
 	}
 
+	if m.MinHours > m.MaxHours {
+		return fmt.Errorf("min_hours cannot be greater than max_hours")
+	}
+
 	return nil
 }
 
+// NewParams creates a new Params instance with custom values.
 func NewParams(maxHours, minHours int64, stakingShare sdkmath.LegacyDec) Params {
 	return Params{
 		MaxHours:     maxHours,
@@ -34,6 +41,7 @@ func NewParams(maxHours, minHours int64, stakingShare sdkmath.LegacyDec) Params 
 	}
 }
 
+// DefaultParams returns a Params struct initialized with default values.
 func DefaultParams() Params {
 	return NewParams(
 		DefaultMaxHours,
@@ -42,51 +50,42 @@ func DefaultParams() Params {
 	)
 }
 
-func validateMaxHours(v interface{}) error {
-	value, ok := v.(int64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
-	}
-
-	if value < 0 {
+// validateMaxHours checks that maxHours is a positive integer.
+func validateMaxHours(v int64) error {
+	if v < 0 {
 		return fmt.Errorf("max_hours cannot be negative")
 	}
-	if value == 0 {
+	if v == 0 {
 		return fmt.Errorf("max_hours cannot be zero")
 	}
 
 	return nil
 }
 
-func validateMinHours(v interface{}) error {
-	value, ok := v.(int64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
-	}
-
-	if value < 0 {
+// validateMinHours checks that minHours is a positive integer.
+func validateMinHours(v int64) error {
+	if v < 0 {
 		return fmt.Errorf("min_hours cannot be negative")
 	}
-	if value == 0 {
+	if v == 0 {
 		return fmt.Errorf("min_hours cannot be zero")
 	}
 
 	return nil
 }
 
-func validateStakingShare(v interface{}) error {
-	value, ok := v.(sdkmath.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
-	}
-
-	if value.IsNil() {
+// validateStakingShare ensures that the staking share is:
+// - Not nil
+// - Not negative
+// - Not greater than 1 (100%)
+func validateStakingShare(v sdkmath.LegacyDec) error {
+	if v.IsNil() {
 		return fmt.Errorf("staking_share cannot be nil")
 	}
-	if value.IsNegative() {
+	if v.IsNegative() {
 		return fmt.Errorf("staking_share cannot be negative")
 	}
-	if value.GT(sdkmath.LegacyOneDec()) {
+	if v.GT(sdkmath.LegacyOneDec()) {
 		return fmt.Errorf("staking_share cannot be greater than 1")
 	}
 

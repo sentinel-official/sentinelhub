@@ -1,22 +1,25 @@
 package v3
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
 	"cosmossdk.io/math"
 )
 
+// Default parameter values for the Params struct
 var (
-	DefaultMaxGigabytes             int64 = 10
-	DefaultMinGigabytes             int64 = 1
-	DefaultMaxHours                 int64 = 10
-	DefaultMinHours                 int64 = 1
-	DefaultProofVerificationEnabled       = false
-	DefaultStakingShare                   = math.LegacyNewDecWithPrec(1, 1)
-	DefaultStatusChangeDelay              = 1 * time.Minute
+	DefaultMaxGigabytes             int64 = 10                                  // Default maximum allowed gigabytes
+	DefaultMinGigabytes             int64 = 1                                   // Default minimum allowed gigabytes
+	DefaultMaxHours                 int64 = 10                                  // Default maximum allowed hours
+	DefaultMinHours                 int64 = 1                                   // Default minimum allowed hours
+	DefaultProofVerificationEnabled       = false                               // Default proof verification flag
+	DefaultStakingShare                   = math.LegacyMustNewDecFromStr("0.1") // Default staking share: 0.1
+	DefaultStatusChangeDelay              = 1 * time.Minute                     // Default delay before validator status change
 )
 
+// Validate checks whether the Params fields are valid according to defined rules.
 func (m *Params) Validate() error {
 	if err := validateMaxGigabytes(m.MaxGigabytes); err != nil {
 		return err
@@ -43,6 +46,7 @@ func (m *Params) Validate() error {
 	return nil
 }
 
+// NewParams creates a new Params instance with custom values.
 func NewParams(
 	maxGigabytes, minGigabytes, maxHours, minHours int64, proofVerificationEnabled bool, stakingShare math.LegacyDec,
 	statusChangeDelay time.Duration,
@@ -58,6 +62,7 @@ func NewParams(
 	}
 }
 
+// DefaultParams returns a Params struct initialized with default values.
 func DefaultParams() Params {
 	return NewParams(
 		DefaultMaxGigabytes,
@@ -70,109 +75,82 @@ func DefaultParams() Params {
 	)
 }
 
-func validateMaxGigabytes(v interface{}) error {
-	value, ok := v.(int64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
+// validateMaxGigabytes ensures maxGigabytes is a positive non-zero integer.
+func validateMaxGigabytes(v int64) error {
+	if v < 0 {
+		return errors.New("max_gigabytes cannot be negative")
 	}
-
-	if value < 0 {
-		return fmt.Errorf("max_gigabytes cannot be negative")
-	}
-	if value == 0 {
-		return fmt.Errorf("max_gigabytes cannot be zero")
+	if v == 0 {
+		return errors.New("max_gigabytes cannot be zero")
 	}
 
 	return nil
 }
 
-func validateMinGigabytes(v interface{}) error {
-	value, ok := v.(int64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
+// validateMinGigabytes ensures minGigabytes is a positive non-zero integer.
+func validateMinGigabytes(v int64) error {
+	if v < 0 {
+		return errors.New("min_gigabytes cannot be negative")
 	}
-
-	if value < 0 {
-		return fmt.Errorf("min_gigabytes cannot be negative")
-	}
-	if value == 0 {
-		return fmt.Errorf("min_gigabytes cannot be zero")
+	if v == 0 {
+		return errors.New("min_gigabytes cannot be zero")
 	}
 
 	return nil
 }
 
-func validateMaxHours(v interface{}) error {
-	value, ok := v.(int64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
+// validateMaxHours ensures maxHours is a positive non-zero integer.
+func validateMaxHours(v int64) error {
+	if v < 0 {
+		return errors.New("max_hours cannot be negative")
 	}
-
-	if value < 0 {
-		return fmt.Errorf("max_hours cannot be negative")
-	}
-	if value == 0 {
-		return fmt.Errorf("max_hours cannot be zero")
+	if v == 0 {
+		return errors.New("max_hours cannot be zero")
 	}
 
 	return nil
 }
 
-func validateMinHours(v interface{}) error {
-	value, ok := v.(int64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
+// validateMinHours ensures minHours is a positive non-zero integer.
+func validateMinHours(v int64) error {
+	if v < 0 {
+		return errors.New("min_hours cannot be negative")
 	}
-
-	if value < 0 {
-		return fmt.Errorf("min_hours cannot be negative")
-	}
-	if value == 0 {
-		return fmt.Errorf("min_hours cannot be zero")
+	if v == 0 {
+		return errors.New("min_hours cannot be zero")
 	}
 
 	return nil
 }
 
-func validateProofVerificationEnabled(v interface{}) error {
-	_, ok := v.(bool)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
-	}
-
+// validateProofVerificationEnabled always returns nil as the type is bool.
+func validateProofVerificationEnabled(v bool) error {
+	// Bool type needs no validation in this context
 	return nil
 }
 
-func validateStakingShare(v interface{}) error {
-	value, ok := v.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
-	}
-
-	if value.IsNil() {
+// validateStakingShare ensures stakingShare is not nil, not negative, and ≤ 1.
+func validateStakingShare(v math.LegacyDec) error {
+	if v.IsNil() {
 		return fmt.Errorf("staking_share cannot be nil")
 	}
-	if value.IsNegative() {
+	if v.IsNegative() {
 		return fmt.Errorf("staking_share cannot be negative")
 	}
-	if value.GT(math.LegacyOneDec()) {
+	if v.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("staking_share cannot be greater than 1")
 	}
 
 	return nil
 }
 
-func validateStatusChangeDelay(v interface{}) error {
-	value, ok := v.(time.Duration)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
+// validateStatusChangeDelay ensures the delay is positive and non-zero.
+func validateStatusChangeDelay(v time.Duration) error {
+	if v < 0 {
+		return errors.New("status_change_delay cannot be negative")
 	}
-
-	if value < 0 {
-		return fmt.Errorf("status_change_delay cannot be negative")
-	}
-	if value == 0 {
-		return fmt.Errorf("status_change_delay cannot be zero")
+	if v == 0 {
+		return errors.New("status_change_delay cannot be zero")
 	}
 
 	return nil

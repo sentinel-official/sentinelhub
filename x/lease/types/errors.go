@@ -7,20 +7,35 @@ import (
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
 
-var (
-	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
+const (
+	_ = 100 + iota
+	ErrCodeDuplicateLease
+	ErrCodeInvalidHours
+	ErrCodeInvalidMessage
+	ErrCodeInvalidNodeStatus
+	ErrCodeInvalidPrice
+	ErrCodeInvalidProviderStatus
+	ErrCodeInvalidRenewalPolicy
+	ErrCodeLeaseNotFound
+	ErrCodeNodeNotFound
+	ErrCodePriceNotFound
+	ErrCodeProviderNotFound
+	ErrCodeUnauthorized
+)
 
-	ErrDuplicateLease        = sdkerrors.Register(ModuleName, 201, "duplicate lease")
-	ErrInvalidHours          = sdkerrors.Register(ModuleName, 202, "invalid hours")
-	ErrInvalidNodeStatus     = sdkerrors.Register(ModuleName, 203, "invalid node status")
-	ErrInvalidPrice          = sdkerrors.Register(ModuleName, 204, "invalid price")
-	ErrInvalidProviderStatus = sdkerrors.Register(ModuleName, 205, "invalid provider status")
-	ErrInvalidRenewalPolicy  = sdkerrors.Register(ModuleName, 206, "invalid renewal policy")
-	ErrLeaseNotFound         = sdkerrors.Register(ModuleName, 207, "lease not found")
-	ErrNodeNotFound          = sdkerrors.Register(ModuleName, 208, "node not found")
-	ErrPriceNotFound         = sdkerrors.Register(ModuleName, 209, "price not found")
-	ErrProviderNotFound      = sdkerrors.Register(ModuleName, 210, "provider not found")
-	ErrUnauthorized          = sdkerrors.Register(ModuleName, 211, "unauthorized")
+var (
+	ErrDuplicateLease        = sdkerrors.Register(ModuleName, ErrCodeDuplicateLease, "duplicate lease")
+	ErrInvalidHours          = sdkerrors.Register(ModuleName, ErrCodeInvalidHours, "invalid hours")
+	ErrInvalidMessage        = sdkerrors.Register(ModuleName, ErrCodeInvalidMessage, "invalid message")
+	ErrInvalidNodeStatus     = sdkerrors.Register(ModuleName, ErrCodeInvalidNodeStatus, "invalid node status")
+	ErrInvalidPrice          = sdkerrors.Register(ModuleName, ErrCodeInvalidPrice, "invalid price")
+	ErrInvalidProviderStatus = sdkerrors.Register(ModuleName, ErrCodeInvalidProviderStatus, "invalid provider status")
+	ErrInvalidRenewalPolicy  = sdkerrors.Register(ModuleName, ErrCodeInvalidRenewalPolicy, "invalid renewal policy")
+	ErrLeaseNotFound         = sdkerrors.Register(ModuleName, ErrCodeLeaseNotFound, "lease not found")
+	ErrNodeNotFound          = sdkerrors.Register(ModuleName, ErrCodeNodeNotFound, "node not found")
+	ErrPriceNotFound         = sdkerrors.Register(ModuleName, ErrCodePriceNotFound, "price not found")
+	ErrProviderNotFound      = sdkerrors.Register(ModuleName, ErrCodeProviderNotFound, "provider not found")
+	ErrUnauthorized          = sdkerrors.Register(ModuleName, ErrCodeUnauthorized, "unauthorized")
 )
 
 // NewErrorDuplicateLease returns an error indicating that a lease for the specified node and provider already exists.
@@ -31,6 +46,11 @@ func NewErrorDuplicateLease(nodeAddr base.NodeAddress, provAddr base.ProvAddress
 // NewErrorInvalidHours returns an error indicating that the provided hours are invalid.
 func NewErrorInvalidHours(hours int64) error {
 	return sdkerrors.Wrapf(ErrInvalidHours, "invalid hours %d", hours)
+}
+
+// NewErrorInvalidMessage returns an error indicating that the provided message is invalid.
+func NewErrorInvalidMessage(desc interface{}) error {
+	return sdkerrors.Wrapf(ErrInvalidMessage, "%v", desc)
 }
 
 // NewErrorInvalidNodeStatus returns an error indicating that the provided status is invalid for the given node.

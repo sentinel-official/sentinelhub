@@ -5,26 +5,27 @@ import (
 	"fmt"
 	"net/url"
 
-	sdkerrors "cosmossdk.io/errors"
-
 	base "github.com/sentinel-official/sentinelhub/v12/types"
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
 
+// GetGigabytePrices returns the node's defined prices per gigabyte.
 func (m *Node) GetGigabytePrices() v1base.Prices {
 	return m.GigabytePrices
 }
 
+// GetHourlyPrices returns the node's defined prices per hour.
 func (m *Node) GetHourlyPrices() v1base.Prices {
 	return m.HourlyPrices
 }
 
+// Validate checks the integrity and validity of the Node's fields.
 func (m *Node) Validate() error {
 	if m.Address == "" {
-		return fmt.Errorf("address cannot be empty")
+		return errors.New("address cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.Address); err != nil {
-		return sdkerrors.Wrapf(err, "invalid address %s", m.Address)
+		return fmt.Errorf("invalid address: %w", err)
 	}
 	if prices := m.GetGigabytePrices(); !prices.IsValid() {
 		return errors.New("gigabyte_prices must be valid")
@@ -33,23 +34,25 @@ func (m *Node) Validate() error {
 		return errors.New("hourly_prices must be valid")
 	}
 	if m.RemoteURL == "" {
-		return fmt.Errorf("remote_url cannot be empty")
+		return errors.New("remote_url cannot be empty")
 	}
 	if len(m.RemoteURL) > 64 {
 		return fmt.Errorf("remote_url length cannot be greater than %d chars", 64)
 	}
 
+	// Parse and validate remote URL format and contents
 	remoteURL, err := url.ParseRequestURI(m.RemoteURL)
 	if err != nil {
-		return sdkerrors.Wrapf(err, "invalid remote_url %s", m.RemoteURL)
+		return fmt.Errorf("invalid remote_url: %w", err)
 	}
 	if remoteURL.Scheme != "https" {
-		return fmt.Errorf("remote_url scheme must be https")
+		return errors.New("remote_url scheme must be https")
 	}
 	if remoteURL.Port() == "" {
-		return fmt.Errorf("remote_url port cannot be empty")
+		return errors.New("remote_url port cannot be empty")
 	}
 
+	// Validate status vs. inactive timestamp logic
 	if m.InactiveAt.IsZero() {
 		if !m.Status.Equal(v1base.StatusInactive) {
 			return fmt.Errorf("invalid inactive_at %s; expected positive", m.InactiveAt)
@@ -60,16 +63,18 @@ func (m *Node) Validate() error {
 			return fmt.Errorf("invalid inactive_at %s; expected zero", m.InactiveAt)
 		}
 	}
+
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {
-		return fmt.Errorf("status must be one of [active, inactive]")
+		return errors.New("status must be one of [active, inactive]")
 	}
 	if m.StatusAt.IsZero() {
-		return fmt.Errorf("status_at cannot be zero")
+		return errors.New("status_at cannot be zero")
 	}
 
 	return nil
 }
 
+// GigabytePrice returns the price per gigabyte for the given denom, if found.
 func (m *Node) GigabytePrice(denom string) (v1base.Price, bool) {
 	prices := m.GetGigabytePrices()
 	if prices.Len() == 0 {
@@ -84,6 +89,7 @@ func (m *Node) GigabytePrice(denom string) (v1base.Price, bool) {
 	return price, true
 }
 
+// HourlyPrice returns the price per hour for the given denom, if found.
 func (m *Node) HourlyPrice(denom string) (v1base.Price, bool) {
 	prices := m.GetHourlyPrices()
 	if prices.Len() == 0 {

@@ -7,23 +7,41 @@ import (
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
 
-var (
-	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
+const (
+	_ = 100 + iota
+	ErrCodeDuplicateNodeForPlan
+	ErrCodeInvalidMessage
+	ErrCodeInvalidNodeStatus
+	ErrCodeLeaseForNodeByProviderNotFound
+	ErrCodeLeaseNotFound
+	ErrCodeNodeForPlanNotFound
+	ErrCodeNodeNotFound
+	ErrCodePlanNotFound
+	ErrCodeProviderNotFound
+	ErrCodeUnauthorized
+)
 
-	ErrDuplicateNodeForPlan           = sdkerrors.Register(ModuleName, 201, "duplicate node for plan")
-	ErrInvalidNodeStatus              = sdkerrors.Register(ModuleName, 202, "invalid node status")
-	ErrLeaseForNodeByProviderNotFound = sdkerrors.Register(ModuleName, 203, "lease for node by provider not found")
-	ErrLeaseNotFound                  = sdkerrors.Register(ModuleName, 204, "lease not found")
-	ErrNodeForPlanNotFound            = sdkerrors.Register(ModuleName, 205, "node for plan not found")
-	ErrNodeNotFound                   = sdkerrors.Register(ModuleName, 206, "node not found")
-	ErrPlanNotFound                   = sdkerrors.Register(ModuleName, 207, "plan not found")
-	ErrProviderNotFound               = sdkerrors.Register(ModuleName, 208, "provider not found")
-	ErrUnauthorized                   = sdkerrors.Register(ModuleName, 209, "unauthorized")
+var (
+	ErrDuplicateNodeForPlan           = sdkerrors.Register(ModuleName, ErrCodeDuplicateNodeForPlan, "duplicate node for plan")
+	ErrInvalidMessage                 = sdkerrors.Register(ModuleName, ErrCodeInvalidMessage, "invalid message")
+	ErrInvalidNodeStatus              = sdkerrors.Register(ModuleName, ErrCodeInvalidNodeStatus, "invalid node status")
+	ErrLeaseForNodeByProviderNotFound = sdkerrors.Register(ModuleName, ErrCodeLeaseForNodeByProviderNotFound, "lease for node by provider not found")
+	ErrLeaseNotFound                  = sdkerrors.Register(ModuleName, ErrCodeLeaseNotFound, "lease not found")
+	ErrNodeForPlanNotFound            = sdkerrors.Register(ModuleName, ErrCodeNodeForPlanNotFound, "node for plan not found")
+	ErrNodeNotFound                   = sdkerrors.Register(ModuleName, ErrCodeNodeNotFound, "node not found")
+	ErrPlanNotFound                   = sdkerrors.Register(ModuleName, ErrCodePlanNotFound, "plan not found")
+	ErrProviderNotFound               = sdkerrors.Register(ModuleName, ErrCodeProviderNotFound, "provider not found")
+	ErrUnauthorized                   = sdkerrors.Register(ModuleName, ErrCodeUnauthorized, "unauthorized")
 )
 
 // NewErrorDuplicateNodeForPlan returns an error indicating that a node already exists for the specified plan.
 func NewErrorDuplicateNodeForPlan(id uint64, addr base.NodeAddress) error {
 	return sdkerrors.Wrapf(ErrDuplicateNodeForPlan, "node %s for plan %d already exists", addr, id)
+}
+
+// NewErrorInvalidMessage returns an error indicating that the provided message is invalid.
+func NewErrorInvalidMessage(desc interface{}) error {
+	return sdkerrors.Wrapf(ErrInvalidMessage, "%v", desc)
 }
 
 // NewErrorInvalidNodeStatus returns an error indicating that the provided status is invalid for the given node.

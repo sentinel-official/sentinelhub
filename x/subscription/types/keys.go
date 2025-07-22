@@ -45,20 +45,20 @@ func SubscriptionForPlanKey(planID, subscriptionID uint64) []byte {
 	return append(GetSubscriptionForPlanKeyPrefix(planID), sdk.Uint64ToBigEndian(subscriptionID)...)
 }
 
-func GetSubscriptionForInactiveAtKeyPrefix(at time.Time) []byte {
-	return append(SubscriptionForInactiveAtKeyPrefix, sdk.FormatTimeBytes(at)...)
+func GetSubscriptionForInactiveAtKeyPrefix(timestamp time.Time) []byte {
+	return append(SubscriptionForInactiveAtKeyPrefix, sdk.FormatTimeBytes(timestamp)...)
 }
 
-func SubscriptionForInactiveAtKey(at time.Time, id uint64) []byte {
-	return append(GetSubscriptionForInactiveAtKeyPrefix(at), sdk.Uint64ToBigEndian(id)...)
+func SubscriptionForInactiveAtKey(timestamp time.Time, id uint64) []byte {
+	return append(GetSubscriptionForInactiveAtKeyPrefix(timestamp), sdk.Uint64ToBigEndian(id)...)
 }
 
-func GetSubscriptionForRenewalAtKeyPrefix(at time.Time) []byte {
-	return append(SubscriptionForRenewalAtKeyPrefix, sdk.FormatTimeBytes(at)...)
+func GetSubscriptionForRenewalAtKeyPrefix(timestamp time.Time) []byte {
+	return append(SubscriptionForRenewalAtKeyPrefix, sdk.FormatTimeBytes(timestamp)...)
 }
 
-func SubscriptionForRenewalAtKey(at time.Time, id uint64) []byte {
-	return append(GetSubscriptionForRenewalAtKeyPrefix(at), sdk.Uint64ToBigEndian(id)...)
+func SubscriptionForRenewalAtKey(timestamp time.Time, id uint64) []byte {
+	return append(GetSubscriptionForRenewalAtKeyPrefix(timestamp), sdk.Uint64ToBigEndian(id)...)
 }
 
 func GetAllocationForSubscriptionKeyPrefix(id uint64) []byte {
@@ -102,7 +102,7 @@ func IDFromSubscriptionForPlanKey(key []byte) uint64 {
 }
 
 func IDFromSubscriptionForInactiveAtKey(key []byte) uint64 {
-	// prefix (1 byte) | at (29 bytes) | id (8 bytes)
+	// prefix (1 byte) | timestamp (29 bytes) | id (8 bytes)
 
 	if len(key) != 38 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 38))
@@ -112,7 +112,7 @@ func IDFromSubscriptionForInactiveAtKey(key []byte) uint64 {
 }
 
 func IDFromSubscriptionForRenewalAtKey(key []byte) uint64 {
-	// prefix (1 byte) | at (29 bytes) | id (8 bytes)
+	// prefix (1 byte) | timestamp (29 bytes) | id (8 bytes)
 
 	if len(key) != 38 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 38))

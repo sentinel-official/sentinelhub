@@ -39,10 +39,10 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 
 	// Retrieve the staking share and compute the total payment amount for the session.
 	share := k.SessionStakingShare(ctx)
-	totalPayment := session.PaymentAmount()
+	total := session.PaymentAmount()
 
 	// Calculate the staking reward and transfer it to the fee collector module.
-	reward := baseutils.GetProportionOfCoin(totalPayment, share)
+	reward := baseutils.GetProportionOfCoin(total, share)
 	if err := k.SendCoinFromDepositToModule(ctx, accAddr, k.feeCollectorName, reward); err != nil {
 		return err
 	}
@@ -54,7 +54,7 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 	}
 
 	// Transfer the remaining payment to the node's account.
-	payment := totalPayment.Sub(reward)
+	payment := total.Sub(reward)
 	if err := k.SendCoinFromDepositToAccount(ctx, accAddr, nodeAddr.Bytes(), payment); err != nil {
 		return err
 	}

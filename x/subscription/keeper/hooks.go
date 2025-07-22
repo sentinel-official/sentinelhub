@@ -91,7 +91,7 @@ func (k *Keeper) SessionUpdatePreHook(ctx sdk.Context, id uint64, currBytes sdkm
 	}
 
 	// Update allocation's utilised bytes based on the difference between current and previous session bytes.
-	diffBytes := currBytes.Sub(session.Bytes())
+	diffBytes := currBytes.Sub(session.TotalBytes())
 	alloc.UtilisedBytes = alloc.UtilisedBytes.Add(diffBytes)
 
 	// Store the updated allocation in the keeper.

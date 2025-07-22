@@ -26,7 +26,10 @@ type Keeper struct {
 	subscription SubscriptionKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter, authority, feeCollectorName string) Keeper {
+func NewKeeper(
+	cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter,
+	authority, feeCollectorName string,
+) Keeper {
 	return Keeper{
 		authority:        authority,
 		feeCollectorName: feeCollectorName,
@@ -36,21 +39,10 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.M
 	}
 }
 
-func (k *Keeper) WithAccountKeeper(keeper AccountKeeper) {
-	k.account = keeper
-}
-
-func (k *Keeper) WithDepositKeeper(keeper DepositKeeper) {
-	k.deposit = keeper
-}
-
-func (k *Keeper) WithNodeKeeper(keeper NodeKeeper) {
-	k.node = keeper
-}
-
-func (k *Keeper) WithSubscriptionKeeper(keeper SubscriptionKeeper) {
-	k.subscription = keeper
-}
+func (k *Keeper) WithAccountKeeper(keeper AccountKeeper)           { k.account = keeper }
+func (k *Keeper) WithDepositKeeper(keeper DepositKeeper)           { k.deposit = keeper }
+func (k *Keeper) WithNodeKeeper(keeper NodeKeeper)                 { k.node = keeper }
+func (k *Keeper) WithSubscriptionKeeper(keeper SubscriptionKeeper) { k.subscription = keeper }
 
 func (k *Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+types.ModuleName)

@@ -11,20 +11,42 @@ import (
 )
 
 var (
-	DefaultActiveDuration    = 30 * time.Second
-	DefaultDeposit           = sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(10))
-	DefaultMinGigabytePrices = v1base.Prices{{Denom: sdk.DefaultBondDenom, BaseValue: sdkmath.LegacyZeroDec(), QuoteValue: sdkmath.NewInt(10)}}
-	DefaultMinHourlyPrices   = v1base.Prices{{Denom: sdk.DefaultBondDenom, BaseValue: sdkmath.LegacyZeroDec(), QuoteValue: sdkmath.NewInt(10)}}
+	// DefaultActiveDuration defines the default duration a node remains active after registration.
+	DefaultActiveDuration = 30 * time.Second
+
+	// DefaultDeposit defines the default amount of deposit required for a node.
+	DefaultDeposit = sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(10))
+
+	// DefaultMinGigabytePrices defines the default minimum price per gigabyte a node can charge.
+	DefaultMinGigabytePrices = v1base.Prices{
+		{
+			Denom:      sdk.DefaultBondDenom,
+			BaseValue:  sdkmath.LegacyZeroDec(),
+			QuoteValue: sdkmath.NewInt(10),
+		},
+	}
+
+	// DefaultMinHourlyPrices defines the default minimum price per hour a node can charge.
+	DefaultMinHourlyPrices = v1base.Prices{
+		{
+			Denom:      sdk.DefaultBondDenom,
+			BaseValue:  sdkmath.LegacyZeroDec(),
+			QuoteValue: sdkmath.NewInt(10),
+		},
+	}
 )
 
+// GetMinGigabytePrices returns the minimum gigabyte prices configured in the parameters.
 func (m *Params) GetMinGigabytePrices() v1base.Prices {
 	return m.MinGigabytePrices
 }
 
+// GetMinHourlyPrices returns the minimum hourly prices configured in the parameters.
 func (m *Params) GetMinHourlyPrices() v1base.Prices {
 	return m.MinHourlyPrices
 }
 
+// Validate validates all parameters to ensure they conform to expected rules.
 func (m *Params) Validate() error {
 	if err := validateActiveDuration(m.ActiveDuration); err != nil {
 		return err
@@ -42,6 +64,7 @@ func (m *Params) Validate() error {
 	return nil
 }
 
+// NewParams creates a new Params instance with the provided values.
 func NewParams(
 	activeDuration time.Duration, deposit sdk.Coin, minGigabytePrices, minHourlyPrices v1base.Prices,
 ) Params {
@@ -53,6 +76,7 @@ func NewParams(
 	}
 }
 
+// DefaultParams returns the default parameters for the module.
 func DefaultParams() Params {
 	return NewParams(
 		DefaultActiveDuration,
@@ -62,68 +86,52 @@ func DefaultParams() Params {
 	)
 }
 
-func validateActiveDuration(v interface{}) error {
-	value, ok := v.(time.Duration)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
-	}
-
-	if value < 0 {
+// validateActiveDuration checks that the active duration is greater than zero.
+func validateActiveDuration(v time.Duration) error {
+	if v < 0 {
 		return fmt.Errorf("active_duration cannot be negative")
 	}
-	if value == 0 {
+	if v == 0 {
 		return fmt.Errorf("active_duration cannot be zero")
 	}
 
 	return nil
 }
 
-func validateDeposit(v interface{}) error {
-	value, ok := v.(sdk.Coin)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
-	}
-
-	if value.IsNil() {
+// validateDeposit checks that the deposit is not nil, not negative, and valid.
+func validateDeposit(v sdk.Coin) error {
+	if v.IsNil() {
 		return fmt.Errorf("deposit cannot be nil")
 	}
-	if value.IsNegative() {
+	if v.IsNegative() {
 		return fmt.Errorf("deposit cannot be negative")
 	}
-	if !value.IsValid() {
-		return fmt.Errorf("invalid deposit %s", value)
+	if !v.IsValid() {
+		return fmt.Errorf("invalid deposit %s", v)
 	}
 
 	return nil
 }
 
-func validateMinGigabytePrices(v interface{}) error {
-	value, ok := v.([]v1base.Price)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
-	}
-
-	if value == nil {
+// validateMinGigabytePrices validates the list of minimum gigabyte prices.
+func validateMinGigabytePrices(v []v1base.Price) error {
+	if v == nil {
 		return nil
 	}
-	if !v1base.Prices(value).IsValid() {
-		return fmt.Errorf("min_gigabyte_prices must be valid")
+	if err := v1base.Prices(v).Validate(); err != nil {
+		return fmt.Errorf("invalid min_gigabyte_prices: %w", err)
 	}
 
 	return nil
 }
 
-func validateMinHourlyPrices(v interface{}) error {
-	value, ok := v.([]v1base.Price)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
-	}
-
-	if value == nil {
+// validateMinHourlyPrices validates the list of minimum hourly prices.
+func validateMinHourlyPrices(v []v1base.Price) error {
+	if v == nil {
 		return nil
 	}
-	if !v1base.Prices(value).IsValid() {
-		return fmt.Errorf("min_hourly_prices must be valid")
+	if err := v1base.Prices(v).Validate(); err != nil {
+		return fmt.Errorf("invalid min_hourly_prices: %w", err)
 	}
 
 	return nil

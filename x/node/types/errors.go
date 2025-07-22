@@ -7,20 +7,35 @@ import (
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
 
-var (
-	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
+const (
+	_ = 100 + iota
+	ErrCodeDuplicateNode
+	ErrCodeInvalidGigabytes
+	ErrCodeInvalidHours
+	ErrCodeInvalidMessage
+	ErrCodeInvalidNodeStatus
+	ErrCodeInvalidPrice
+	ErrCodeInvalidPrices
+	ErrCodeInvalidSessionStatus
+	ErrCodeNodeNotFound
+	ErrCodePriceNotFound
+	ErrCodeSessionNotFound
+	ErrCodeUnauthorized
+)
 
-	ErrDuplicateNode        = sdkerrors.Register(ModuleName, 201, "duplicate node")
-	ErrInvalidGigabytes     = sdkerrors.Register(ModuleName, 202, "invalid gigabytes")
-	ErrInvalidHours         = sdkerrors.Register(ModuleName, 203, "invalid hours")
-	ErrInvalidNodeStatus    = sdkerrors.Register(ModuleName, 204, "invalid node status")
-	ErrInvalidPrice         = sdkerrors.Register(ModuleName, 205, "invalid price")
-	ErrInvalidPrices        = sdkerrors.Register(ModuleName, 206, "invalid prices")
-	ErrInvalidSessionStatus = sdkerrors.Register(ModuleName, 207, "invalid session status")
-	ErrNodeNotFound         = sdkerrors.Register(ModuleName, 208, "node not found")
-	ErrPriceNotFound        = sdkerrors.Register(ModuleName, 209, "price not found")
-	ErrSessionNotFound      = sdkerrors.Register(ModuleName, 210, "session not found")
-	ErrUnauthorized         = sdkerrors.Register(ModuleName, 211, "unauthorized")
+var (
+	ErrDuplicateNode        = sdkerrors.Register(ModuleName, ErrCodeDuplicateNode, "duplicate node")
+	ErrInvalidGigabytes     = sdkerrors.Register(ModuleName, ErrCodeInvalidGigabytes, "invalid gigabytes")
+	ErrInvalidHours         = sdkerrors.Register(ModuleName, ErrCodeInvalidHours, "invalid hours")
+	ErrInvalidMessage       = sdkerrors.Register(ModuleName, ErrCodeInvalidMessage, "invalid message")
+	ErrInvalidNodeStatus    = sdkerrors.Register(ModuleName, ErrCodeInvalidNodeStatus, "invalid node status")
+	ErrInvalidPrice         = sdkerrors.Register(ModuleName, ErrCodeInvalidPrice, "invalid price")
+	ErrInvalidPrices        = sdkerrors.Register(ModuleName, ErrCodeInvalidPrices, "invalid prices")
+	ErrInvalidSessionStatus = sdkerrors.Register(ModuleName, ErrCodeInvalidSessionStatus, "invalid session status")
+	ErrNodeNotFound         = sdkerrors.Register(ModuleName, ErrCodeNodeNotFound, "node not found")
+	ErrPriceNotFound        = sdkerrors.Register(ModuleName, ErrCodePriceNotFound, "price not found")
+	ErrSessionNotFound      = sdkerrors.Register(ModuleName, ErrCodeSessionNotFound, "session not found")
+	ErrUnauthorized         = sdkerrors.Register(ModuleName, ErrCodeUnauthorized, "unauthorized")
 )
 
 // NewErrorDuplicateNode returns an error indicating that the specified node already exists.
@@ -36,6 +51,11 @@ func NewErrorInvalidGigabytes(gigabytes int64) error {
 // NewErrorInvalidHours returns an error indicating that the provided hours value is invalid.
 func NewErrorInvalidHours(hours int64) error {
 	return sdkerrors.Wrapf(ErrInvalidHours, "invalid hours %d", hours)
+}
+
+// NewErrorInvalidMessage returns an error indicating that the provided message is invalid.
+func NewErrorInvalidMessage(desc interface{}) error {
+	return sdkerrors.Wrapf(ErrInvalidMessage, "%v", desc)
 }
 
 // NewErrorInvalidNodeStatus returns an error indicating that the provided status is invalid for the given node.

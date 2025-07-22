@@ -26,9 +26,7 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey) Keeper {
 	}
 }
 
-func (k *Keeper) WithBankKeeper(keeper BankKeeper) {
-	k.bank = keeper
-}
+func (k *Keeper) WithBankKeeper(keeper BankKeeper) { k.bank = keeper }
 
 func (k *Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+types.ModuleName)

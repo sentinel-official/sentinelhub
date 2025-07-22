@@ -9,24 +9,43 @@ import (
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
 
-var (
-	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
+const (
+	_ = 100 + iota
+	ErrCodeAllocationNotFound
+	ErrCodeInsufficientBytes
+	ErrCodeInvalidAllocation
+	ErrCodeInvalidMessage
+	ErrCodeInvalidNodeStatus
+	ErrCodeInvalidPlanStatus
+	ErrCodeInvalidRenewalPolicy
+	ErrCodeInvalidSessionStatus
+	ErrCodeInvalidSubscriptionStatus
+	ErrCodeNodeForPlanNotFound
+	ErrCodeNodeNotFound
+	ErrCodePlanNotFound
+	ErrCodePriceNotFound
+	ErrCodeSessionNotFound
+	ErrCodeSubscriptionNotFound
+	ErrCodeUnauthorized
+)
 
-	ErrAllocationNotFound        = sdkerrors.Register(ModuleName, 201, "allocation not found")
-	ErrInsufficientBytes         = sdkerrors.Register(ModuleName, 202, "insufficient bytes")
-	ErrInvalidAllocation         = sdkerrors.Register(ModuleName, 203, "invalid allocation")
-	ErrInvalidNodeStatus         = sdkerrors.Register(ModuleName, 204, "invalid node status")
-	ErrInvalidPlanStatus         = sdkerrors.Register(ModuleName, 205, "invalid plan status")
-	ErrInvalidRenewalPolicy      = sdkerrors.Register(ModuleName, 206, "invalid renewal policy")
-	ErrInvalidSessionStatus      = sdkerrors.Register(ModuleName, 207, "invalid session status")
-	ErrInvalidSubscriptionStatus = sdkerrors.Register(ModuleName, 208, "invalid subscription status")
-	ErrNodeForPlanNotFound       = sdkerrors.Register(ModuleName, 209, "node for plan not found")
-	ErrNodeNotFound              = sdkerrors.Register(ModuleName, 210, "node not found")
-	ErrPlanNotFound              = sdkerrors.Register(ModuleName, 211, "plan not found")
-	ErrPriceNotFound             = sdkerrors.Register(ModuleName, 212, "price not found")
-	ErrSessionNotFound           = sdkerrors.Register(ModuleName, 213, "session not found")
-	ErrSubscriptionNotFound      = sdkerrors.Register(ModuleName, 214, "subscription not found")
-	ErrUnauthorized              = sdkerrors.Register(ModuleName, 215, "unauthorized")
+var (
+	ErrAllocationNotFound        = sdkerrors.Register(ModuleName, ErrCodeAllocationNotFound, "allocation not found")
+	ErrInsufficientBytes         = sdkerrors.Register(ModuleName, ErrCodeInsufficientBytes, "insufficient bytes")
+	ErrInvalidAllocation         = sdkerrors.Register(ModuleName, ErrCodeInvalidAllocation, "invalid allocation")
+	ErrInvalidMessage            = sdkerrors.Register(ModuleName, ErrCodeInvalidMessage, "invalid message")
+	ErrInvalidNodeStatus         = sdkerrors.Register(ModuleName, ErrCodeInvalidNodeStatus, "invalid node status")
+	ErrInvalidPlanStatus         = sdkerrors.Register(ModuleName, ErrCodeInvalidPlanStatus, "invalid plan status")
+	ErrInvalidRenewalPolicy      = sdkerrors.Register(ModuleName, ErrCodeInvalidRenewalPolicy, "invalid renewal policy")
+	ErrInvalidSessionStatus      = sdkerrors.Register(ModuleName, ErrCodeInvalidSessionStatus, "invalid session status")
+	ErrInvalidSubscriptionStatus = sdkerrors.Register(ModuleName, ErrCodeInvalidSubscriptionStatus, "invalid subscription status")
+	ErrNodeForPlanNotFound       = sdkerrors.Register(ModuleName, ErrCodeNodeForPlanNotFound, "node for plan not found")
+	ErrNodeNotFound              = sdkerrors.Register(ModuleName, ErrCodeNodeNotFound, "node not found")
+	ErrPlanNotFound              = sdkerrors.Register(ModuleName, ErrCodePlanNotFound, "plan not found")
+	ErrPriceNotFound             = sdkerrors.Register(ModuleName, ErrCodePriceNotFound, "price not found")
+	ErrSessionNotFound           = sdkerrors.Register(ModuleName, ErrCodeSessionNotFound, "session not found")
+	ErrSubscriptionNotFound      = sdkerrors.Register(ModuleName, ErrCodeSubscriptionNotFound, "subscription not found")
+	ErrUnauthorized              = sdkerrors.Register(ModuleName, ErrCodeUnauthorized, "unauthorized")
 )
 
 // NewErrorAllocationNotFound returns an error indicating that the specified allocation does not exist.
@@ -42,6 +61,11 @@ func NewErrorInsufficientBytes(id uint64, bytes sdkmath.Int) error {
 // NewErrorInvalidAllocation returns an error indicating that the allocation is invalid.
 func NewErrorInvalidAllocation(id uint64, addr sdk.AccAddress) error {
 	return sdkerrors.Wrapf(ErrInvalidAllocation, "invalid allocation %d/%s", id, addr)
+}
+
+// NewErrorInvalidMessage returns an error indicating that the provided message is invalid.
+func NewErrorInvalidMessage(desc interface{}) error {
+	return sdkerrors.Wrapf(ErrInvalidMessage, "%v", desc)
 }
 
 // NewErrorInvalidNodeStatus returns an error indicating that the provided status is invalid for the node.

@@ -33,25 +33,11 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.M
 	}
 }
 
-func (k *Keeper) WithLeaseKeeper(keeper LeaseKeeper) {
-	k.lease = keeper
-}
-
-func (k *Keeper) WithNodeKeeper(keeper NodeKeeper) {
-	k.node = keeper
-}
-
-func (k *Keeper) WithProviderKeeper(keeper ProviderKeeper) {
-	k.provider = keeper
-}
-
-func (k *Keeper) WithSessionKeeper(keeper SessionKeeper) {
-	k.session = keeper
-}
-
-func (k *Keeper) WithSubscriptionKeeper(keeper SubscriptionKeeper) {
-	k.subscription = keeper
-}
+func (k *Keeper) WithLeaseKeeper(keeper LeaseKeeper)               { k.lease = keeper }
+func (k *Keeper) WithNodeKeeper(keeper NodeKeeper)                 { k.node = keeper }
+func (k *Keeper) WithProviderKeeper(keeper ProviderKeeper)         { k.provider = keeper }
+func (k *Keeper) WithSessionKeeper(keeper SessionKeeper)           { k.session = keeper }
+func (k *Keeper) WithSubscriptionKeeper(keeper SubscriptionKeeper) { k.subscription = keeper }
 
 func (k *Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+types.ModuleName)

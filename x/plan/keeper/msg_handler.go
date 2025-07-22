@@ -11,16 +11,21 @@ import (
 	subscriptiontypes "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
 )
 
+// HandleMsgCreatePlan handles a request to create a new plan.
+// It validates the provider, constructs the plan, stores it, and emits a creation event.
 func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanRequest) (*v3.MsgCreatePlanResponse, error) {
+	// Parse and validate the provider address
 	provAddr, err := base.ProvAddressFromBech32(msg.From)
 	if err != nil {
 		return nil, err
 	}
 
+	// Ensure provider exists in the state
 	if !k.HasProvider(ctx, provAddr) {
 		return nil, types.NewErrorProviderNotFound(provAddr)
 	}
 
+	// Construct the new plan with an incremented ID and inactive status
 	count := k.GetPlanCount(ctx)
 	plan := v3.Plan{
 		ID:          count + 1,
@@ -32,10 +37,12 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 		StatusAt:    ctx.BlockTime(),
 	}
 
+	// Persist the plan and update indexes
 	k.SetPlanCount(ctx, count+1)
 	k.SetPlan(ctx, plan)
 	k.SetPlanForProvider(ctx, provAddr, plan.ID)
 
+	// Emit event to indicate plan creation
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventCreate{
 			ID:          plan.ID,
@@ -51,7 +58,10 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 	}, nil
 }
 
+// HandleMsgLinkNode handles a request to associate a node with a plan.
+// It ensures authorization, validates node and lease state, and updates indexes accordingly.
 func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) (*v3.MsgLinkNodeResponse, error) {
+	// Fetch and authorize the plan
 	plan, found := k.GetPlan(ctx, msg.ID)
 	if !found {
 		return nil, types.NewErrorPlanNotFound(msg.ID)
@@ -60,11 +70,13 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
 
+	// Parse and validate the node address
 	nodeAddr, err := base.NodeAddressFromBech32(msg.NodeAddress)
 	if err != nil {
 		return nil, err
 	}
 
+	// Ensure the node exists and is active
 	node, found := k.GetNode(ctx, nodeAddr)
 	if !found {
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
@@ -73,28 +85,32 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
 
+	// Prevent duplicate node linkage for the same plan
 	if k.HasNodeForPlan(ctx, plan.ID, nodeAddr) {
 		return nil, types.NewErrorDuplicateNodeForPlan(plan.ID, nodeAddr)
 	}
 
+	// Convert and validate the provider address from the plan
 	provAddr, err := base.ProvAddressFromBech32(plan.ProvAddress)
 	if err != nil {
 		return nil, err
 	}
 
+	// Ensure an active lease exists between the node and provider
 	leaseExists := false
 	k.IterateLeasesForNodeByProvider(ctx, nodeAddr, provAddr, func(_ int, _ v1.Lease) bool {
 		leaseExists = true
 		return true
 	})
-
 	if !leaseExists {
 		return nil, types.NewErrorLeaseForNodeByProviderNotFound(nodeAddr, provAddr)
 	}
 
+	// Store the node-plan association and update indexes
 	k.SetNodeForPlan(ctx, plan.ID, nodeAddr)
 	k.SetPlanForNodeByProvider(ctx, nodeAddr, provAddr, plan.ID)
 
+	// Emit event to signal node linkage
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventLinkNode{
 			ID:          plan.ID,
@@ -106,7 +122,10 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 	return &v3.MsgLinkNodeResponse{}, nil
 }
 
+// HandleMsgUnlinkNode handles a request to dissociate a node from a plan.
+// It performs checks, calls pre-unlink hook, and removes the mapping.
 func (k *Keeper) HandleMsgUnlinkNode(ctx sdk.Context, msg *v3.MsgUnlinkNodeRequest) (*v3.MsgUnlinkNodeResponse, error) {
+	// Fetch and authorize the plan
 	plan, found := k.GetPlan(ctx, msg.ID)
 	if !found {
 		return nil, types.NewErrorPlanNotFound(msg.ID)
@@ -115,27 +134,33 @@ func (k *Keeper) HandleMsgUnlinkNode(ctx sdk.Context, msg *v3.MsgUnlinkNodeReque
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
 
+	// Parse and validate the node address
 	nodeAddr, err := base.NodeAddressFromBech32(msg.NodeAddress)
 	if err != nil {
 		return nil, err
 	}
 
+	// Ensure the node is currently linked to the plan
 	if !k.HasNodeForPlan(ctx, plan.ID, nodeAddr) {
 		return nil, types.NewErrorNodeForPlanNotFound(plan.ID, nodeAddr)
 	}
 
+	// Call unlink pre-hook to allow any custom logic or validation
 	if err := k.PlanUnlinkNodePreHook(ctx, plan.ID, nodeAddr); err != nil {
 		return nil, err
 	}
 
+	// Convert and validate the provider address from the plan
 	provAddr, err := base.ProvAddressFromBech32(plan.ProvAddress)
 	if err != nil {
 		return nil, err
 	}
 
+	// Remove the node-plan association and update indexes
 	k.DeleteNodeForPlan(ctx, plan.ID, nodeAddr)
 	k.DeletePlanForNodeByProvider(ctx, nodeAddr, provAddr, plan.ID)
 
+	// Emit event to indicate node unlink
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventUnlinkNode{
 			ID:          plan.ID,
@@ -147,7 +172,10 @@ func (k *Keeper) HandleMsgUnlinkNode(ctx sdk.Context, msg *v3.MsgUnlinkNodeReque
 	return &v3.MsgUnlinkNodeResponse{}, nil
 }
 
+// HandleMsgUpdatePlanStatus handles a request to update the activation status of a plan.
+// It updates the plan’s status and cleans up the old status index.
 func (k *Keeper) HandleMsgUpdatePlanStatus(ctx sdk.Context, msg *v3.MsgUpdatePlanStatusRequest) (*v3.MsgUpdatePlanStatusResponse, error) {
+	// Fetch and authorize the plan
 	plan, found := k.GetPlan(ctx, msg.ID)
 	if !found {
 		return nil, types.NewErrorPlanNotFound(msg.ID)
@@ -156,6 +184,7 @@ func (k *Keeper) HandleMsgUpdatePlanStatus(ctx sdk.Context, msg *v3.MsgUpdatePla
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
 
+	// Remove old status index if transitioning state
 	if msg.Status.Equal(v1base.StatusActive) {
 		if plan.Status.Equal(v1base.StatusInactive) {
 			k.DeleteInactivePlan(ctx, plan.ID)
@@ -167,10 +196,13 @@ func (k *Keeper) HandleMsgUpdatePlanStatus(ctx sdk.Context, msg *v3.MsgUpdatePla
 		}
 	}
 
+	// Apply new status and persist the plan
 	plan.Status = msg.Status
 	plan.StatusAt = ctx.BlockTime()
 
 	k.SetPlan(ctx, plan)
+
+	// Emit event to indicate status update
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventUpdate{
 			ID:          plan.ID,
@@ -182,7 +214,10 @@ func (k *Keeper) HandleMsgUpdatePlanStatus(ctx sdk.Context, msg *v3.MsgUpdatePla
 	return &v3.MsgUpdatePlanStatusResponse{}, nil
 }
 
+// HandleMsgStartSession handles a request to start a new session under a plan.
+// It triggers subscription and session workflows via delegation to the subscription module.
 func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionRequest) (*v3.MsgStartSessionResponse, error) {
+	// Forward subscription creation request to subscription module
 	subscriptionReq := &subscriptiontypes.MsgStartSubscriptionRequest{
 		From:               msg.From,
 		ID:                 msg.ID,
@@ -195,6 +230,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 		return nil, err
 	}
 
+	// Forward session start request based on returned subscription ID
 	sessionReq := &subscriptiontypes.MsgStartSessionRequest{
 		From:        msg.From,
 		ID:          subscriptionResp.ID,

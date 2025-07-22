@@ -1,7 +1,6 @@
 package v3
 
 import (
-	sdkerrors "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types"
 )
 
+// Ensure the message types implement sdk.Msg interface
 var (
 	_ sdk.Msg = (*MsgCancelSubscriptionRequest)(nil)
 	_ sdk.Msg = (*MsgRenewSubscriptionRequest)(nil)
@@ -20,6 +20,7 @@ var (
 	_ sdk.Msg = (*MsgUpdateParamsRequest)(nil)
 )
 
+// NewMsgCancelSubscriptionRequest creates a new MsgCancelSubscriptionRequest instance.
 func NewMsgCancelSubscriptionRequest(from sdk.AccAddress, id uint64) *MsgCancelSubscriptionRequest {
 	return &MsgCancelSubscriptionRequest{
 		From: from.String(),
@@ -27,20 +28,22 @@ func NewMsgCancelSubscriptionRequest(from sdk.AccAddress, id uint64) *MsgCancelS
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgCancelSubscriptionRequest.
 func (m *MsgCancelSubscriptionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrapf(types.ErrInvalidMessage, "invalid from %s", err)
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgCancelSubscriptionRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {
@@ -50,6 +53,7 @@ func (m *MsgCancelSubscriptionRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgRenewSubscriptionRequest creates a new MsgRenewSubscriptionRequest instance.
 func NewMsgRenewSubscriptionRequest(from sdk.AccAddress, id uint64, denom string) *MsgRenewSubscriptionRequest {
 	return &MsgRenewSubscriptionRequest{
 		From:  from.String(),
@@ -58,25 +62,27 @@ func NewMsgRenewSubscriptionRequest(from sdk.AccAddress, id uint64, denom string
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgRenewSubscriptionRequest.
 func (m *MsgRenewSubscriptionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
 	if m.Denom != "" {
 		if err := sdk.ValidateDenom(m.Denom); err != nil {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+			return types.NewErrorInvalidMessage(err)
 		}
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgRenewSubscriptionRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {
@@ -86,6 +92,7 @@ func (m *MsgRenewSubscriptionRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgShareSubscriptionRequest creates a new MsgShareSubscriptionRequest instance.
 func NewMsgShareSubscriptionRequest(from sdk.AccAddress, id uint64, accAddr sdk.AccAddress, bytes sdkmath.Int) *MsgShareSubscriptionRequest {
 	return &MsgShareSubscriptionRequest{
 		From:       from.String(),
@@ -95,32 +102,34 @@ func NewMsgShareSubscriptionRequest(from sdk.AccAddress, id uint64, accAddr sdk.
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgShareSubscriptionRequest.
 func (m *MsgShareSubscriptionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrapf(types.ErrInvalidMessage, "invalid from %s", err)
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
 	if m.AccAddress == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "acc_address cannot be empty")
+		return types.NewErrorInvalidMessage("acc_address cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.AccAddress); err != nil {
-		return sdkerrors.Wrapf(types.ErrInvalidMessage, "invalid acc_address %s", err)
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.Bytes.IsNil() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "bytes cannot be nil")
+		return types.NewErrorInvalidMessage("bytes cannot be nil")
 	}
 	if m.Bytes.IsNegative() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "bytes cannot be negative")
+		return types.NewErrorInvalidMessage("bytes cannot be negative")
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgShareSubscriptionRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {
@@ -130,6 +139,7 @@ func (m *MsgShareSubscriptionRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgStartSubscriptionRequest creates a new MsgStartSubscriptionRequest instance.
 func NewMsgStartSubscriptionRequest(from sdk.AccAddress, id uint64, denom string, renewalPricePolicy v1base.RenewalPricePolicy) *MsgStartSubscriptionRequest {
 	return &MsgStartSubscriptionRequest{
 		From:               from.String(),
@@ -139,28 +149,30 @@ func NewMsgStartSubscriptionRequest(from sdk.AccAddress, id uint64, denom string
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgStartSubscriptionRequest.
 func (m *MsgStartSubscriptionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
 	if m.Denom != "" {
 		if err := sdk.ValidateDenom(m.Denom); err != nil {
-			return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+			return types.NewErrorInvalidMessage(err)
 		}
 	}
 	if !m.RenewalPricePolicy.IsValid() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "renewal_price_policy must be valid")
+		return types.NewErrorInvalidMessage("renewal_price_policy must be valid")
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgStartSubscriptionRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {
@@ -170,6 +182,7 @@ func (m *MsgStartSubscriptionRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgUpdateSubscriptionRequest creates a new MsgUpdateSubscriptionRequest instance.
 func NewMsgUpdateSubscriptionRequest(from sdk.AccAddress, id uint64, renewalPricePolicy v1base.RenewalPricePolicy) *MsgUpdateSubscriptionRequest {
 	return &MsgUpdateSubscriptionRequest{
 		From:               from.String(),
@@ -178,23 +191,25 @@ func NewMsgUpdateSubscriptionRequest(from sdk.AccAddress, id uint64, renewalPric
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgUpdateSubscriptionRequest.
 func (m *MsgUpdateSubscriptionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
 	if !m.RenewalPricePolicy.IsValid() {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "renewal_price_policy must be valid")
+		return types.NewErrorInvalidMessage("renewal_price_policy must be valid")
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgUpdateSubscriptionRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {
@@ -204,6 +219,7 @@ func (m *MsgUpdateSubscriptionRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgStartSessionRequest creates a new MsgStartSessionRequest instance.
 func NewMsgStartSessionRequest(from sdk.AccAddress, id uint64, nodeAddr base.NodeAddress) *MsgStartSessionRequest {
 	return &MsgStartSessionRequest{
 		From:        from.String(),
@@ -212,26 +228,28 @@ func NewMsgStartSessionRequest(from sdk.AccAddress, id uint64, nodeAddr base.Nod
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgStartSessionRequest.
 func (m *MsgStartSessionRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if m.ID == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "id cannot be zero")
+		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
 	if m.NodeAddress == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "node_address cannot be empty")
+		return types.NewErrorInvalidMessage("node_address cannot be empty")
 	}
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgStartSessionRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {
@@ -241,6 +259,7 @@ func (m *MsgStartSessionRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
+// NewMsgUpdateParamsRequest creates a new MsgUpdateParamsRequest instance.
 func NewMsgUpdateParamsRequest(from sdk.AccAddress, params Params) *MsgUpdateParamsRequest {
 	return &MsgUpdateParamsRequest{
 		From:   from.String(),
@@ -248,20 +267,22 @@ func NewMsgUpdateParamsRequest(from sdk.AccAddress, params Params) *MsgUpdatePar
 	}
 }
 
+// ValidateBasic performs basic validation checks on the MsgUpdateParamsRequest.
 func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, "from cannot be empty")
+		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidMessage, err.Error())
+		return types.NewErrorInvalidMessage(err)
 	}
 	if err := m.Params.Validate(); err != nil {
-		return err
+		return types.NewErrorInvalidMessage(err)
 	}
 
 	return nil
 }
 
+// GetSigners returns the account addresses that must sign the message.
 func (m *MsgUpdateParamsRequest) GetSigners() []sdk.AccAddress {
 	from, err := sdk.AccAddressFromBech32(m.From)
 	if err != nil {

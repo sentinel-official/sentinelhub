@@ -76,10 +76,20 @@ func (k *Migrator) migrateNodes(ctx sdk.Context) {
 		var item v2.Node
 		k.cdc.MustUnmarshal(it.Value(), &item)
 
+		gigabytePrices, err := v1.NewPricesFromCoins(item.GigabytePrices...)
+		if err != nil {
+			panic(err)
+		}
+
+		hourlyPrices, err := v1.NewPricesFromCoins(item.HourlyPrices...)
+		if err != nil {
+			panic(err)
+		}
+
 		node := v3.Node{
 			Address:        item.Address,
-			GigabytePrices: v1.NewPricesFromCoins(item.GigabytePrices...),
-			HourlyPrices:   v1.NewPricesFromCoins(item.HourlyPrices...),
+			GigabytePrices: gigabytePrices,
+			HourlyPrices:   hourlyPrices,
 			RemoteURL:      item.RemoteURL,
 			InactiveAt:     item.InactiveAt,
 			Status:         item.Status,

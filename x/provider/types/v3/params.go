@@ -1,6 +1,7 @@
 package v3
 
 import (
+	"errors"
 	"fmt"
 
 	sdkmath "cosmossdk.io/math"
@@ -8,9 +9,10 @@ import (
 )
 
 var (
-	DefaultDeposit = sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(1000))
+	DefaultDeposit = sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(1000)) // Default required deposit: 1000 stake
 )
 
+// Validate checks that all parameters in Params are valid.
 func (m *Params) Validate() error {
 	if err := validateDeposit(m.Deposit); err != nil {
 		return err
@@ -19,30 +21,28 @@ func (m *Params) Validate() error {
 	return nil
 }
 
+// NewParams creates a new Params instance with the given deposit.
 func NewParams(deposit sdk.Coin) Params {
 	return Params{
 		Deposit: deposit,
 	}
 }
 
+// DefaultParams returns a Params instance initialized with default values.
 func DefaultParams() Params {
 	return NewParams(DefaultDeposit)
 }
 
-func validateDeposit(v interface{}) error {
-	value, ok := v.(sdk.Coin)
-	if !ok {
-		return fmt.Errorf("invalid parameter type %T", v)
+// validateDeposit checks that the deposit is a valid, non-negative, non-nil coin.
+func validateDeposit(v sdk.Coin) error {
+	if v.IsNil() {
+		return errors.New("deposit cannot be nil")
 	}
-
-	if value.IsNil() {
-		return fmt.Errorf("deposit cannot be nil")
+	if v.IsNegative() {
+		return errors.New("deposit cannot be negative")
 	}
-	if value.IsNegative() {
-		return fmt.Errorf("deposit cannot be negative")
-	}
-	if !value.IsValid() {
-		return fmt.Errorf("invalid deposit %s", value)
+	if err := v.Validate(); err != nil {
+		return fmt.Errorf("invalid deposit: %w", err)
 	}
 
 	return nil

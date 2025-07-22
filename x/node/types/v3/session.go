@@ -1,6 +1,7 @@
 package v3
 
 import (
+	"fmt"
 	"time"
 
 	sdkmath "cosmossdk.io/math"
@@ -95,4 +96,16 @@ func (m *Session) PaymentAmount() sdk.Coin {
 // RefundAmount returns the refund amount as an SDK coin.
 func (m *Session) RefundAmount() sdk.Coin {
 	return sdk.Coin{Denom: m.Price.Denom, Amount: m.refundAmount()}
+}
+
+// Validate performs basic validation on the session.
+func (m *Session) Validate() error {
+	if err := m.BaseSession.Validate(); err != nil {
+		return err
+	}
+	if err := m.Price.Validate(); err != nil {
+		return fmt.Errorf("invalid price: %w", err)
+	}
+
+	return nil
 }

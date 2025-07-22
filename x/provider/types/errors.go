@@ -6,17 +6,29 @@ import (
 	base "github.com/sentinel-official/sentinelhub/v12/types"
 )
 
-var (
-	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
+const (
+	_ = 100 + iota
+	ErrCodeDuplicateProvider
+	ErrCodeInvalidMessage
+	ErrCodeProviderNotFound
+	ErrCodeUnauthorized
+)
 
-	ErrDuplicateProvider = sdkerrors.Register(ModuleName, 201, "duplicate provider")
-	ErrProviderNotFound  = sdkerrors.Register(ModuleName, 202, "provider not found")
-	ErrUnauthorized      = sdkerrors.Register(ModuleName, 203, "unauthorized")
+var (
+	ErrDuplicateProvider = sdkerrors.Register(ModuleName, ErrCodeDuplicateProvider, "duplicate provider")
+	ErrInvalidMessage    = sdkerrors.Register(ModuleName, ErrCodeInvalidMessage, "invalid message")
+	ErrProviderNotFound  = sdkerrors.Register(ModuleName, ErrCodeProviderNotFound, "provider not found")
+	ErrUnauthorized      = sdkerrors.Register(ModuleName, ErrCodeUnauthorized, "unauthorized")
 )
 
 // NewErrorDuplicateProvider returns an error indicating that the specified provider already exists.
 func NewErrorDuplicateProvider(addr base.ProvAddress) error {
 	return sdkerrors.Wrapf(ErrDuplicateProvider, "provider %s already exists", addr)
+}
+
+// NewErrorInvalidMessage returns an error indicating that the provided message is invalid.
+func NewErrorInvalidMessage(desc interface{}) error {
+	return sdkerrors.Wrapf(ErrInvalidMessage, "%v", desc)
 }
 
 // NewErrorProviderNotFound returns an error indicating that the specified provider does not exist.

@@ -9,16 +9,27 @@ import (
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
 
-var (
-	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
+const (
+	_ = 100 + iota
+	ErrCodeInvalidDownloadBytes
+	ErrCodeInvalidDuration
+	ErrCodeInvalidMessage
+	ErrCodeInvalidSessionStatus
+	ErrCodeInvalidSignature
+	ErrCodeInvalidUploadBytes
+	ErrCodeSessionNotFound
+	ErrCodeUnauthorized
+)
 
-	ErrInvalidDownloadBytes = sdkerrors.Register(ModuleName, 201, "invalid download bytes")
-	ErrInvalidDuration      = sdkerrors.Register(ModuleName, 202, "invalid duration")
-	ErrInvalidSessionStatus = sdkerrors.Register(ModuleName, 203, "invalid session status")
-	ErrInvalidSignature     = sdkerrors.Register(ModuleName, 204, "invalid signature")
-	ErrInvalidUploadBytes   = sdkerrors.Register(ModuleName, 205, "invalid upload bytes")
-	ErrSessionNotFound      = sdkerrors.Register(ModuleName, 206, "session not found")
-	ErrUnauthorized         = sdkerrors.Register(ModuleName, 207, "unauthorized")
+var (
+	ErrInvalidDownloadBytes = sdkerrors.Register(ModuleName, ErrCodeInvalidDownloadBytes, "invalid download bytes")
+	ErrInvalidDuration      = sdkerrors.Register(ModuleName, ErrCodeInvalidDuration, "invalid duration")
+	ErrInvalidMessage       = sdkerrors.Register(ModuleName, ErrCodeInvalidMessage, "invalid message")
+	ErrInvalidSessionStatus = sdkerrors.Register(ModuleName, ErrCodeInvalidSessionStatus, "invalid session status")
+	ErrInvalidSignature     = sdkerrors.Register(ModuleName, ErrCodeInvalidSignature, "invalid signature")
+	ErrInvalidUploadBytes   = sdkerrors.Register(ModuleName, ErrCodeInvalidUploadBytes, "invalid upload bytes")
+	ErrSessionNotFound      = sdkerrors.Register(ModuleName, ErrCodeSessionNotFound, "session not found")
+	ErrUnauthorized         = sdkerrors.Register(ModuleName, ErrCodeUnauthorized, "unauthorized")
 )
 
 // NewErrorInvalidDownloadBytes returns an error indicating that the download bytes are invalid.
@@ -29,6 +40,11 @@ func NewErrorInvalidDownloadBytes(bytes sdkmath.Int) error {
 // NewErrorInvalidDuration returns an error indicating that the specified duration is invalid.
 func NewErrorInvalidDuration(duration time.Duration) error {
 	return sdkerrors.Wrapf(ErrInvalidDuration, "invalid duration %d", duration)
+}
+
+// NewErrorInvalidMessage returns an error indicating that the provided message is invalid.
+func NewErrorInvalidMessage(desc interface{}) error {
+	return sdkerrors.Wrapf(ErrInvalidMessage, "%v", desc)
 }
 
 // NewErrorInvalidSessionStatus returns an error indicating that the provided status is invalid for the session.

@@ -7,12 +7,19 @@ import (
 	ibcerrors "github.com/cosmos/ibc-go/v7/modules/core/errors"
 )
 
-var (
-	ErrInvalidMessage = sdkerrors.Register(ModuleName, 101, "invalid message")
+const (
+	_ = 100 + iota
+	ErrCodeAssetNotFound
+	ErrCodeDenomForPacketNotFound
+	ErrCodeDuplicateAsset
+	ErrCodeInvalidMessage
+)
 
-	ErrAssetNotFound          = sdkerrors.Register(ModuleName, 201, "asset not found")
-	ErrDenomForPacketNotFound = sdkerrors.Register(ModuleName, 202, "denom for packet not found")
-	ErrDuplicateAsset         = sdkerrors.Register(ModuleName, 203, "duplicate asset")
+var (
+	ErrAssetNotFound          = sdkerrors.Register(ModuleName, ErrCodeAssetNotFound, "asset not found")
+	ErrDenomForPacketNotFound = sdkerrors.Register(ModuleName, ErrCodeDenomForPacketNotFound, "denom for packet not found")
+	ErrDuplicateAsset         = sdkerrors.Register(ModuleName, ErrCodeDuplicateAsset, "duplicate asset")
+	ErrInvalidMessage         = sdkerrors.Register(ModuleName, ErrCodeInvalidMessage, "invalid message")
 )
 
 // NewErrorAssetNotFound returns an error indicating that the specified asset does not exist.
@@ -28,6 +35,11 @@ func NewErrorDenomForPacketNotFound(portID, channelID string, sequence uint64) e
 // NewErrorDuplicateAsset returns an error indicating that the specified asset already exists.
 func NewErrorDuplicateAsset(denom string) error {
 	return sdkerrors.Wrapf(ErrDuplicateAsset, "asset %s already exists", denom)
+}
+
+// NewErrorInvalidMessage returns an error indicating that the provided message is invalid.
+func NewErrorInvalidMessage(desc interface{}) error {
+	return sdkerrors.Wrapf(ErrInvalidMessage, "%v", desc)
 }
 
 // NewErrorInvalidCounterpartyVersion returns an error indicating that the counterparty version is invalid.

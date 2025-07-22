@@ -41,15 +41,6 @@ func (q *queryServer) QueryLeases(c context.Context, req *v1.QueryLeasesRequest)
 	return q.HandleQueryLeases(ctx, req)
 }
 
-func (q *queryServer) QueryLeasesForProvider(c context.Context, req *v1.QueryLeasesForProviderRequest) (*v1.QueryLeasesForProviderResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	return q.HandleQueryLeasesForProvider(ctx, req)
-}
-
 func (q *queryServer) QueryLeasesForNode(c context.Context, req *v1.QueryLeasesForNodeRequest) (*v1.QueryLeasesForNodeResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
@@ -57,6 +48,15 @@ func (q *queryServer) QueryLeasesForNode(c context.Context, req *v1.QueryLeasesF
 
 	ctx := sdk.UnwrapSDKContext(c)
 	return q.HandleQueryLeasesForNode(ctx, req)
+}
+
+func (q *queryServer) QueryLeasesForProvider(c context.Context, req *v1.QueryLeasesForProviderRequest) (*v1.QueryLeasesForProviderResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	return q.HandleQueryLeasesForProvider(ctx, req)
 }
 
 func (q *queryServer) QueryParams(c context.Context, req *v1.QueryParamsRequest) (*v1.QueryParamsResponse, error) {

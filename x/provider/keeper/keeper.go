@@ -24,7 +24,9 @@ type Keeper struct {
 	lease        LeaseKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter, authority string) Keeper {
+func NewKeeper(
+	cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter, authority string,
+) Keeper {
 	return Keeper{
 		authority: authority,
 		cdc:       cdc,
@@ -33,17 +35,9 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.M
 	}
 }
 
-func (k *Keeper) WithDistributionKeeper(keeper DistributionKeeper) {
-	k.distribution = keeper
-}
-
-func (k *Keeper) WithPlanKeeper(keeper PlanKeeper) {
-	k.plan = keeper
-}
-
-func (k *Keeper) WithLeaseKeeper(keeper LeaseKeeper) {
-	k.lease = keeper
-}
+func (k *Keeper) WithDistributionKeeper(keeper DistributionKeeper) { k.distribution = keeper }
+func (k *Keeper) WithPlanKeeper(keeper PlanKeeper)                 { k.plan = keeper }
+func (k *Keeper) WithLeaseKeeper(keeper LeaseKeeper)               { k.lease = keeper }
 
 func (k *Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+types.ModuleName)

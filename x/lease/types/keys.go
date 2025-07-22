@@ -49,28 +49,28 @@ func LeaseForProviderKey(addr base.ProvAddress, id uint64) []byte {
 	return append(GetLeaseForProviderKeyPrefix(addr), sdk.Uint64ToBigEndian(id)...)
 }
 
-func GetLeaseForInactiveAtKeyPrefix(at time.Time) []byte {
-	return append(LeaseForInactiveAtKeyPrefix, sdk.FormatTimeBytes(at)...)
+func GetLeaseForInactiveAtKeyPrefix(timestamp time.Time) []byte {
+	return append(LeaseForInactiveAtKeyPrefix, sdk.FormatTimeBytes(timestamp)...)
 }
 
-func LeaseForInactiveAtKey(at time.Time, id uint64) []byte {
-	return append(GetLeaseForInactiveAtKeyPrefix(at), sdk.Uint64ToBigEndian(id)...)
+func LeaseForInactiveAtKey(timestamp time.Time, id uint64) []byte {
+	return append(GetLeaseForInactiveAtKeyPrefix(timestamp), sdk.Uint64ToBigEndian(id)...)
 }
 
-func GetLeaseForPayoutAtKeyPrefix(at time.Time) []byte {
-	return append(LeaseForPayoutAtKeyPrefix, sdk.FormatTimeBytes(at)...)
+func GetLeaseForPayoutAtKeyPrefix(timestamp time.Time) []byte {
+	return append(LeaseForPayoutAtKeyPrefix, sdk.FormatTimeBytes(timestamp)...)
 }
 
-func LeaseForPayoutAtKey(at time.Time, id uint64) []byte {
-	return append(GetLeaseForPayoutAtKeyPrefix(at), sdk.Uint64ToBigEndian(id)...)
+func LeaseForPayoutAtKey(timestamp time.Time, id uint64) []byte {
+	return append(GetLeaseForPayoutAtKeyPrefix(timestamp), sdk.Uint64ToBigEndian(id)...)
 }
 
-func GetLeaseForRenewalAtKeyPrefix(at time.Time) []byte {
-	return append(LeaseForRenewalAtKeyPrefix, sdk.FormatTimeBytes(at)...)
+func GetLeaseForRenewalAtKeyPrefix(timestamp time.Time) []byte {
+	return append(LeaseForRenewalAtKeyPrefix, sdk.FormatTimeBytes(timestamp)...)
 }
 
-func LeaseForRenewalAtKey(at time.Time, id uint64) []byte {
-	return append(GetLeaseForRenewalAtKeyPrefix(at), sdk.Uint64ToBigEndian(id)...)
+func LeaseForRenewalAtKey(timestamp time.Time, id uint64) []byte {
+	return append(GetLeaseForRenewalAtKeyPrefix(timestamp), sdk.Uint64ToBigEndian(id)...)
 }
 
 func IDFromLeaseForNodeByProviderKey(key []byte) uint64 {
@@ -96,7 +96,7 @@ func IDFromLeaseForProviderKey(key []byte) uint64 {
 }
 
 func IDFromLeaseForInactiveAtKey(key []byte) uint64 {
-	// prefix (1 byte) | at (29 bytes) | id (8 bytes)
+	// prefix (1 byte) | timestamp (29 bytes) | id (8 bytes)
 
 	if len(key) != 38 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 38))
@@ -106,7 +106,7 @@ func IDFromLeaseForInactiveAtKey(key []byte) uint64 {
 }
 
 func IDFromLeaseForPayoutAtKey(key []byte) uint64 {
-	// prefix (1 byte) | at (29 bytes) | id (8 bytes)
+	// prefix (1 byte) | timestamp (29 bytes) | id (8 bytes)
 
 	if len(key) != 38 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 38))
@@ -116,7 +116,7 @@ func IDFromLeaseForPayoutAtKey(key []byte) uint64 {
 }
 
 func IDFromLeaseForRenewalAtKey(key []byte) uint64 {
-	// prefix (1 byte) | at (29 bytes) | id (8 bytes)
+	// prefix (1 byte) | timestamp (29 bytes) | id (8 bytes)
 
 	if len(key) != 38 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 38))

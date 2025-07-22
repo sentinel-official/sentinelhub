@@ -27,7 +27,10 @@ type Keeper struct {
 	session      SessionKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter, authority, feeCollectorName string) Keeper {
+func NewKeeper(
+	cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter,
+	authority, feeCollectorName string,
+) Keeper {
 	return Keeper{
 		authority:        authority,
 		feeCollectorName: feeCollectorName,
@@ -37,25 +40,11 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.M
 	}
 }
 
-func (k *Keeper) WithDepositKeeper(keeper DepositKeeper) {
-	k.deposit = keeper
-}
-
-func (k *Keeper) WithDistributionKeeper(keeper DistributionKeeper) {
-	k.distribution = keeper
-}
-
-func (k *Keeper) WithLeaseKeeper(keeper LeaseKeeper) {
-	k.lease = keeper
-}
-
-func (k *Keeper) WithOracleKeeper(keeper OracleKeeper) {
-	k.oracle = keeper
-}
-
-func (k *Keeper) WithSessionKeeper(keeper SessionKeeper) {
-	k.session = keeper
-}
+func (k *Keeper) WithDepositKeeper(keeper DepositKeeper)           { k.deposit = keeper }
+func (k *Keeper) WithDistributionKeeper(keeper DistributionKeeper) { k.distribution = keeper }
+func (k *Keeper) WithLeaseKeeper(keeper LeaseKeeper)               { k.lease = keeper }
+func (k *Keeper) WithOracleKeeper(keeper OracleKeeper)             { k.oracle = keeper }
+func (k *Keeper) WithSessionKeeper(keeper SessionKeeper)           { k.session = keeper }
 
 func (k *Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+types.ModuleName)

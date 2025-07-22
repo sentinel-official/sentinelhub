@@ -60,16 +60,16 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 			panic(err)
 		}
 
-		totalPayment := item.Price.QuotePrice()
+		total := item.Price.QuotePrice()
 
 		// Calculate the staking reward and send it to the module
-		reward := baseutils.GetProportionOfCoin(totalPayment, share)
+		reward := baseutils.GetProportionOfCoin(total, share)
 		if err := k.SendCoinFromDepositToModule(ctx, provAddr.Bytes(), k.feeCollectorName, reward); err != nil {
 			panic(err)
 		}
 
 		// Calculate the remaining payment and send it to the node address
-		payment := totalPayment.Sub(reward)
+		payment := total.Sub(reward)
 		if err := k.SendCoinFromDepositToAccount(ctx, provAddr.Bytes(), nodeAddr.Bytes(), payment); err != nil {
 			panic(err)
 		}

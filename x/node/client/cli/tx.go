@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -13,8 +15,8 @@ import (
 
 func txRegisterNode() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "register-node [remote-url]",
-		Short: "Register a new node with a remote URL and pricing details",
+		Use:   "register-node [remote-addrs]",
+		Short: "Register a new node with a remote addrs and pricing details",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
@@ -36,7 +38,7 @@ func txRegisterNode() *cobra.Command {
 				ctx.FromAddress.Bytes(),
 				gigabytePrices,
 				hourlyPrices,
-				args[0],
+				strings.Split(args[0], ","),
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -73,7 +75,7 @@ func txUpdateNodeDetails() *cobra.Command {
 				return err
 			}
 
-			remoteURL, err := cmd.Flags().GetString(flagRemoteURL)
+			remoteAddrs, err := cmd.Flags().GetString(flagRemoteAddrs)
 			if err != nil {
 				return err
 			}
@@ -82,7 +84,7 @@ func txUpdateNodeDetails() *cobra.Command {
 				ctx.FromAddress.Bytes(),
 				gigabytePrices,
 				hourlyPrices,
-				remoteURL,
+				strings.Split(remoteAddrs, ","),
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -95,7 +97,7 @@ func txUpdateNodeDetails() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(flagGigabytePrices, "", "prices for one gigabyte of bandwidth (e.g., 1000token)")
 	cmd.Flags().String(flagHourlyPrices, "", "prices for one hour of bandwidth (e.g., 500token)")
-	cmd.Flags().String(flagRemoteURL, "", "remote URL address for the node")
+	cmd.Flags().String(flagRemoteAddrs, "", "remote addrs for the node")
 
 	return cmd
 }

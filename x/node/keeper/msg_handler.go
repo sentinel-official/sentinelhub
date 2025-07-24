@@ -51,7 +51,7 @@ func (k *Keeper) HandleMsgRegisterNode(ctx sdk.Context, msg *v3.MsgRegisterNodeR
 		Address:        nodeAddr.String(),
 		GigabytePrices: msg.GigabytePrices,
 		HourlyPrices:   msg.HourlyPrices,
-		RemoteURL:      msg.RemoteURL,
+		RemoteAddrs:    msg.RemoteAddrs,
 		Status:         v1base.StatusInactive,
 		InactiveAt:     time.Time{},
 		StatusAt:       ctx.BlockTime(),
@@ -67,7 +67,7 @@ func (k *Keeper) HandleMsgRegisterNode(ctx sdk.Context, msg *v3.MsgRegisterNodeR
 			NodeAddress:    node.Address,
 			GigabytePrices: node.GetGigabytePrices().String(),
 			HourlyPrices:   node.GetHourlyPrices().String(),
-			RemoteURL:      node.RemoteURL,
+			RemoteAddrs:    node.RemoteAddrs,
 		},
 	)
 
@@ -99,11 +99,11 @@ func (k *Keeper) HandleMsgUpdateNodeDetails(ctx sdk.Context, msg *v3.MsgUpdateNo
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
 	}
 
-	// Apply updated prices and optional remote URL
+	// Apply updated prices and optional remote addrs
 	node.GigabytePrices = msg.GigabytePrices
 	node.HourlyPrices = msg.HourlyPrices
-	if msg.RemoteURL != "" {
-		node.RemoteURL = msg.RemoteURL
+	if len(msg.RemoteAddrs) > 0 {
+		node.RemoteAddrs = msg.RemoteAddrs
 	}
 
 	// Save the updated node to state
@@ -115,7 +115,7 @@ func (k *Keeper) HandleMsgUpdateNodeDetails(ctx sdk.Context, msg *v3.MsgUpdateNo
 			NodeAddress:    node.Address,
 			GigabytePrices: node.GetGigabytePrices().String(),
 			HourlyPrices:   node.GetHourlyPrices().String(),
-			RemoteURL:      node.RemoteURL,
+			RemoteAddrs:    node.RemoteAddrs,
 		},
 	)
 

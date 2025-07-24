@@ -90,7 +90,7 @@ func (k *Migrator) migrateNodes(ctx sdk.Context) {
 			Address:        item.Address,
 			GigabytePrices: gigabytePrices,
 			HourlyPrices:   hourlyPrices,
-			RemoteURL:      item.RemoteURL,
+			RemoteAddrs:    []string{item.RemoteURL},
 			InactiveAt:     item.InactiveAt,
 			Status:         item.Status,
 			StatusAt:       item.StatusAt,

@@ -14,14 +14,14 @@ message MsgRegisterNodeRequest {
   string from = 1;
   repeated sentinel.types.v1.Price gigabyte_prices = 2 [(gogoproto.nullable) = false];
   repeated sentinel.types.v1.Price hourly_prices = 3 [(gogoproto.nullable) = false];
-  string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
+  repeated string remote_addrs = 4;
 }
 
 message MsgUpdateNodeDetailsRequest {
   string from = 1;
   repeated sentinel.types.v1.Price gigabyte_prices = 2 [(gogoproto.nullable) = false];
   repeated sentinel.types.v1.Price hourly_prices = 3 [(gogoproto.nullable) = false];
-  string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
+  repeated string remote_addrs = 4;
 }
 
 message MsgUpdateNodeStatusRequest {

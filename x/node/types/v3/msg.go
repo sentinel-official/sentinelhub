@@ -1,7 +1,6 @@
 package v3
 
 import (
-	"net/url"
 	"time"
 
 	sdkmath "cosmossdk.io/math"
@@ -22,12 +21,12 @@ var (
 )
 
 // NewMsgRegisterNodeRequest creates a MsgRegisterNodeRequest with pricing and remote URL for a new node registration
-func NewMsgRegisterNodeRequest(from sdk.AccAddress, gigabytePrices, hourlyPrices v1base.Prices, remoteURL string) *MsgRegisterNodeRequest {
+func NewMsgRegisterNodeRequest(from sdk.AccAddress, gigabytePrices, hourlyPrices v1base.Prices, remoteAddrs []string) *MsgRegisterNodeRequest {
 	return &MsgRegisterNodeRequest{
 		From:           from.String(),
 		GigabytePrices: gigabytePrices,
 		HourlyPrices:   hourlyPrices,
-		RemoteURL:      remoteURL,
+		RemoteAddrs:    remoteAddrs,
 	}
 }
 
@@ -55,22 +54,8 @@ func (m *MsgRegisterNodeRequest) ValidateBasic() error {
 	if prices := m.GetHourlyPrices(); !prices.IsValid() {
 		return types.NewErrorInvalidMessage("hourly_prices must be valid")
 	}
-	if m.RemoteURL == "" {
-		return types.NewErrorInvalidMessage("remote_url cannot be empty")
-	}
-	if len(m.RemoteURL) > 64 {
-		return types.NewErrorInvalidMessage("remote_url length cannot be greater than 64 chars")
-	}
-
-	s, err := url.ParseRequestURI(m.RemoteURL)
-	if err != nil {
+	if err := validateRemoteAddrs(m.RemoteAddrs); err != nil {
 		return types.NewErrorInvalidMessage(err)
-	}
-	if s.Scheme != "https" {
-		return types.NewErrorInvalidMessage("remote_url scheme must be https")
-	}
-	if s.Port() == "" {
-		return types.NewErrorInvalidMessage("remote_url port cannot be empty")
 	}
 
 	return nil
@@ -87,12 +72,12 @@ func (m *MsgRegisterNodeRequest) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgUpdateNodeDetailsRequest creates a MsgUpdateNodeDetailsRequest for updating a node’s prices or remote URL
-func NewMsgUpdateNodeDetailsRequest(from base.NodeAddress, gigabytePrices, hourlyPrices v1base.Prices, remoteURL string) *MsgUpdateNodeDetailsRequest {
+func NewMsgUpdateNodeDetailsRequest(from base.NodeAddress, gigabytePrices, hourlyPrices v1base.Prices, remoteAddrs []string) *MsgUpdateNodeDetailsRequest {
 	return &MsgUpdateNodeDetailsRequest{
 		From:           from.String(),
 		GigabytePrices: gigabytePrices,
 		HourlyPrices:   hourlyPrices,
-		RemoteURL:      remoteURL,
+		RemoteAddrs:    remoteAddrs,
 	}
 }
 
@@ -120,20 +105,9 @@ func (m *MsgUpdateNodeDetailsRequest) ValidateBasic() error {
 	if prices := m.GetHourlyPrices(); !prices.IsValid() {
 		return types.NewErrorInvalidMessage("hourly_prices must be valid")
 	}
-	if m.RemoteURL != "" {
-		if len(m.RemoteURL) > 64 {
-			return types.NewErrorInvalidMessage("remote_url length cannot be greater than 64 chars")
-		}
-
-		s, err := url.ParseRequestURI(m.RemoteURL)
-		if err != nil {
+	if len(m.RemoteAddrs) > 0 {
+		if err := validateRemoteAddrs(m.RemoteAddrs); err != nil {
 			return types.NewErrorInvalidMessage(err)
-		}
-		if s.Scheme != "https" {
-			return types.NewErrorInvalidMessage("remote_url scheme must be https")
-		}
-		if s.Port() == "" {
-			return types.NewErrorInvalidMessage("remote_url port cannot be empty")
 		}
 	}
 

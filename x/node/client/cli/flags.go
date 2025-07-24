@@ -13,7 +13,7 @@ const (
 	flagHourlyPrices   = "hourly-prices"
 	flagHours          = "hours"
 	flagMaxPrice       = "max-price"
-	flagRemoteURL      = "remote-url"
+	flagRemoteAddrs    = "remote-addrs"
 )
 
 func GetGigabytePrices(flags *pflag.FlagSet) (v1base.Prices, error) {

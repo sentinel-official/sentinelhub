@@ -3,7 +3,9 @@ package v3
 import (
 	"errors"
 	"fmt"
-	"net/url"
+	"net"
+	"strconv"
+	"strings"
 
 	base "github.com/sentinel-official/sentinelhub/v12/types"
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
@@ -33,23 +35,8 @@ func (m *Node) Validate() error {
 	if prices := m.GetHourlyPrices(); !prices.IsValid() {
 		return errors.New("hourly_prices must be valid")
 	}
-	if m.RemoteURL == "" {
-		return errors.New("remote_url cannot be empty")
-	}
-	if len(m.RemoteURL) > 64 {
-		return fmt.Errorf("remote_url length cannot be greater than %d chars", 64)
-	}
-
-	// Parse and validate remote URL format and contents
-	remoteURL, err := url.ParseRequestURI(m.RemoteURL)
-	if err != nil {
-		return fmt.Errorf("invalid remote_url: %w", err)
-	}
-	if remoteURL.Scheme != "https" {
-		return errors.New("remote_url scheme must be https")
-	}
-	if remoteURL.Port() == "" {
-		return errors.New("remote_url port cannot be empty")
+	if err := validateRemoteAddrs(m.RemoteAddrs); err != nil {
+		return fmt.Errorf("invalid remote_addrs: %w", err)
 	}
 
 	// Validate status vs. inactive timestamp logic
@@ -102,4 +89,51 @@ func (m *Node) HourlyPrice(denom string) (v1base.Price, bool) {
 	}
 
 	return price, true
+}
+
+// validateRemoteAddrs validates a slice of network addresses.
+//   - The slice contains between 1 and 4 addresses.
+//   - No duplicate addresses are present.
+//   - Each address must be in "host:port" format.
+//   - The host may be a domain name, IPv4, or IPv6 address.
+//   - The host part must not exceed 64 characters.
+//   - IPv6 addresses must be enclosed in square brackets.
+//   - The port must be a numeric value between 1 and 65535.
+func validateRemoteAddrs(addrs []string) error {
+	if len(addrs) < 1 || len(addrs) > 4 {
+		return errors.New("must contain between 1 and 4 addrs")
+	}
+
+	seen := make(map[string]bool)
+	for _, addr := range addrs {
+		if seen[addr] {
+			return errors.New("duplicate addr found")
+		}
+
+		seen[addr] = true
+
+		host, port, err := net.SplitHostPort(addr)
+		if err != nil {
+			return fmt.Errorf("invalid format: %w", err)
+		}
+
+		if port == "" {
+			return errors.New("missing port")
+		}
+
+		portNum, err := strconv.Atoi(port)
+		if err != nil {
+			return fmt.Errorf("invalid port: %w", err)
+		}
+		if portNum < 1 || portNum > 65535 {
+			return errors.New("invalid port range")
+		}
+
+		host = strings.Trim(host, "[]")
+		if len(host) > 64 {
+			return errors.New("host exceeds 64 characters")
+		}
+	}
+
+	return nil
 }

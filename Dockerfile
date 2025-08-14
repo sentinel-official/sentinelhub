@@ -1,4 +1,4 @@
-FROM golang:1.24-alpine3.21 as build
+FROM golang:1.25-alpine3.21 as build
 
 COPY . /root/
 

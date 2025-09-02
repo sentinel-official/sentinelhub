@@ -38,11 +38,6 @@ func (k *Keeper) GetChannelID(ctx sdk.Context) string {
 	return k.GetParams(ctx).ChannelID
 }
 
-// GetPortID retrieves the PortID parameter from the module's parameters.
-func (k *Keeper) GetPortID(ctx sdk.Context) string {
-	return k.GetParams(ctx).PortID
-}
-
 // GetTimeout retrieves the Timeout parameter from the module's parameters.
 func (k *Keeper) GetTimeout(ctx sdk.Context) time.Duration {
 	return k.GetParams(ctx).Timeout

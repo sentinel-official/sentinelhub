@@ -9,7 +9,6 @@ import (
 var (
 	DefaultBlockInterval int64 = 100             // Default block interval in block numbers
 	DefaultChannelID           = ""              // Default IBC channel ID
-	DefaultPortID              = ""              // Default IBC port ID
 	DefaultTimeout             = 1 * time.Minute // Default timeout duration
 )
 
@@ -21,9 +20,6 @@ func (m *Params) Validate() error {
 	if err := validateChannelID(m.ChannelID); err != nil {
 		return err
 	}
-	if err := validatePortID(m.PortID); err != nil {
-		return err
-	}
 	if err := validateTimeout(m.Timeout); err != nil {
 		return err
 	}
@@ -32,11 +28,10 @@ func (m *Params) Validate() error {
 }
 
 // NewParams creates a new Params instance with custom values.
-func NewParams(blockInterval int64, channelID, portID string, timeout time.Duration) Params {
+func NewParams(blockInterval int64, channelID string, timeout time.Duration) Params {
 	return Params{
 		BlockInterval: blockInterval,
 		ChannelID:     channelID,
-		PortID:        portID,
 		Timeout:       timeout,
 	}
 }
@@ -46,7 +41,6 @@ func DefaultParams() Params {
 	return NewParams(
 		DefaultBlockInterval,
 		DefaultChannelID,
-		DefaultPortID,
 		DefaultTimeout,
 	)
 }
@@ -65,11 +59,6 @@ func validateBlockInterval(v int64) error {
 
 // validateChannelID checks that the channel ID is non-empty.
 func validateChannelID(_ string) error {
-	return nil
-}
-
-// validatePortID checks that the port ID is non-empty.
-func validatePortID(_ string) error {
 	return nil
 }
 

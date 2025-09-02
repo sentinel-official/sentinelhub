@@ -1,14 +1,22 @@
 package v1
 
-func NewGenesisState(params Params) *GenesisState {
+import (
+	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
+)
+
+func NewGenesisState(assets []Asset, params Params, portID string) *GenesisState {
 	return &GenesisState{
+		Assets: assets,
 		Params: params,
+		PortID: portID,
 	}
 }
 
 func DefaultGenesisState() *GenesisState {
 	return NewGenesisState(
+		nil,
 		DefaultParams(),
+		types.PortID,
 	)
 }
 

@@ -6,12 +6,14 @@ import (
 
 const (
 	ModuleName = "oracle"
+	PortID     = "oracle-1"
 	StoreKey   = ModuleName
 	Version    = ibcicqtypes.Version
 )
 
 var (
 	ParamsKey = []byte{0x00}
+	PortIDKey = []byte{0x01}
 
 	AssetKeyPrefix = []byte{0x10}
 )

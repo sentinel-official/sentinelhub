@@ -12,4 +12,5 @@ option (gogoproto.goproto_getters_all) = false;
 message GenesisState {
   repeated sentinel.oracle.v1.Asset assets = 1 [(gogoproto.nullable) = false];
   Params params = 2 [(gogoproto.nullable) = false];
+  string port_id = 3 [(gogoproto.customname) = "PortID"];
 }

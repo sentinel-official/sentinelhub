@@ -263,7 +263,8 @@ func NewKeepers(
 
 	k.CustomMintKeeper = custommintkeeper.NewKeeper(encCfg.Codec, keys.KV(customminttypes.StoreKey), k.MintKeeper)
 	k.OracleKeeper = oraclekeeper.NewKeeper(
-		encCfg.Codec, keys.KV(oracletypes.StoreKey), k.ScopedOracleKeeper, k.IBCKeeper.ChannelKeeper, govModuleAddr,
+		encCfg.Codec, keys.KV(oracletypes.StoreKey), k.ScopedOracleKeeper, k.IBCKeeper.ChannelKeeper,
+		&k.IBCKeeper.PortKeeper, govModuleAddr,
 	)
 	k.SwapKeeper = swapkeeper.NewKeeper(
 		encCfg.Codec, keys.KV(swaptypes.StoreKey), k.Subspace(swaptypes.ModuleName), k.AccountKeeper, k.BankKeeper,

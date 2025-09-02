@@ -18,11 +18,12 @@ type Keeper struct {
 
 	capability ibcexported.ScopedKeeper
 	ics4       ibcporttypes.ICS4Wrapper
+	port       PortKeeper
 }
 
 func NewKeeper(
 	cdc codec.Codec, key storetypes.StoreKey, capability ibcexported.ScopedKeeper, ics4 ibcporttypes.ICS4Wrapper,
-	authority string,
+	port PortKeeper, authority string,
 ) Keeper {
 	return Keeper{
 		authority:  authority,
@@ -30,6 +31,7 @@ func NewKeeper(
 		key:        key,
 		capability: capability,
 		ics4:       ics4,
+		port:       port,
 	}
 }
 

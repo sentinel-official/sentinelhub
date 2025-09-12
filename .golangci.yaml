@@ -1,25 +1,36 @@
-run:
-  concurrency: 16
-  timeout: 5m
-  tests: false
-  allow-parallel-runners: true
-
+version: '2'
 linters:
+  default: all
   disable:
-    - gochecknoglobals
+    - cyclop
+    - depguard
+    - err113
+    - exhaustruct
+    - forcetypeassert
+    - funlen
+    - gocognit
+    - ireturn
+    - lll
+    - mnd
+    - nestif
+    - nilnil
+    - noinlineerr
+    - nonamedreturns
     - varnamelen
-  presets:
-    - bugs
-    - comment
-    - complexity
-    - error
-    - format
-    - import
-    - metalinter
-    - module
-    - performance
-    - sql
-    - style
-    - test
-    - unused
-  fast: false
+    - wsl
+  settings:
+    gosec:
+      excludes:
+        - G115
+        - G204
+        - G404
+    revive:
+      rules:
+        - name: package-comments
+          disabled: true
+    tagliatelle:
+      case:
+        rules:
+          json: snake
+run:
+  timeout: 1m

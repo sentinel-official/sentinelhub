@@ -32,6 +32,7 @@ func (k *Keeper) GetSubscription(ctx sdk.Context, id uint64) (subscription v3.Su
 	}
 
 	k.cdc.MustUnmarshal(value, &subscription)
+
 	return subscription, true
 }
 
@@ -75,6 +76,7 @@ func (k *Keeper) IterateSubscriptions(ctx sdk.Context, fn func(index int, item v
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }
@@ -209,6 +211,7 @@ func (k *Keeper) IterateSubscriptionsForInactiveAt(ctx sdk.Context, at time.Time
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }
@@ -255,6 +258,7 @@ func (k *Keeper) IterateSubscriptionsForRenewalAt(ctx sdk.Context, at time.Time,
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }

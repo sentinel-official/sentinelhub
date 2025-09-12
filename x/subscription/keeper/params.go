@@ -26,6 +26,7 @@ func (k *Keeper) GetParams(ctx sdk.Context) (v v3.Params) {
 	value := store.Get(key)
 
 	k.cdc.MustUnmarshal(value, &v)
+
 	return v
 }
 
@@ -42,5 +43,6 @@ func (k *Keeper) StatusChangeDelay(ctx sdk.Context) time.Duration {
 // GetInactiveAt returns the inactive time by adding StatusChangeDelay to the current block time.
 func (k *Keeper) GetInactiveAt(ctx sdk.Context) time.Time {
 	d := k.StatusChangeDelay(ctx)
+
 	return ctx.BlockTime().Add(d)
 }

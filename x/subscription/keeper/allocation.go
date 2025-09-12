@@ -33,6 +33,7 @@ func (k *Keeper) GetAllocation(ctx sdk.Context, id uint64, addr sdk.AccAddress) 
 	}
 
 	k.cdc.MustUnmarshal(value, &alloc)
+
 	return alloc, true
 }
 
@@ -84,6 +85,7 @@ func (k *Keeper) IterateAllocationsForSubscription(ctx sdk.Context, id uint64, f
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }

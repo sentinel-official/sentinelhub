@@ -80,6 +80,7 @@ func queryNodes() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			default:
 				res, err := qc.QueryNodes(
@@ -89,6 +90,7 @@ func queryNodes() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			}
 		},

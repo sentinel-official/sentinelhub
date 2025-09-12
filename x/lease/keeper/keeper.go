@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -51,6 +49,7 @@ func (k *Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 func (k *Keeper) Store(ctx sdk.Context) sdk.KVStore {
-	child := fmt.Sprintf("%s/", types.ModuleName)
+	child := types.ModuleName + "/"
+
 	return prefix.NewStore(ctx.KVStore(k.key), []byte(child))
 }

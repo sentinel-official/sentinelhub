@@ -54,9 +54,9 @@ func (k *Keeper) HandleQueryPlans(ctx sdk.Context, req *v3.QueryPlansRequest) (r
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -92,12 +92,12 @@ func (k *Keeper) HandleQueryPlansForProvider(ctx sdk.Context, req *v3.QueryPlans
 		// Append the plan if status matches or no status was specified
 		if req.Status.Equal(v1base.StatusUnspecified) || item.Status.Equal(req.Status) {
 			items = append(items, item)
+
 			return true, nil
 		}
 
 		return false, nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

@@ -41,6 +41,7 @@ func (k *Keeper) GetLease(ctx sdk.Context, id uint64) (lease v1.Lease, found boo
 	}
 
 	k.cdc.MustUnmarshal(value, &lease)
+
 	return lease, true
 }
 
@@ -84,6 +85,7 @@ func (k *Keeper) IterateLeases(ctx sdk.Context, fn func(index int, item v1.Lease
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }
@@ -130,6 +132,7 @@ func (k *Keeper) IterateLeasesForNodeByProvider(ctx sdk.Context, nodeAddr base.N
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }
@@ -152,6 +155,7 @@ func (k *Keeper) IterateLeasesForNode(ctx sdk.Context, addr base.NodeAddress, fn
 		if err != nil {
 			return err
 		}
+
 		if stop {
 			break
 		}
@@ -205,6 +209,7 @@ func (k *Keeper) IterateLeasesForProvider(ctx sdk.Context, addr base.ProvAddress
 		if err != nil {
 			return err
 		}
+
 		if stop {
 			break
 		}
@@ -257,6 +262,7 @@ func (k *Keeper) IterateLeasesForInactiveAt(ctx sdk.Context, at time.Time, fn fu
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }
@@ -303,6 +309,7 @@ func (k *Keeper) IterateLeasesForPayoutAt(ctx sdk.Context, at time.Time, fn func
 		if stop := fn(i, lease); stop {
 			break
 		}
+
 		i++
 	}
 }
@@ -349,6 +356,7 @@ func (k *Keeper) IterateLeasesForRenewalAt(ctx sdk.Context, at time.Time, fn fun
 		if stop := fn(i, lease); stop {
 			break
 		}
+
 		i++
 	}
 }

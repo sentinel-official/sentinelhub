@@ -41,6 +41,7 @@ func (k *Keeper) handleInactivePendingSubscriptions(ctx sdk.Context) {
 
 		// Emit any events generated during the cancel process
 		ctx.EventManager().EmitEvents(resp.GetEvents())
+
 		return false
 	})
 }
@@ -70,6 +71,7 @@ func (k *Keeper) handleInactiveSubscriptions(ctx sdk.Context) {
 			// Delete allocation for the given subscription and account
 			k.DeleteAllocation(ctx, item.ID, accAddr)
 			k.DeleteSubscriptionForAccount(ctx, accAddr, item.ID)
+
 			return false
 		})
 
@@ -117,6 +119,7 @@ func (k *Keeper) handleSubscriptionRenewals(ctx sdk.Context) {
 		resp, err := handler(cc, msg)
 		if err != nil {
 			k.Logger(cc).Error("Failed to handle subscription renewal", "id", item.ID, "msg", err)
+
 			return false
 		}
 
@@ -125,6 +128,7 @@ func (k *Keeper) handleSubscriptionRenewals(ctx sdk.Context) {
 
 		// Emit any events generated during the renewal process
 		cc.EventManager().EmitEvents(resp.GetEvents())
+
 		return false
 	})
 }

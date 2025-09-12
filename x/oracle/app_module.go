@@ -58,6 +58,7 @@ func (amb AppModuleBasic) GetQueryCmd() *cobra.Command {
 
 func (amb AppModuleBasic) DefaultGenesis(jsonCodec codec.JSONCodec) json.RawMessage {
 	state := v1.DefaultGenesisState()
+
 	return jsonCodec.MustMarshalJSON(state)
 }
 
@@ -72,6 +73,7 @@ func (amb AppModuleBasic) ValidateGenesis(jsonCodec codec.JSONCodec, _ client.Tx
 
 type AppModule struct {
 	AppModuleBasic
+
 	cdc    codec.BinaryCodec
 	keeper keeper.Keeper
 }
@@ -93,6 +95,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, jsonCodec codec.JSONCodec, mess
 
 func (am AppModule) ExportGenesis(ctx sdk.Context, jsonCodec codec.JSONCodec) json.RawMessage {
 	state := am.keeper.ExportGenesis(ctx)
+
 	return jsonCodec.MustMarshalJSON(state)
 }
 

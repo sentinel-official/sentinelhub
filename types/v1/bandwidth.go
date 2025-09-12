@@ -70,6 +70,7 @@ func (b Bandwidth) CeilTo(pre sdkmath.Int) Bandwidth {
 	if diff.Upload.Equal(pre) {
 		diff.Upload = sdkmath.ZeroInt()
 	}
+
 	if diff.Download.Equal(pre) {
 		diff.Download = sdkmath.ZeroInt()
 	}

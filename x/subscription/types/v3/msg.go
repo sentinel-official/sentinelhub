@@ -9,7 +9,7 @@ import (
 	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types"
 )
 
-// Ensure the message types implement sdk.Msg interface
+// Ensure the message types implement sdk.Msg interface.
 var (
 	_ sdk.Msg = (*MsgCancelSubscriptionRequest)(nil)
 	_ sdk.Msg = (*MsgRenewSubscriptionRequest)(nil)
@@ -33,9 +33,11 @@ func (m *MsgCancelSubscriptionRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
@@ -67,12 +69,15 @@ func (m *MsgRenewSubscriptionRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
+
 	if m.Denom != "" {
 		if err := sdk.ValidateDenom(m.Denom); err != nil {
 			return types.NewErrorInvalidMessage(err)
@@ -107,21 +112,27 @@ func (m *MsgShareSubscriptionRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
+
 	if m.AccAddress == "" {
 		return types.NewErrorInvalidMessage("acc_address cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.AccAddress); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.Bytes.IsNil() {
 		return types.NewErrorInvalidMessage("bytes cannot be nil")
 	}
+
 	if m.Bytes.IsNegative() {
 		return types.NewErrorInvalidMessage("bytes cannot be negative")
 	}
@@ -154,17 +165,21 @@ func (m *MsgStartSubscriptionRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
+
 	if m.Denom != "" {
 		if err := sdk.ValidateDenom(m.Denom); err != nil {
 			return types.NewErrorInvalidMessage(err)
 		}
 	}
+
 	if !m.RenewalPricePolicy.IsValid() {
 		return types.NewErrorInvalidMessage("renewal_price_policy must be valid")
 	}
@@ -196,12 +211,15 @@ func (m *MsgUpdateSubscriptionRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
+
 	if !m.RenewalPricePolicy.IsValid() {
 		return types.NewErrorInvalidMessage("renewal_price_policy must be valid")
 	}
@@ -233,15 +251,19 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
+
 	if m.NodeAddress == "" {
 		return types.NewErrorInvalidMessage("node_address cannot be empty")
 	}
+
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
@@ -272,9 +294,11 @@ func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if err := m.Params.Validate(); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}

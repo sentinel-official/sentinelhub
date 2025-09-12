@@ -2,13 +2,12 @@ package v3
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"cosmossdk.io/math"
 )
 
-// Default parameter values for the Params struct
+// Default parameter values for the Params struct.
 var (
 	DefaultMaxGigabytes             int64 = 10                                  // Default maximum allowed gigabytes
 	DefaultMinGigabytes             int64 = 1                                   // Default minimum allowed gigabytes
@@ -24,21 +23,27 @@ func (m *Params) Validate() error {
 	if err := validateMaxGigabytes(m.MaxGigabytes); err != nil {
 		return err
 	}
+
 	if err := validateMinGigabytes(m.MinGigabytes); err != nil {
 		return err
 	}
+
 	if err := validateMaxHours(m.MaxHours); err != nil {
 		return err
 	}
+
 	if err := validateMinHours(m.MinHours); err != nil {
 		return err
 	}
+
 	if err := validateProofVerificationEnabled(m.ProofVerificationEnabled); err != nil {
 		return err
 	}
+
 	if err := validateStakingShare(m.StakingShare); err != nil {
 		return err
 	}
+
 	if err := validateStatusChangeDelay(m.StatusChangeDelay); err != nil {
 		return err
 	}
@@ -80,6 +85,7 @@ func validateMaxGigabytes(v int64) error {
 	if v < 0 {
 		return errors.New("max_gigabytes cannot be negative")
 	}
+
 	if v == 0 {
 		return errors.New("max_gigabytes cannot be zero")
 	}
@@ -92,6 +98,7 @@ func validateMinGigabytes(v int64) error {
 	if v < 0 {
 		return errors.New("min_gigabytes cannot be negative")
 	}
+
 	if v == 0 {
 		return errors.New("min_gigabytes cannot be zero")
 	}
@@ -104,6 +111,7 @@ func validateMaxHours(v int64) error {
 	if v < 0 {
 		return errors.New("max_hours cannot be negative")
 	}
+
 	if v == 0 {
 		return errors.New("max_hours cannot be zero")
 	}
@@ -116,6 +124,7 @@ func validateMinHours(v int64) error {
 	if v < 0 {
 		return errors.New("min_hours cannot be negative")
 	}
+
 	if v == 0 {
 		return errors.New("min_hours cannot be zero")
 	}
@@ -132,13 +141,15 @@ func validateProofVerificationEnabled(v bool) error {
 // validateStakingShare ensures stakingShare is not nil, not negative, and ≤ 1.
 func validateStakingShare(v math.LegacyDec) error {
 	if v.IsNil() {
-		return fmt.Errorf("staking_share cannot be nil")
+		return errors.New("staking_share cannot be nil")
 	}
+
 	if v.IsNegative() {
-		return fmt.Errorf("staking_share cannot be negative")
+		return errors.New("staking_share cannot be negative")
 	}
+
 	if v.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("staking_share cannot be greater than 1")
+		return errors.New("staking_share cannot be greater than 1")
 	}
 
 	return nil
@@ -149,6 +160,7 @@ func validateStatusChangeDelay(v time.Duration) error {
 	if v < 0 {
 		return errors.New("status_change_delay cannot be negative")
 	}
+
 	if v == 0 {
 		return errors.New("status_change_delay cannot be zero")
 	}

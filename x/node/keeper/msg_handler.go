@@ -101,6 +101,7 @@ func (k *Keeper) HandleMsgUpdateNodeDetails(ctx sdk.Context, msg *v3.MsgUpdateNo
 
 	// Apply updated prices and optional remote addrs
 	node.GigabytePrices = msg.GigabytePrices
+
 	node.HourlyPrices = msg.HourlyPrices
 	if len(msg.RemoteAddrs) > 0 {
 		node.RemoteAddrs = msg.RemoteAddrs
@@ -195,6 +196,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 			return nil, types.NewErrorInvalidGigabytes(msg.Gigabytes)
 		}
 	}
+
 	if msg.Hours != 0 {
 		if ok := k.IsValidSessionHours(ctx, msg.Hours); !ok {
 			return nil, types.NewErrorInvalidHours(msg.Hours)
@@ -212,6 +214,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	if !found {
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
 	}
+
 	if !node.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
@@ -224,6 +227,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 			return nil, types.NewErrorPriceNotFound(msg.MaxPrice.Denom)
 		}
 	}
+
 	if msg.Hours != 0 {
 		price, found = node.HourlyPrice(msg.MaxPrice.Denom)
 		if !found {
@@ -311,5 +315,6 @@ func (k *Keeper) HandleMsgUpdateParams(ctx sdk.Context, msg *v3.MsgUpdateParamsR
 
 	// Save updated parameters to state
 	k.SetParams(ctx, msg.Params)
+
 	return &v3.MsgUpdateParamsResponse{}, nil
 }

@@ -19,6 +19,7 @@ func HomeDir() (string, error) {
 	}
 
 	dir = path.Join(dir, ".sentinelhub")
+
 	return dir, nil
 }
 

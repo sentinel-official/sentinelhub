@@ -48,21 +48,27 @@ func (m *GenesisState) Validate() error {
 	if err := deposittypes.ValidateGenesisState(m.Deposit); err != nil {
 		return sdkerrors.Wrapf(err, "invalid deposit genesis state")
 	}
+
 	if err := leasetypes.ValidateGenesis(m.Lease); err != nil {
 		return sdkerrors.Wrapf(err, "invalid lease genesis state")
 	}
+
 	if err := nodetypes.ValidateGenesis(m.Node); err != nil {
 		return sdkerrors.Wrapf(err, "invalid node genesis state")
 	}
+
 	if err := plantypes.ValidateGenesis(m.Plan); err != nil {
 		return sdkerrors.Wrapf(err, "invalid plan genesis state")
 	}
+
 	if err := providertypes.ValidateGenesis(m.Provider); err != nil {
 		return sdkerrors.Wrapf(err, "invalid provider genesis state")
 	}
+
 	if err := sessiontypes.ValidateGenesis(m.Session); err != nil {
 		return sdkerrors.Wrapf(err, "invalid session genesis state")
 	}
+
 	if err := subscriptiontypes.ValidateGenesis(m.Subscription); err != nil {
 		return sdkerrors.Wrapf(err, "invalid subscription genesis state")
 	}

@@ -17,7 +17,7 @@ const flagOverwriteConfigWithDefaults = "overwrite-config-with-defaults"
 func applyRecommendedValues(cfg interface{}) {
 	switch c := cfg.(type) {
 	case *serverconfig.Config:
-		c.BaseConfig.MinGasPrices = "0.1udvpn"
+		c.MinGasPrices = "0.1udvpn"
 		c.StateSync.SnapshotInterval = 1000
 	case *tmcfg.Config:
 		c.Consensus.TimeoutCommit = 3 * time.Second
@@ -28,7 +28,9 @@ func applyRecommendedValues(cfg interface{}) {
 func initAppConfig() (string, interface{}) {
 	cfg := serverconfig.DefaultConfig()
 	cfgTemplate := serverconfig.DefaultConfigTemplate
+
 	applyRecommendedValues(cfg)
+
 	return cfgTemplate, cfg
 }
 
@@ -36,6 +38,7 @@ func initAppConfig() (string, interface{}) {
 func initTendermintConfig() *tmcfg.Config {
 	cfg := tmcfg.DefaultConfig()
 	applyRecommendedValues(cfg)
+
 	return cfg
 }
 
@@ -50,14 +53,17 @@ func overwriteConfig(name string, cfg interface{}, write func(string, interface{
 
 	v := viper.New()
 	v.SetConfigFile(cfgPath)
+
 	if err := v.ReadInConfig(); err != nil {
 		return err
 	}
+
 	if err := v.Unmarshal(cfg); err != nil {
 		return err
 	}
 
 	applyRecommendedValues(cfg)
+
 	return write(cfgPath, cfg)
 }
 
@@ -65,6 +71,7 @@ func overwriteConfig(name string, cfg interface{}, write func(string, interface{
 func overwriteAppConfig() error {
 	return overwriteConfig("app.toml", serverconfig.DefaultConfig(), func(cfgPath string, cfg interface{}) error {
 		serverconfig.WriteConfigFile(cfgPath, cfg.(*serverconfig.Config))
+
 		return nil
 	})
 }
@@ -73,6 +80,7 @@ func overwriteAppConfig() error {
 func overwriteTendermintConfig() error {
 	return overwriteConfig("config.toml", tmcfg.DefaultConfig(), func(cfgPath string, cfg interface{}) error {
 		tmcfg.WriteConfigFile(cfgPath, cfg.(*tmcfg.Config))
+
 		return nil
 	})
 }

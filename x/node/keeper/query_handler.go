@@ -57,9 +57,9 @@ func (k *Keeper) HandleQueryNodes(ctx sdk.Context, req *v3.QueryNodesRequest) (r
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -89,12 +89,12 @@ func (k *Keeper) HandleQueryNodesForPlan(ctx sdk.Context, req *v3.QueryNodesForP
 		// Filter by status if specified
 		if req.Status.Equal(v1base.StatusUnspecified) || item.Status.Equal(req.Status) {
 			items = append(items, item)
+
 			return true, nil
 		}
 
 		return false, nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -105,5 +105,6 @@ func (k *Keeper) HandleQueryNodesForPlan(ctx sdk.Context, req *v3.QueryNodesForP
 // HandleQueryParams handles a query to fetch the module's current parameter settings.
 func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v3.QueryParamsRequest) (*v3.QueryParamsResponse, error) {
 	params := k.GetParams(ctx)
+
 	return &v3.QueryParamsResponse{Params: params}, nil
 }

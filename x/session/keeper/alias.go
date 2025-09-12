@@ -27,6 +27,7 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 	if err := k.node.SessionInactivePreHook(ctx, id); err != nil {
 		return err
 	}
+
 	if err := k.subscription.SessionInactivePreHook(ctx, id); err != nil {
 		return err
 	}
@@ -46,6 +47,7 @@ func (k *Keeper) UpdateMaxValues(ctx sdk.Context, session v3.Session) error {
 	if err := k.node.UpdateSessionMaxValues(ctx, session); err != nil {
 		return err
 	}
+
 	if err := k.subscription.UpdateSessionMaxValues(ctx, session); err != nil {
 		return err
 	}

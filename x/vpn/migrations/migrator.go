@@ -40,21 +40,27 @@ func (k *Migrator) Migrate(ctx sdk.Context) error {
 	if err := k.deposit.Migrate(ctx); err != nil {
 		panic(err)
 	}
+
 	if err := k.lease.Migrate(ctx); err != nil {
 		return err
 	}
+
 	if err := k.node.Migrate(ctx); err != nil {
 		return err
 	}
+
 	if err := k.plan.Migrate(ctx); err != nil {
 		return err
 	}
+
 	if err := k.provider.Migrate(ctx); err != nil {
 		return err
 	}
+
 	if err := k.session.Migrate(ctx); err != nil {
 		return err
 	}
+
 	if err := k.subscription.Migrate(ctx); err != nil {
 		return err
 	}

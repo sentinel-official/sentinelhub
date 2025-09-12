@@ -8,16 +8,19 @@ import (
 
 func (k *Keeper) SwapEnabled(ctx sdk.Context) (yes bool) {
 	k.params.Get(ctx, v1.KeySwapEnabled, &yes)
+
 	return
 }
 
 func (k *Keeper) SwapDenom(ctx sdk.Context) (denom string) {
 	k.params.Get(ctx, v1.KeySwapDenom, &denom)
+
 	return
 }
 
 func (k *Keeper) ApproveBy(ctx sdk.Context) (address string) {
 	k.params.Get(ctx, v1.KeyApproveBy, &address)
+
 	return
 }
 

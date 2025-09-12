@@ -85,7 +85,6 @@ func SessionForInactiveAtKey(timestamp time.Time, id uint64) []byte {
 
 func IDFromSessionForAccountKey(key []byte) uint64 {
 	// prefix (1 byte) | addrLen (1 byte) | addr (addrLen bytes) | id (8 bytes)
-
 	addrLen := int(key[1])
 	if len(key) != 10+addrLen {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 10+addrLen))
@@ -96,7 +95,6 @@ func IDFromSessionForAccountKey(key []byte) uint64 {
 
 func IDFromSessionForNodeKey(key []byte) uint64 {
 	// prefix (1 byte) | addrLen (1 byte) | addr (addrLen bytes) | id (8 bytes)
-
 	addrLen := int(key[1])
 	if len(key) != 10+addrLen {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 10+addrLen))
@@ -107,7 +105,6 @@ func IDFromSessionForNodeKey(key []byte) uint64 {
 
 func IDFromSessionForPlanByNodeKey(key []byte) uint64 {
 	// prefix (1 byte) | planID (8 bytes) | addrLen (1 byte) | addr (addrLen bytes) | sessionID (8 bytes)
-
 	addrLen := int(key[9])
 	if len(key) != 18+addrLen {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 18+addrLen))
@@ -118,7 +115,6 @@ func IDFromSessionForPlanByNodeKey(key []byte) uint64 {
 
 func IDFromSessionForSubscriptionKey(key []byte) uint64 {
 	// prefix (1 byte) | subscriptionID (8 bytes) | sessionID (8 bytes)
-
 	if len(key) != 17 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 17))
 	}
@@ -128,7 +124,6 @@ func IDFromSessionForSubscriptionKey(key []byte) uint64 {
 
 func IDFromSessionForAllocationKey(key []byte) uint64 {
 	// prefix (1 byte) | subscriptionID (8 bytes) | addrLen (1 byte) | addr (addrLen bytes) | id (8 bytes)
-
 	addrLen := int(key[9])
 	if len(key) != 18+addrLen {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 18+addrLen))
@@ -139,7 +134,6 @@ func IDFromSessionForAllocationKey(key []byte) uint64 {
 
 func IDFromSessionForInactiveAtKey(key []byte) uint64 {
 	// prefix (1 byte) | timestamp (29 bytes) | session (8 bytes)
-
 	if len(key) != 38 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 38))
 	}

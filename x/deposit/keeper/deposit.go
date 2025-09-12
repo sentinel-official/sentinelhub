@@ -17,6 +17,7 @@ func (k *Keeper) SetDeposit(ctx sdk.Context, deposit v1.Deposit) {
 	deposit.Coins = sdk.NewCoins(deposit.Coins...)
 	if deposit.Coins.IsZero() {
 		k.DeleteDeposit(ctx, addr)
+
 		return
 	}
 
@@ -39,6 +40,7 @@ func (k *Keeper) GetDeposit(ctx sdk.Context, addr sdk.AccAddress) (deposit v1.De
 	}
 
 	k.cdc.MustUnmarshal(value, &deposit)
+
 	return deposit, true
 }
 
@@ -82,6 +84,7 @@ func (k *Keeper) IterateDeposits(ctx sdk.Context, fn func(index int, item v1.Dep
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }

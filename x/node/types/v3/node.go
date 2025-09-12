@@ -26,15 +26,19 @@ func (m *Node) Validate() error {
 	if m.Address == "" {
 		return errors.New("address cannot be empty")
 	}
+
 	if _, err := base.NodeAddressFromBech32(m.Address); err != nil {
 		return fmt.Errorf("invalid address: %w", err)
 	}
+
 	if prices := m.GetGigabytePrices(); !prices.IsValid() {
 		return errors.New("gigabyte_prices must be valid")
 	}
+
 	if prices := m.GetHourlyPrices(); !prices.IsValid() {
 		return errors.New("hourly_prices must be valid")
 	}
+
 	if err := validateRemoteAddrs(m.RemoteAddrs); err != nil {
 		return fmt.Errorf("invalid remote_addrs: %w", err)
 	}
@@ -45,6 +49,7 @@ func (m *Node) Validate() error {
 			return fmt.Errorf("invalid inactive_at %s; expected positive", m.InactiveAt)
 		}
 	}
+
 	if !m.InactiveAt.IsZero() {
 		if !m.Status.Equal(v1base.StatusActive) {
 			return fmt.Errorf("invalid inactive_at %s; expected zero", m.InactiveAt)
@@ -54,6 +59,7 @@ func (m *Node) Validate() error {
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {
 		return errors.New("status must be one of [active, inactive]")
 	}
+
 	if m.StatusAt.IsZero() {
 		return errors.New("status_at cannot be zero")
 	}
@@ -125,6 +131,7 @@ func validateRemoteAddrs(addrs []string) error {
 		if err != nil {
 			return fmt.Errorf("invalid port: %w", err)
 		}
+
 		if portNum < 1 || portNum > 65535 {
 			return errors.New("invalid port range")
 		}

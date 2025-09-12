@@ -46,9 +46,9 @@ func (k *Keeper) HandleQueryAllocations(ctx sdk.Context, req *v2.QueryAllocation
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -60,6 +60,7 @@ func (k *Keeper) HandleQueryAllocations(ctx sdk.Context, req *v2.QueryAllocation
 // Returns the stored Params object as-is.
 func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v3.QueryParamsRequest) (*v3.QueryParamsResponse, error) {
 	params := k.GetParams(ctx)
+
 	return &v3.QueryParamsResponse{Params: params}, nil
 }
 
@@ -89,9 +90,9 @@ func (k *Keeper) HandleQuerySubscriptions(ctx sdk.Context, req *v3.QuerySubscrip
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -119,9 +120,9 @@ func (k *Keeper) HandleQuerySubscriptionsForAccount(ctx sdk.Context, req *v3.Que
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -145,9 +146,9 @@ func (k *Keeper) HandleQuerySubscriptionsForPlan(ctx sdk.Context, req *v3.QueryS
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

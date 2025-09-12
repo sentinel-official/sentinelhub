@@ -12,9 +12,11 @@ func TestBandwidth_Add(t *testing.T) {
 		Upload   sdkmath.Int
 		Download sdkmath.Int
 	}
+
 	type args struct {
 		v Bandwidth
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -139,9 +141,11 @@ func TestBandwidth_CeilTo(t *testing.T) {
 		Upload   sdkmath.Int
 		Download sdkmath.Int
 	}
+
 	type args struct {
 		precision sdkmath.Int
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -323,9 +327,11 @@ func TestBandwidth_IsAllLTE(t *testing.T) {
 		Upload   sdkmath.Int
 		Download sdkmath.Int
 	}
+
 	type args struct {
 		v Bandwidth
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -450,6 +456,7 @@ func TestBandwidth_IsAllPositive(t *testing.T) {
 		Upload   sdkmath.Int
 		Download sdkmath.Int
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -546,6 +553,7 @@ func TestBandwidth_IsAllZero(t *testing.T) {
 		Upload   sdkmath.Int
 		Download sdkmath.Int
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -642,9 +650,11 @@ func TestBandwidth_IsAnyGT(t *testing.T) {
 		Upload   sdkmath.Int
 		Download sdkmath.Int
 	}
+
 	type args struct {
 		v Bandwidth
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -769,6 +779,7 @@ func TestBandwidth_IsAnyNegative(t *testing.T) {
 		Upload   sdkmath.Int
 		Download sdkmath.Int
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -865,6 +876,7 @@ func TestBandwidth_IsAnyZero(t *testing.T) {
 		Upload   sdkmath.Int
 		Download sdkmath.Int
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -961,9 +973,11 @@ func TestBandwidth_Sub(t *testing.T) {
 		Upload   sdkmath.Int
 		Download sdkmath.Int
 	}
+
 	type args struct {
 		v Bandwidth
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -1088,6 +1102,7 @@ func TestBandwidth_Sum(t *testing.T) {
 		Upload   sdkmath.Int
 		Download sdkmath.Int
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -1184,6 +1199,7 @@ func TestNewBandwidth(t *testing.T) {
 		upload   sdkmath.Int
 		download sdkmath.Int
 	}
+
 	tests := []struct {
 		name string
 		args args
@@ -1224,6 +1240,7 @@ func TestNewBandwidthFromInt64(t *testing.T) {
 		upload   int64
 		download int64
 	}
+
 	tests := []struct {
 		name string
 		args args

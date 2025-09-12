@@ -36,6 +36,7 @@ func (k *Keeper) handleInactiveLeases(ctx sdk.Context) {
 
 		// Emit any events generated during the lease termination process
 		ctx.EventManager().EmitEvents(resp.GetEvents())
+
 		return false
 	})
 }
@@ -137,6 +138,7 @@ func (k *Keeper) handleLeaseRenewals(ctx sdk.Context) {
 		resp, err := handler(cc, msg)
 		if err != nil {
 			k.Logger(cc).Error("Failed to handle lease renewal", "id", item.ID, "msg", err)
+
 			return false
 		}
 
@@ -145,6 +147,7 @@ func (k *Keeper) handleLeaseRenewals(ctx sdk.Context) {
 
 		// Emit any events generated during the lease renewal process
 		cc.EventManager().EmitEvents(resp.GetEvents())
+
 		return false
 	})
 }

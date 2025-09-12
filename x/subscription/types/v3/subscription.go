@@ -33,33 +33,43 @@ func (m *Subscription) Validate() error {
 	if m.ID == 0 {
 		return errors.New("id cannot be zero")
 	}
+
 	if m.AccAddress == "" {
 		return errors.New("acc_address cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.AccAddress); err != nil {
 		return fmt.Errorf("invalid acc_address: %w", err)
 	}
+
 	if m.PlanID == 0 {
 		return errors.New("plan_id cannot be zero")
 	}
+
 	if err := m.Price.Validate(); err != nil {
 		return fmt.Errorf("invalid price: %w", err)
 	}
+
 	if !m.RenewalPricePolicy.IsValid() {
 		return errors.New("renewal_price_policy must be valid")
 	}
+
 	if m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactivePending) {
 		return errors.New("status must be one of [active, inactive_pending]")
 	}
+
 	if m.InactiveAt.IsZero() {
 		return errors.New("inactive_at cannot be zero")
 	}
+
 	if m.StartAt.IsZero() {
 		return errors.New("start_at cannot be zero")
 	}
+
 	if !m.StartAt.Before(m.InactiveAt) {
 		return errors.New("start_at must be less than inactive_at")
 	}
+
 	if m.StatusAt.IsZero() {
 		return errors.New("status_at cannot be zero")
 	}

@@ -11,9 +11,11 @@ func (k *Keeper) HandleMsgSwap(ctx sdk.Context, msg *v1.MsgSwapRequest) (*v1.Msg
 	if !k.SwapEnabled(ctx) {
 		return nil, types.ErrorSwapIsDisabled
 	}
+
 	if k.ApproveBy(ctx) != msg.From {
 		return nil, types.ErrorUnauthorized
 	}
+
 	if k.HasSwap(ctx, types.BytesToHash(msg.TxHash)) {
 		return nil, types.ErrorDuplicateSwap
 	}
@@ -35,6 +37,7 @@ func (k *Keeper) HandleMsgSwap(ctx sdk.Context, msg *v1.MsgSwapRequest) (*v1.Msg
 	if err := k.MintCoin(ctx, coin); err != nil {
 		return nil, err
 	}
+
 	if err := k.SendCoinFromModuleToAccount(ctx, msgReceiver, coin); err != nil {
 		return nil, err
 	}

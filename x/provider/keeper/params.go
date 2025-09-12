@@ -23,6 +23,7 @@ func (k *Keeper) GetParams(ctx sdk.Context) (v v3.Params) {
 	value := store.Get(key)
 
 	k.cdc.MustUnmarshal(value, &v)
+
 	return v
 }
 

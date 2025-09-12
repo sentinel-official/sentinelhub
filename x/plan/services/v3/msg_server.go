@@ -23,25 +23,30 @@ func NewMsgServiceServer(k keeper.Keeper) v3.MsgServiceServer {
 
 func (m *msgServer) MsgCreatePlan(c context.Context, req *v3.MsgCreatePlanRequest) (*v3.MsgCreatePlanResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgCreatePlan(ctx, req)
 }
 
 func (m *msgServer) MsgLinkNode(c context.Context, req *v3.MsgLinkNodeRequest) (*v3.MsgLinkNodeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgLinkNode(ctx, req)
 }
 
 func (m *msgServer) MsgUnlinkNode(c context.Context, req *v3.MsgUnlinkNodeRequest) (*v3.MsgUnlinkNodeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgUnlinkNode(ctx, req)
 }
 
 func (m *msgServer) MsgUpdatePlanStatus(c context.Context, req *v3.MsgUpdatePlanStatusRequest) (*v3.MsgUpdatePlanStatusResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgUpdatePlanStatus(ctx, req)
 }
 
 func (m *msgServer) MsgStartSession(c context.Context, req *v3.MsgStartSessionRequest) (*v3.MsgStartSessionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgStartSession(ctx, req)
 }

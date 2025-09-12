@@ -113,5 +113,6 @@ func (k *Keeper) HandleMsgUpdateParams(ctx sdk.Context, msg *v1.MsgUpdateParamsR
 	}
 
 	k.SetParams(ctx, msg.Params)
+
 	return &v1.MsgUpdateParamsResponse{}, nil
 }

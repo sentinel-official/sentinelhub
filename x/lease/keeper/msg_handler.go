@@ -18,6 +18,7 @@ func (k *Keeper) HandleMsgEndLease(ctx sdk.Context, msg *v1.MsgEndLeaseRequest) 
 	if !found {
 		return nil, types.NewErrorLeaseNotFound(msg.ID)
 	}
+
 	if msg.From != lease.ProvAddress {
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
@@ -87,6 +88,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 	if !found {
 		return nil, types.NewErrorLeaseNotFound(msg.ID)
 	}
+
 	if msg.From != lease.ProvAddress {
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
@@ -102,6 +104,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 	if !found {
 		return nil, types.NewErrorProviderNotFound(provAddr)
 	}
+
 	if !provider.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidProviderStatus(provAddr, provider.Status)
 	}
@@ -117,6 +120,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 	if !found {
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
 	}
+
 	if !node.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
@@ -220,6 +224,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 	if !found {
 		return nil, types.NewErrorProviderNotFound(provAddr)
 	}
+
 	if !provider.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidProviderStatus(provAddr, provider.Status)
 	}
@@ -235,6 +240,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 	if !found {
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
 	}
+
 	if !node.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
@@ -258,10 +264,13 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 
 	// Check if a lease already exists between this provider and node
 	leaseExists := false
+
 	k.IterateLeasesForNodeByProvider(ctx, nodeAddr, provAddr, func(_ int, _ v1.Lease) bool {
 		leaseExists = true
+
 		return true
 	})
+
 	if leaseExists {
 		return nil, types.NewErrorDuplicateLease(nodeAddr, provAddr)
 	}
@@ -319,6 +328,7 @@ func (k *Keeper) HandleMsgUpdateLease(ctx sdk.Context, msg *v1.MsgUpdateLeaseReq
 	if !found {
 		return nil, types.NewErrorLeaseNotFound(msg.ID)
 	}
+
 	if msg.From != lease.ProvAddress {
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
@@ -356,5 +366,6 @@ func (k *Keeper) HandleMsgUpdateParams(ctx sdk.Context, msg *v1.MsgUpdateParamsR
 
 	// Store the new parameter configuration in module state
 	k.SetParams(ctx, msg.Params)
+
 	return &v1.MsgUpdateParamsResponse{}, nil
 }

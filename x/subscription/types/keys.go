@@ -71,7 +71,6 @@ func AllocationKey(id uint64, addr sdk.AccAddress) []byte {
 
 func AccAddrFromSubscriptionForAccountKey(key []byte) sdk.AccAddress {
 	// prefix (1 byte) | addrLen (1 byte) | addr (addrLen bytes) | id (8 bytes)
-
 	addrLen := int(key[1])
 	if len(key) != 10+addrLen {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 10+addrLen))
@@ -82,7 +81,6 @@ func AccAddrFromSubscriptionForAccountKey(key []byte) sdk.AccAddress {
 
 func IDFromSubscriptionForAccountKey(key []byte) uint64 {
 	// prefix (1 byte) | addrLen (1 byte) | addr (addrLen bytes) | id (8 bytes)
-
 	addrLen := int(key[1])
 	if len(key) != 10+addrLen {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 10+addrLen))
@@ -93,7 +91,6 @@ func IDFromSubscriptionForAccountKey(key []byte) uint64 {
 
 func IDFromSubscriptionForPlanKey(key []byte) uint64 {
 	// prefix (1 byte) | planID (8 bytes) | subscriptionID (8 bytes)
-
 	if len(key) != 17 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 17))
 	}
@@ -103,7 +100,6 @@ func IDFromSubscriptionForPlanKey(key []byte) uint64 {
 
 func IDFromSubscriptionForInactiveAtKey(key []byte) uint64 {
 	// prefix (1 byte) | timestamp (29 bytes) | id (8 bytes)
-
 	if len(key) != 38 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 38))
 	}
@@ -113,7 +109,6 @@ func IDFromSubscriptionForInactiveAtKey(key []byte) uint64 {
 
 func IDFromSubscriptionForRenewalAtKey(key []byte) uint64 {
 	// prefix (1 byte) | timestamp (29 bytes) | id (8 bytes)
-
 	if len(key) != 38 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 38))
 	}

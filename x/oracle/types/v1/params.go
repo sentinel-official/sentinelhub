@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Default parameter values for the Params struct
+// Default parameter values for the Params struct.
 var (
 	DefaultBlockInterval int64 = 100             // Default block interval in block numbers
 	DefaultChannelID           = ""              // Default IBC channel ID
@@ -17,9 +17,11 @@ func (m *Params) Validate() error {
 	if err := validateBlockInterval(m.BlockInterval); err != nil {
 		return err
 	}
+
 	if err := validateChannelID(m.ChannelID); err != nil {
 		return err
 	}
+
 	if err := validateTimeout(m.Timeout); err != nil {
 		return err
 	}
@@ -50,6 +52,7 @@ func validateBlockInterval(v int64) error {
 	if v < 0 {
 		return errors.New("block_interval cannot be negative")
 	}
+
 	if v == 0 {
 		return errors.New("block_interval cannot not be zero")
 	}
@@ -67,6 +70,7 @@ func validateTimeout(v time.Duration) error {
 	if v < 0 {
 		return errors.New("timeout cannot be negative")
 	}
+
 	if v == 0 {
 		return errors.New("timeout cannot be zero")
 	}

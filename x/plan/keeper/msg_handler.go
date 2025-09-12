@@ -66,6 +66,7 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 	if !found {
 		return nil, types.NewErrorPlanNotFound(msg.ID)
 	}
+
 	if msg.From != plan.ProvAddress {
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
@@ -81,6 +82,7 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 	if !found {
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
 	}
+
 	if !node.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
@@ -98,10 +100,13 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 
 	// Ensure an active lease exists between the node and provider
 	leaseExists := false
+
 	k.IterateLeasesForNodeByProvider(ctx, nodeAddr, provAddr, func(_ int, _ v1.Lease) bool {
 		leaseExists = true
+
 		return true
 	})
+
 	if !leaseExists {
 		return nil, types.NewErrorLeaseForNodeByProviderNotFound(nodeAddr, provAddr)
 	}
@@ -130,6 +135,7 @@ func (k *Keeper) HandleMsgUnlinkNode(ctx sdk.Context, msg *v3.MsgUnlinkNodeReque
 	if !found {
 		return nil, types.NewErrorPlanNotFound(msg.ID)
 	}
+
 	if msg.From != plan.ProvAddress {
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
@@ -180,6 +186,7 @@ func (k *Keeper) HandleMsgUpdatePlanStatus(ctx sdk.Context, msg *v3.MsgUpdatePla
 	if !found {
 		return nil, types.NewErrorPlanNotFound(msg.ID)
 	}
+
 	if msg.From != plan.ProvAddress {
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
@@ -190,6 +197,7 @@ func (k *Keeper) HandleMsgUpdatePlanStatus(ctx sdk.Context, msg *v3.MsgUpdatePla
 			k.DeleteInactivePlan(ctx, plan.ID)
 		}
 	}
+
 	if msg.Status.Equal(v1base.StatusInactive) {
 		if plan.Status.Equal(v1base.StatusActive) {
 			k.DeleteActivePlan(ctx, plan.ID)

@@ -8,7 +8,7 @@ import (
 	"github.com/sentinel-official/sentinelhub/v12/x/lease/types"
 )
 
-// Ensure the message types implement sdk.Msg interface
+// Ensure the message types implement sdk.Msg interface.
 var (
 	_ sdk.Msg = (*MsgEndLeaseRequest)(nil)
 	_ sdk.Msg = (*MsgRenewLeaseRequest)(nil)
@@ -30,9 +30,11 @@ func (m *MsgEndLeaseRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
@@ -65,18 +67,23 @@ func (m *MsgRenewLeaseRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
+
 	if m.Hours == 0 {
 		return types.NewErrorInvalidMessage("hours cannot be zero")
 	}
+
 	if m.Hours < 0 {
 		return types.NewErrorInvalidMessage("hours cannot be negative")
 	}
+
 	if m.MaxPrice.Denom != "" {
 		if err := m.MaxPrice.Validate(); err != nil {
 			return types.NewErrorInvalidMessage(err)
@@ -112,26 +119,33 @@ func (m *MsgStartLeaseRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.NodeAddress == "" {
 		return types.NewErrorInvalidMessage("node_address cannot be empty")
 	}
+
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.Hours == 0 {
 		return types.NewErrorInvalidMessage("hours cannot be zero")
 	}
+
 	if m.Hours < 0 {
 		return types.NewErrorInvalidMessage("hours cannot be negative")
 	}
+
 	if m.MaxPrice.Denom != "" {
 		if err := m.MaxPrice.Validate(); err != nil {
 			return types.NewErrorInvalidMessage(err)
 		}
 	}
+
 	if !m.RenewalPricePolicy.IsValid() {
 		return types.NewErrorInvalidMessage("renewal price policy must be valid")
 	}
@@ -163,12 +177,15 @@ func (m *MsgUpdateLeaseRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
+
 	if !m.RenewalPricePolicy.IsValid() {
 		return types.NewErrorInvalidMessage("renewal price policy must be valid")
 	}
@@ -199,9 +216,11 @@ func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if err := m.Params.Validate(); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}

@@ -38,9 +38,11 @@ func validateDeposit(v sdk.Coin) error {
 	if v.IsNil() {
 		return errors.New("deposit cannot be nil")
 	}
+
 	if v.IsNegative() {
 		return errors.New("deposit cannot be negative")
 	}
+
 	if err := v.Validate(); err != nil {
 		return fmt.Errorf("invalid deposit: %w", err)
 	}

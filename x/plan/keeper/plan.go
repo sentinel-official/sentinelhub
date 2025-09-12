@@ -40,6 +40,7 @@ func (k *Keeper) GetActivePlan(ctx sdk.Context, id uint64) (plan v3.Plan, found 
 	}
 
 	k.cdc.MustUnmarshal(value, &plan)
+
 	return plan, true
 }
 
@@ -79,6 +80,7 @@ func (k *Keeper) GetInactivePlan(ctx sdk.Context, id uint64) (plan v3.Plan, foun
 	}
 
 	k.cdc.MustUnmarshal(value, &plan)
+
 	return plan, true
 }
 
@@ -182,6 +184,7 @@ func (k *Keeper) IteratePlansForNodeByProvider(ctx sdk.Context, nodeAddr base.No
 		if err != nil {
 			return err
 		}
+
 		if stop {
 			break
 		}
@@ -209,6 +212,7 @@ func (k *Keeper) IteratePlansForNode(ctx sdk.Context, addr base.NodeAddress, fn 
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }
@@ -265,6 +269,7 @@ func (k *Keeper) IteratePlansForProvider(ctx sdk.Context, addr base.ProvAddress,
 		if err != nil {
 			return err
 		}
+
 		if stop {
 			break
 		}

@@ -35,9 +35,11 @@ func (k *Keeper) GetSession(ctx sdk.Context, id uint64) (session v3.Session, fou
 	if value == nil {
 		return session, false
 	}
+
 	if err := k.cdc.UnmarshalInterface(value, &session); err != nil {
 		panic(err)
 	}
+
 	if err := k.UpdateMaxValues(ctx, session); err != nil {
 		panic(err)
 	}
@@ -65,6 +67,7 @@ func (k *Keeper) GetSessions(ctx sdk.Context) (items []v3.Session) {
 		if err := k.cdc.UnmarshalInterface(iterator.Value(), &item); err != nil {
 			panic(err)
 		}
+
 		if err := k.UpdateMaxValues(ctx, item); err != nil {
 			panic(err)
 		}
@@ -88,6 +91,7 @@ func (k *Keeper) IterateSessions(ctx sdk.Context, fn func(index int, item v3.Ses
 		if err := k.cdc.UnmarshalInterface(iterator.Value(), &item); err != nil {
 			panic(err)
 		}
+
 		if err := k.UpdateMaxValues(ctx, item); err != nil {
 			panic(err)
 		}
@@ -95,6 +99,7 @@ func (k *Keeper) IterateSessions(ctx sdk.Context, fn func(index int, item v3.Ses
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }
@@ -189,6 +194,7 @@ func (k *Keeper) IterateSessionsForNode(ctx sdk.Context, addr base.NodeAddress, 
 		if err != nil {
 			return err
 		}
+
 		if stop {
 			break
 		}
@@ -234,6 +240,7 @@ func (k *Keeper) IterateSessionsForPlanByNode(ctx sdk.Context, id uint64, addr b
 		if err != nil {
 			return err
 		}
+
 		if stop {
 			break
 		}
@@ -298,6 +305,7 @@ func (k *Keeper) IterateSessionsForSubscription(ctx sdk.Context, id uint64, fn f
 		if err != nil {
 			return err
 		}
+
 		if stop {
 			break
 		}
@@ -342,6 +350,7 @@ func (k *Keeper) IterateSessionsForAllocation(ctx sdk.Context, id uint64, addr s
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }
@@ -380,6 +389,7 @@ func (k *Keeper) IterateSessionsForInactiveAt(ctx sdk.Context, at time.Time, fn 
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }

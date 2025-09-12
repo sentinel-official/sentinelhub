@@ -19,12 +19,14 @@ func (k *Keeper) GetSwap(ctx sdk.Context, txHash types.EthereumHash) (swap v1.Sw
 	store := k.Store(ctx)
 
 	key := types.SwapKey(txHash)
+
 	value := store.Get(key)
 	if value == nil {
 		return swap, false
 	}
 
 	k.cdc.MustUnmarshal(value, &swap)
+
 	return swap, true
 }
 
@@ -32,6 +34,7 @@ func (k *Keeper) HasSwap(ctx sdk.Context, txHash types.EthereumHash) bool {
 	key := types.SwapKey(txHash)
 
 	store := k.Store(ctx)
+
 	return store.Has(key)
 }
 

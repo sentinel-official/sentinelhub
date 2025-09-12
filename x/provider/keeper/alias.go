@@ -18,6 +18,7 @@ func (k *Keeper) ProviderInactivePreHook(ctx sdk.Context, addr base.ProvAddress)
 	if err := k.plan.ProviderInactivePreHook(ctx, addr); err != nil {
 		return err
 	}
+
 	if err := k.lease.ProviderInactivePreHook(ctx, addr); err != nil {
 		return err
 	}

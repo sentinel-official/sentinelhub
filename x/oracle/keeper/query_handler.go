@@ -38,9 +38,9 @@ func (k *Keeper) HandleQueryAssets(ctx sdk.Context, req *v1.QueryAssetsRequest) 
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -52,5 +52,6 @@ func (k *Keeper) HandleQueryAssets(ctx sdk.Context, req *v1.QueryAssetsRequest) 
 // Simply returns the parameters stored in the keeper.
 func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v1.QueryParamsRequest) (*v1.QueryParamsResponse, error) {
 	params := k.GetParams(ctx)
+
 	return &v1.QueryParamsResponse{Params: params}, nil
 }

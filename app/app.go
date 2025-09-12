@@ -46,6 +46,7 @@ type App struct {
 	EncodingConfig
 	Keepers
 	StoreKeys
+
 	mm *sdkmodule.Manager
 	sm *sdkmodule.SimulationManager
 }
@@ -107,7 +108,7 @@ func NewApp(
 			tmos.Exit("failed to load the latest version: " + err.Error())
 		}
 
-		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
+		ctx := app.NewUncachedContext(true, tmproto.Header{})
 		if err = app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
 			tmos.Exit("failed to initialize the pinned codes: " + err.Error())
 		}
@@ -135,6 +136,7 @@ func (a *App) InitChainer(ctx sdk.Context, req abcitypes.RequestInitChain) abcit
 	}
 
 	a.UpgradeKeeper.SetModuleVersionMap(ctx, a.mm.GetVersionMap())
+
 	return a.mm.InitGenesis(ctx, a.Codec, state)
 }
 
@@ -154,11 +156,11 @@ func (a *App) RegisterAPIRoutes(server *api.Server, _ serverconfig.APIConfig) {
 }
 
 func (a *App) RegisterTxService(ctx client.Context) {
-	authtx.RegisterTxService(a.BaseApp.GRPCQueryRouter(), ctx, a.BaseApp.Simulate, a.InterfaceRegistry)
+	authtx.RegisterTxService(a.GRPCQueryRouter(), ctx, a.Simulate, a.InterfaceRegistry)
 }
 
 func (a *App) RegisterTendermintService(ctx client.Context) {
-	tmservice.RegisterTendermintService(ctx, a.BaseApp.GRPCQueryRouter(), a.InterfaceRegistry, a.Query)
+	tmservice.RegisterTendermintService(ctx, a.GRPCQueryRouter(), a.InterfaceRegistry, a.Query)
 }
 
 func (a *App) RegisterNodeService(ctx client.Context) {
@@ -167,6 +169,7 @@ func (a *App) RegisterNodeService(ctx client.Context) {
 
 func (a *App) ModuleAccountAddrs() map[string]bool {
 	addrs := make(map[string]bool)
+
 	for v := range ModuleAccPerms() {
 		addr := authtypes.NewModuleAddress(v)
 		addrs[addr.String()] = true

@@ -50,7 +50,6 @@ func NodeForInactiveAtKey(timestamp time.Time, addr base.NodeAddress) []byte {
 
 func AddressFromNodeForPlanKey(key []byte) base.NodeAddress {
 	// prefix (1 byte) | id (8 bytes) | addrLen (1 byte) | addr (addrLen bytes)
-
 	addrLen := int(key[9])
 	if len(key) != 10+addrLen {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 10+addrLen))
@@ -61,7 +60,6 @@ func AddressFromNodeForPlanKey(key []byte) base.NodeAddress {
 
 func AddressFromNodeForInactiveAtKey(key []byte) base.NodeAddress {
 	// prefix (1 byte) | timestamp (29 bytes) | addrLen (1 byte) | addr (addrLen bytes)
-
 	addrLen := int(key[30])
 	if len(key) != 31+addrLen {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 31+addrLen))

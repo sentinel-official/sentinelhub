@@ -16,6 +16,7 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) []abcitypes.ValidatorUpdate {
 		params := k.GetParams(ctx)
 		params.InflationMax = item.Max
 		params.InflationMin = item.Min
+
 		params.InflationRateChange = item.RateChange
 		if err := k.SetParams(ctx, params); err != nil {
 			panic(err)
@@ -26,6 +27,7 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) []abcitypes.ValidatorUpdate {
 		k.SetMinter(ctx, minter)
 
 		k.DeleteInflation(ctx, item.Timestamp)
+
 		return false
 	})
 

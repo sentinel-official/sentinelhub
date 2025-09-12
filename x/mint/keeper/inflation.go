@@ -30,6 +30,7 @@ func (k *Keeper) GetInflation(ctx sdk.Context, t time.Time) (inflation v1.Inflat
 	}
 
 	k.cdc.MustUnmarshal(value, &inflation)
+
 	return inflation, true
 }
 
@@ -73,6 +74,7 @@ func (k *Keeper) IterateInflations(ctx sdk.Context, fn func(index int, item v1.I
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }

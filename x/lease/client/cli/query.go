@@ -82,6 +82,7 @@ func queryLeases() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			case provAddr != nil:
 				res, err := qc.QueryLeasesForProvider(
@@ -91,6 +92,7 @@ func queryLeases() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			default:
 				res, err := qc.QueryLeases(
@@ -100,6 +102,7 @@ func queryLeases() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			}
 		},

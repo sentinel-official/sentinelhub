@@ -29,6 +29,7 @@ func (q *queryServer) QueryAllocation(c context.Context, req *v2.QueryAllocation
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryAllocation(ctx, req)
 }
 
@@ -38,6 +39,7 @@ func (q *queryServer) QueryAllocations(c context.Context, req *v2.QueryAllocatio
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryAllocations(ctx, req)
 }
 

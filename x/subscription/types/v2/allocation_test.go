@@ -14,6 +14,7 @@ func TestAllocation_Validate(t *testing.T) {
 		GrantedBytes  sdkmath.Int
 		UtilisedBytes sdkmath.Int
 	}
+
 	tests := []struct {
 		name    string
 		fields  fields

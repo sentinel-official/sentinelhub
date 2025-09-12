@@ -124,6 +124,7 @@ type Keepers struct {
 
 func (k *Keepers) Subspace(v string) paramstypes.Subspace {
 	subspace, _ := k.ParamsKeeper.GetSubspace(v)
+
 	return subspace
 }
 
@@ -303,17 +304,19 @@ func NewKeepers(
 
 	// Cosmos IBC port router
 	var ibcICAControllerIBCModule ibcporttypes.IBCModule
+
 	ibcICAControllerIBCModule = ibcicacontroller.NewIBCMiddleware(ibcICAControllerIBCModule, k.IBCICAControllerKeeper)
 	ibcICAControllerIBCModule = ibcfee.NewIBCMiddleware(ibcICAControllerIBCModule, k.IBCFeeKeeper)
 
-	var ibcICAHostIBCModule ibcporttypes.IBCModule
-	ibcICAHostIBCModule = ibcicahost.NewIBCModule(k.IBCICAHostKeeper)
+	var ibcICAHostIBCModule ibcporttypes.IBCModule = ibcicahost.NewIBCModule(k.IBCICAHostKeeper)
 
 	var ibcTransferIBCModule ibcporttypes.IBCModule
+
 	ibcTransferIBCModule = ibctransfer.NewIBCModule(k.IBCTransferKeeper)
 	ibcTransferIBCModule = ibcfee.NewIBCMiddleware(ibcTransferIBCModule, k.IBCFeeKeeper)
 
 	var wasmIBCModule ibcporttypes.IBCModule
+
 	wasmIBCModule = wasm.NewIBCHandler(k.WasmKeeper, k.IBCKeeper.ChannelKeeper, k.IBCKeeper.ChannelKeeper)
 	wasmIBCModule = ibcfee.NewIBCMiddleware(wasmIBCModule, k.IBCFeeKeeper)
 
@@ -325,5 +328,6 @@ func NewKeepers(
 	k.IBCKeeper.SetRouter(ibcPortRouter)
 
 	k.CapabilityKeeper.Seal()
+
 	return k
 }

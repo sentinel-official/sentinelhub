@@ -1,6 +1,7 @@
 package v3
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -51,12 +52,15 @@ func (m *Params) Validate() error {
 	if err := validateActiveDuration(m.ActiveDuration); err != nil {
 		return err
 	}
+
 	if err := validateDeposit(m.Deposit); err != nil {
 		return err
 	}
+
 	if err := validateMinGigabytePrices(m.MinGigabytePrices); err != nil {
 		return err
 	}
+
 	if err := validateMinHourlyPrices(m.MinHourlyPrices); err != nil {
 		return err
 	}
@@ -89,10 +93,11 @@ func DefaultParams() Params {
 // validateActiveDuration checks that the active duration is greater than zero.
 func validateActiveDuration(v time.Duration) error {
 	if v < 0 {
-		return fmt.Errorf("active_duration cannot be negative")
+		return errors.New("active_duration cannot be negative")
 	}
+
 	if v == 0 {
-		return fmt.Errorf("active_duration cannot be zero")
+		return errors.New("active_duration cannot be zero")
 	}
 
 	return nil
@@ -101,11 +106,13 @@ func validateActiveDuration(v time.Duration) error {
 // validateDeposit checks that the deposit is not nil, not negative, and valid.
 func validateDeposit(v sdk.Coin) error {
 	if v.IsNil() {
-		return fmt.Errorf("deposit cannot be nil")
+		return errors.New("deposit cannot be nil")
 	}
+
 	if v.IsNegative() {
-		return fmt.Errorf("deposit cannot be negative")
+		return errors.New("deposit cannot be negative")
 	}
+
 	if !v.IsValid() {
 		return fmt.Errorf("invalid deposit %s", v)
 	}
@@ -118,6 +125,7 @@ func validateMinGigabytePrices(v []v1base.Price) error {
 	if v == nil {
 		return nil
 	}
+
 	if err := v1base.Prices(v).Validate(); err != nil {
 		return fmt.Errorf("invalid min_gigabyte_prices: %w", err)
 	}
@@ -130,6 +138,7 @@ func validateMinHourlyPrices(v []v1base.Price) error {
 	if v == nil {
 		return nil
 	}
+
 	if err := v1base.Prices(v).Validate(); err != nil {
 		return fmt.Errorf("invalid min_hourly_prices: %w", err)
 	}

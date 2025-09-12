@@ -40,9 +40,9 @@ func (k *Keeper) HandleQueryLeases(ctx sdk.Context, req *v1.QueryLeasesRequest) 
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -72,9 +72,9 @@ func (k *Keeper) HandleQueryLeasesForNode(ctx sdk.Context, req *v1.QueryLeasesFo
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -104,9 +104,9 @@ func (k *Keeper) HandleQueryLeasesForProvider(ctx sdk.Context, req *v1.QueryLeas
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -117,5 +117,6 @@ func (k *Keeper) HandleQueryLeasesForProvider(ctx sdk.Context, req *v1.QueryLeas
 // HandleQueryParams handles a request to fetch the module's current parameter configuration.
 func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v1.QueryParamsRequest) (*v1.QueryParamsResponse, error) {
 	params := k.GetParams(ctx)
+
 	return &v1.QueryParamsResponse{Params: params}, nil
 }

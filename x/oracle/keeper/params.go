@@ -25,6 +25,7 @@ func (k *Keeper) GetParams(ctx sdk.Context) (v v1.Params) {
 	value := store.Get(key)
 
 	k.cdc.MustUnmarshal(value, &v)
+
 	return v
 }
 
@@ -46,5 +47,6 @@ func (k *Keeper) GetTimeout(ctx sdk.Context) time.Duration {
 // GetQueryTimeout returns the current block time adjusted by the module's timeout parameter in Unix nanoseconds.
 func (k *Keeper) GetQueryTimeout(ctx sdk.Context) int64 {
 	t := k.GetTimeout(ctx)
+
 	return ctx.BlockTime().Add(t).UnixNano()
 }

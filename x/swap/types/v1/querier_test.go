@@ -23,7 +23,7 @@ func TestNewQuerySwapRequest(t *testing.T) {
 		bytes []byte
 	)
 
-	for i := 0; i < 20; i++ {
+	for i := range 20 {
 		bytes = make([]byte, i)
 		_, _ = rand.Read(bytes)
 
@@ -42,7 +42,7 @@ func TestNewQuerySwapsRequest(t *testing.T) {
 		pagination *sdkquery.PageRequest
 	)
 
-	for i := 0; i < 20; i++ {
+	for i := range 20 {
 		pagination = &sdkquery.PageRequest{
 			Key:        make([]byte, i),
 			Offset:     uint64(i),

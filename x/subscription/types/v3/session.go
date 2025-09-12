@@ -13,6 +13,7 @@ func (m *Session) Validate() error {
 	if err := m.BaseSession.Validate(); err != nil {
 		return err
 	}
+
 	if m.SubscriptionID == 0 {
 		return errors.New("subscription id cannot be zero")
 	}

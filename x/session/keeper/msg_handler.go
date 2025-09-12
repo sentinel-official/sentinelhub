@@ -22,6 +22,7 @@ func (k *Keeper) HandleMsgCancelSession(ctx sdk.Context, msg *v3.MsgCancelSessio
 	if !found {
 		return nil, types.NewErrorSessionNotFound(msg.ID)
 	}
+
 	if !session.GetStatus().Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidSessionStatus(session.GetID(), session.GetStatus())
 	}
@@ -41,6 +42,7 @@ func (k *Keeper) HandleMsgCancelSession(ctx sdk.Context, msg *v3.MsgCancelSessio
 
 	// Update session status to inactive pending and set timestamps
 	inactiveAt := k.GetInactiveAt(ctx)
+
 	session.SetStatus(v1base.StatusInactivePending)
 	session.SetInactiveAt(inactiveAt)
 	session.SetStatusAt(ctx.BlockTime())
@@ -86,9 +88,11 @@ func (k *Keeper) HandleMsgUpdateSession(ctx sdk.Context, msg *v3.MsgUpdateSessio
 	if msg.DownloadBytes.LT(session.GetDownloadBytes()) {
 		return nil, types.NewErrorInvalidDownloadBytes(msg.DownloadBytes)
 	}
+
 	if msg.UploadBytes.LT(session.GetUploadBytes()) {
 		return nil, types.NewErrorInvalidUploadBytes(msg.UploadBytes)
 	}
+
 	if msg.Duration < session.GetDuration() {
 		return nil, types.NewErrorInvalidDuration(msg.Duration)
 	}
@@ -128,6 +132,7 @@ func (k *Keeper) HandleMsgUpdateSession(ctx sdk.Context, msg *v3.MsgUpdateSessio
 
 	// Persist updated session and reindex if still active
 	k.SetSession(ctx, session)
+
 	if session.GetStatus().Equal(v1base.StatusActive) {
 		k.SetSessionForInactiveAt(ctx, session.GetInactiveAt(), session.GetID())
 	}

@@ -16,7 +16,7 @@ func TestNewQueryProviderRequest(t *testing.T) {
 		address []byte
 	)
 
-	for i := 0; i < 40; i++ {
+	for i := range 40 {
 		address = make([]byte, i)
 		_, _ = rand.Read(address)
 
@@ -36,7 +36,7 @@ func TestNewQueryProvidersRequest(t *testing.T) {
 		pagination *sdkquery.PageRequest
 	)
 
-	for i := 0; i < 20; i++ {
+	for i := range 20 {
 		status = v1base.Status(i % 4)
 		pagination = &sdkquery.PageRequest{
 			Key:        make([]byte, i),

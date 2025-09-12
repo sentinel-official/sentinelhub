@@ -84,6 +84,7 @@ func querySubscriptions() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			case id != 0:
 				res, err := qc.QuerySubscriptionsForPlan(
@@ -93,6 +94,7 @@ func querySubscriptions() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			default:
 				res, err := qc.QuerySubscriptions(
@@ -102,6 +104,7 @@ func querySubscriptions() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			}
 		},

@@ -10,7 +10,7 @@ import (
 	"github.com/sentinel-official/sentinelhub/v12/x/provider/types"
 )
 
-// Ensure the message types implement sdk.Msg interface
+// Ensure the message types implement sdk.Msg interface.
 var (
 	_ sdk.Msg = (*MsgRegisterProviderRequest)(nil)
 	_ sdk.Msg = (*MsgUpdateProviderDetailsRequest)(nil)
@@ -34,26 +34,33 @@ func (m *MsgRegisterProviderRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.Name == "" {
 		return types.NewErrorInvalidMessage("name cannot be empty")
 	}
+
 	if len(m.Name) > 64 {
 		return types.NewErrorInvalidMessage("name length cannot be greater than 64 chars")
 	}
+
 	if len(m.Identity) > 64 {
 		return types.NewErrorInvalidMessage("identity length cannot be greater than 64 chars")
 	}
+
 	if len(m.Website) > 64 {
 		return types.NewErrorInvalidMessage("website length cannot be greater than 64 chars")
 	}
+
 	if m.Website != "" {
 		if _, err := url.ParseRequestURI(m.Website); err != nil {
 			return types.NewErrorInvalidMessage(err)
 		}
 	}
+
 	if len(m.Description) > 256 {
 		return types.NewErrorInvalidMessage("description length cannot be greater than 256 chars")
 	}
@@ -87,23 +94,29 @@ func (m *MsgUpdateProviderDetailsRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if len(m.Name) > 64 {
 		return types.NewErrorInvalidMessage("name length cannot be greater than 64 chars")
 	}
+
 	if len(m.Identity) > 64 {
 		return types.NewErrorInvalidMessage("identity length cannot be greater than 64 chars")
 	}
+
 	if len(m.Website) > 64 {
 		return types.NewErrorInvalidMessage("website length cannot be greater than 64 chars")
 	}
+
 	if m.Website != "" {
 		if _, err := url.ParseRequestURI(m.Website); err != nil {
 			return types.NewErrorInvalidMessage(err)
 		}
 	}
+
 	if len(m.Description) > 256 {
 		return types.NewErrorInvalidMessage("description length cannot be greater than 256 chars")
 	}
@@ -134,9 +147,11 @@ func (m *MsgUpdateProviderStatusRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {
 		return types.NewErrorInvalidMessage("status must be one of [active, inactive]")
 	}
@@ -167,9 +182,11 @@ func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if err := m.Params.Validate(); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}

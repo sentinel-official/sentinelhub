@@ -59,9 +59,9 @@ func (k *Keeper) HandleQuerySessions(ctx sdk.Context, req *v3.QuerySessionsReque
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -94,9 +94,9 @@ func (k *Keeper) HandleQuerySessionsForAccount(ctx sdk.Context, req *v3.QuerySes
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -129,9 +129,9 @@ func (k *Keeper) HandleQuerySessionsForNode(ctx sdk.Context, req *v3.QuerySessio
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -159,9 +159,9 @@ func (k *Keeper) HandleQuerySessionsForSubscription(ctx sdk.Context, req *v3.Que
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -194,9 +194,9 @@ func (k *Keeper) HandleQuerySessionsForAllocation(ctx sdk.Context, req *v3.Query
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -208,5 +208,6 @@ func (k *Keeper) HandleQuerySessionsForAllocation(ctx sdk.Context, req *v3.Query
 // This function simply retrieves and returns the stored Params object.
 func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v3.QueryParamsRequest) (*v3.QueryParamsResponse, error) {
 	params := k.GetParams(ctx)
+
 	return &v3.QueryParamsResponse{Params: params}, nil
 }

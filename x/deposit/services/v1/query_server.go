@@ -29,6 +29,7 @@ func (q *queryServer) QueryDeposit(c context.Context, req *v1.QueryDepositReques
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryDeposit(ctx, req)
 }
 
@@ -38,5 +39,6 @@ func (q *queryServer) QueryDeposits(c context.Context, req *v1.QueryDepositsRequ
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryDeposits(ctx, req)
 }

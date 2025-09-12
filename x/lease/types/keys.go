@@ -75,7 +75,6 @@ func LeaseForRenewalAtKey(timestamp time.Time, id uint64) []byte {
 
 func IDFromLeaseForNodeByProviderKey(key []byte) uint64 {
 	// prefix (1 byte) | nodeAddrLen (1 byte) | nodeAddr (nodeAddrLen bytes) | provAddrLen (1 byte) | provAddr (provAddrLen bytes) | id (8 bytes)
-
 	nodeAddrLen, provAddrLen := int(key[1]), int(key[2+int(key[1])])
 	if len(key) != 11+nodeAddrLen+provAddrLen {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 11+nodeAddrLen+provAddrLen))
@@ -86,7 +85,6 @@ func IDFromLeaseForNodeByProviderKey(key []byte) uint64 {
 
 func IDFromLeaseForProviderKey(key []byte) uint64 {
 	// prefix (1 bytes) | addrLen (1 byte) | addr (addrLen bytes) | id (8 bytes)
-
 	addrLen := int(key[1])
 	if len(key) != 10+addrLen {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 10+addrLen))
@@ -97,7 +95,6 @@ func IDFromLeaseForProviderKey(key []byte) uint64 {
 
 func IDFromLeaseForInactiveAtKey(key []byte) uint64 {
 	// prefix (1 byte) | timestamp (29 bytes) | id (8 bytes)
-
 	if len(key) != 38 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 38))
 	}
@@ -107,7 +104,6 @@ func IDFromLeaseForInactiveAtKey(key []byte) uint64 {
 
 func IDFromLeaseForPayoutAtKey(key []byte) uint64 {
 	// prefix (1 byte) | timestamp (29 bytes) | id (8 bytes)
-
 	if len(key) != 38 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 38))
 	}
@@ -117,7 +113,6 @@ func IDFromLeaseForPayoutAtKey(key []byte) uint64 {
 
 func IDFromLeaseForRenewalAtKey(key []byte) uint64 {
 	// prefix (1 byte) | timestamp (29 bytes) | id (8 bytes)
-
 	if len(key) != 38 {
 		panic(fmt.Errorf("invalid key length %d; expected %d", len(key), 38))
 	}

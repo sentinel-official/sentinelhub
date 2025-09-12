@@ -23,15 +23,18 @@ func NewMsgServiceServer(k keeper.Keeper) v3.MsgServiceServer {
 
 func (m *msgServer) MsgCancelSession(c context.Context, req *v3.MsgCancelSessionRequest) (*v3.MsgCancelSessionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgCancelSession(ctx, req)
 }
 
 func (m *msgServer) MsgUpdateSession(c context.Context, req *v3.MsgUpdateSessionRequest) (*v3.MsgUpdateSessionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgUpdateSession(ctx, req)
 }
 
 func (m *msgServer) MsgUpdateParams(c context.Context, req *v3.MsgUpdateParamsRequest) (*v3.MsgUpdateParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgUpdateParams(ctx, req)
 }

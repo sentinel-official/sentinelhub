@@ -45,6 +45,7 @@ func (k *Keeper) GetActiveProvider(ctx sdk.Context, addr base.ProvAddress) (v v2
 	}
 
 	k.cdc.MustUnmarshal(value, &v)
+
 	return v, true
 }
 
@@ -90,6 +91,7 @@ func (k *Keeper) GetInactiveProvider(ctx sdk.Context, addr base.ProvAddress) (v 
 	}
 
 	k.cdc.MustUnmarshal(value, &v)
+
 	return v, true
 }
 
@@ -165,6 +167,7 @@ func (k *Keeper) IterateProviders(ctx sdk.Context, fn func(index int, item v2.Pr
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }

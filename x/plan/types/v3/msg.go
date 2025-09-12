@@ -8,7 +8,7 @@ import (
 	"github.com/sentinel-official/sentinelhub/v12/x/plan/types"
 )
 
-// Ensure the message types implement sdk.Msg interface
+// Ensure the message types implement sdk.Msg interface.
 var (
 	_ sdk.Msg = (*MsgCreatePlanRequest)(nil)
 	_ sdk.Msg = (*MsgLinkNodeRequest)(nil)
@@ -37,15 +37,19 @@ func (m *MsgCreatePlanRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.Gigabytes <= 0 {
 		return types.NewErrorInvalidMessage("gigabytes must be positive")
 	}
+
 	if m.Hours <= 0 {
 		return types.NewErrorInvalidMessage("hours must be positive")
 	}
+
 	if !m.GetPrices().IsValid() {
 		return types.NewErrorInvalidMessage("prices must be valid")
 	}
@@ -77,15 +81,19 @@ func (m *MsgLinkNodeRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
+
 	if m.NodeAddress == "" {
 		return types.NewErrorInvalidMessage("node_address cannot be empty")
 	}
+
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
@@ -117,15 +125,19 @@ func (m *MsgUnlinkNodeRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
+
 	if m.NodeAddress == "" {
 		return types.NewErrorInvalidMessage("node_address cannot be empty")
 	}
+
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
@@ -157,12 +169,15 @@ func (m *MsgUpdatePlanStatusRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
+
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {
 		return types.NewErrorInvalidMessage("status must be one of [active, inactive]")
 	}
@@ -196,23 +211,29 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
+
 	if m.Denom != "" {
 		if err := sdk.ValidateDenom(m.Denom); err != nil {
 			return types.NewErrorInvalidMessage(err)
 		}
 	}
+
 	if !m.RenewalPricePolicy.IsValid() {
 		return types.NewErrorInvalidMessage("renewal_price_policy must be valid")
 	}
+
 	if m.NodeAddress == "" {
 		return types.NewErrorInvalidMessage("node_address cannot be empty")
 	}
+
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}

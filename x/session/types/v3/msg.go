@@ -10,7 +10,7 @@ import (
 	"github.com/sentinel-official/sentinelhub/v12/x/session/types"
 )
 
-// Ensure the message types implement sdk.Msg interface
+// Ensure the message types implement sdk.Msg interface.
 var (
 	_ sdk.Msg = (*MsgCancelSessionRequest)(nil)
 	_ sdk.Msg = (*MsgUpdateSessionRequest)(nil)
@@ -30,9 +30,11 @@ func (m *MsgCancelSessionRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
@@ -82,27 +84,35 @@ func (m *MsgUpdateSessionRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := base.NodeAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.ID == 0 {
 		return types.NewErrorInvalidMessage("id cannot be zero")
 	}
+
 	if m.DownloadBytes.IsNil() {
 		return types.NewErrorInvalidMessage("download_bytes cannot be nil")
 	}
+
 	if m.DownloadBytes.IsNegative() {
 		return types.NewErrorInvalidMessage("download_bytes cannot be negative")
 	}
+
 	if m.UploadBytes.IsNil() {
 		return types.NewErrorInvalidMessage("upload_bytes cannot be nil")
 	}
+
 	if m.UploadBytes.IsNegative() {
 		return types.NewErrorInvalidMessage("upload_bytes cannot be negative")
 	}
+
 	if m.Duration < 0 {
 		return types.NewErrorInvalidMessage("duration cannot be negative")
 	}
+
 	if m.Signature != nil {
 		if len(m.Signature) != 64 {
 			return types.NewErrorInvalidMessage("signature length must be 64 bytes")
@@ -135,9 +145,11 @@ func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if err := m.Params.Validate(); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}

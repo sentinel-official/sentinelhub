@@ -22,9 +22,11 @@ func (k *Keeper) HandleMsgCancelSubscription(ctx sdk.Context, msg *v3.MsgCancelS
 	if !found {
 		return nil, types.NewErrorSubscriptionNotFound(msg.ID)
 	}
+
 	if !subscription.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidSubscriptionStatus(subscription.ID, subscription.Status)
 	}
+
 	if msg.From != subscription.AccAddress {
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
@@ -72,9 +74,11 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	if !found {
 		return nil, types.NewErrorSubscriptionNotFound(msg.ID)
 	}
+
 	if msg.From != subscription.AccAddress {
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
+
 	if !subscription.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidSubscriptionStatus(subscription.ID, subscription.Status)
 	}
@@ -84,6 +88,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	if !found {
 		return nil, types.NewErrorPlanNotFound(subscription.PlanID)
 	}
+
 	if !plan.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidPlanStatus(plan.ID, plan.Status)
 	}
@@ -198,6 +203,7 @@ func (k *Keeper) HandleMsgShareSubscription(ctx sdk.Context, msg *v3.MsgShareSub
 	if !found {
 		return nil, types.NewErrorSubscriptionNotFound(msg.ID)
 	}
+
 	if msg.From != subscription.AccAddress {
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
@@ -283,6 +289,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 	if !found {
 		return nil, types.NewErrorPlanNotFound(msg.ID)
 	}
+
 	if !plan.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidPlanStatus(plan.ID, plan.Status)
 	}
@@ -400,9 +407,11 @@ func (k *Keeper) HandleMsgUpdateSubscription(ctx sdk.Context, msg *v3.MsgUpdateS
 	if !found {
 		return nil, types.NewErrorSubscriptionNotFound(msg.ID)
 	}
+
 	if !subscription.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidSubscriptionStatus(subscription.ID, subscription.Status)
 	}
+
 	if msg.From != subscription.AccAddress {
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
@@ -438,6 +447,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	if !found {
 		return nil, types.NewErrorSubscriptionNotFound(msg.ID)
 	}
+
 	if !subscription.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidSubscriptionStatus(subscription.ID, subscription.Status)
 	}
@@ -452,6 +462,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	if !found {
 		return nil, types.NewErrorNodeNotFound(nodeAddr)
 	}
+
 	if !node.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
 	}
@@ -471,6 +482,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	if !found {
 		return nil, types.NewErrorAllocationNotFound(subscription.ID, accAddr)
 	}
+
 	if alloc.UtilisedBytes.GTE(alloc.GrantedBytes) {
 		return nil, types.NewErrorInvalidAllocation(subscription.ID, accAddr)
 	}

@@ -152,6 +152,7 @@ func ModuleAccPerms() map[string][]string {
 
 func BlockedAccAddrs() map[string]bool {
 	accAddrs := make(map[string]bool)
+
 	for v := range ModuleAccPerms() {
 		accAddr := authtypes.NewModuleAddress(v)
 		accAddrs[accAddr.String()] = true

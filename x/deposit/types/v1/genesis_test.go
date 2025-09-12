@@ -7,11 +7,7 @@ import (
 )
 
 func TestDefaultGenesisState(t *testing.T) {
-	var (
-		state *GenesisState
-	)
-
-	state = DefaultGenesisState()
+	var state = DefaultGenesisState()
 	require.Equal(t, &GenesisState{Deposits: nil}, state)
 }
 
@@ -23,11 +19,11 @@ func TestNewGenesisState(t *testing.T) {
 
 	state = NewGenesisState(nil)
 	require.Equal(t, &GenesisState{Deposits: nil}, state)
-	require.Len(t, state.Deposits, 0)
+	require.Empty(t, state.Deposits)
 
 	state = NewGenesisState(deposits)
 	require.Equal(t, &GenesisState{Deposits: deposits}, state)
-	require.Len(t, state.Deposits, 0)
+	require.Empty(t, state.Deposits)
 
 	deposits = append(deposits,
 		Deposit{},

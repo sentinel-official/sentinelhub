@@ -8,6 +8,7 @@ import (
 
 func (k *Keeper) InitGenesis(ctx sdk.Context, state *v1.GenesisState) {
 	k.SetParams(ctx, state.Params)
+
 	for _, item := range state.Swaps {
 		k.SetSwap(ctx, item)
 	}

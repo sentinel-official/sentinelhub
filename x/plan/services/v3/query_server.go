@@ -29,6 +29,7 @@ func (q *queryServer) QueryPlan(c context.Context, req *v3.QueryPlanRequest) (*v
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryPlan(ctx, req)
 }
 
@@ -38,6 +39,7 @@ func (q *queryServer) QueryPlans(c context.Context, req *v3.QueryPlansRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryPlans(ctx, req)
 }
 
@@ -47,5 +49,6 @@ func (q *queryServer) QueryPlansForProvider(c context.Context, req *v3.QueryPlan
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryPlansForProvider(ctx, req)
 }

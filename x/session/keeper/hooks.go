@@ -41,6 +41,7 @@ func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) err
 
 		// Emit any events generated during the session cancellation process.
 		ctx.EventManager().EmitEvents(resp.GetEvents())
+
 		return false, nil
 	})
 }
@@ -76,6 +77,7 @@ func (k *Keeper) SubscriptionInactivePendingPreHook(ctx sdk.Context, id uint64) 
 
 		// Emit any events generated during the session cancellation process.
 		ctx.EventManager().EmitEvents(resp.GetEvents())
+
 		return false, nil
 	})
 }
@@ -111,6 +113,7 @@ func (k *Keeper) PlanUnlinkNodePreHook(ctx sdk.Context, id uint64, addr base.Nod
 
 		// Emit any events generated during the session cancellation process.
 		ctx.EventManager().EmitEvents(resp.GetEvents())
+
 		return false, nil
 	})
 }

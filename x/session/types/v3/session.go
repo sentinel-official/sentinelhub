@@ -88,6 +88,7 @@ func (m *BaseSession) Validate() error {
 	if m.AccAddress == "" {
 		return errors.New("acc_address cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.AccAddress); err != nil {
 		return fmt.Errorf("invalid acc_address %s: %w", m.AccAddress, err)
 	}
@@ -96,6 +97,7 @@ func (m *BaseSession) Validate() error {
 	if m.NodeAddress == "" {
 		return errors.New("node_address cannot be empty")
 	}
+
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
 		return fmt.Errorf("invalid node_address %s: %w", m.NodeAddress, err)
 	}
@@ -104,6 +106,7 @@ func (m *BaseSession) Validate() error {
 	if m.DownloadBytes.IsNil() {
 		return errors.New("download_bytes cannot be nil")
 	}
+
 	if m.DownloadBytes.IsNegative() {
 		return errors.New("download_bytes cannot be negative")
 	}
@@ -112,6 +115,7 @@ func (m *BaseSession) Validate() error {
 	if m.UploadBytes.IsNil() {
 		return errors.New("upload_bytes cannot be nil")
 	}
+
 	if m.UploadBytes.IsNegative() {
 		return errors.New("upload_bytes cannot be negative")
 	}
@@ -120,6 +124,7 @@ func (m *BaseSession) Validate() error {
 	if m.MaxBytes.IsNil() {
 		return errors.New("max_bytes cannot be nil")
 	}
+
 	if m.MaxBytes.IsNegative() {
 		return errors.New("max_bytes cannot be negative")
 	}
@@ -133,9 +138,11 @@ func (m *BaseSession) Validate() error {
 	if m.Duration < 0 {
 		return errors.New("duration cannot be negative")
 	}
+
 	if m.MaxDuration < 0 {
 		return errors.New("max_duration cannot be negative")
 	}
+
 	if m.Duration > m.MaxDuration {
 		return errors.New("duration cannot be greater than max_duration")
 	}
@@ -149,12 +156,15 @@ func (m *BaseSession) Validate() error {
 	if m.InactiveAt.IsZero() {
 		return errors.New("inactive_at cannot be zero")
 	}
+
 	if m.StartAt.IsZero() {
 		return errors.New("start_at cannot be zero")
 	}
+
 	if !m.StartAt.Before(m.InactiveAt) {
 		return errors.New("start_at must be less than inactive_at")
 	}
+
 	if m.StatusAt.IsZero() {
 		return errors.New("status_at cannot be zero")
 	}

@@ -23,5 +23,6 @@ func NewMsgServiceServer(k keeper.Keeper) v1.MsgServiceServer {
 
 func (m *msgServer) MsgSwap(c context.Context, req *v1.MsgSwapRequest) (*v1.MsgSwapResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgSwap(ctx, req)
 }

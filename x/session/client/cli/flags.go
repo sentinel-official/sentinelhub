@@ -15,6 +15,7 @@ func GetSignature(flags *pflag.FlagSet) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if s == "" {
 		return nil, nil
 	}

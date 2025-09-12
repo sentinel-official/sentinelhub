@@ -78,6 +78,7 @@ func (k *Keeper) HandleMsgUpdateProviderDetails(ctx sdk.Context, msg *v3.MsgUpda
 	if msg.Name != "" {
 		provider.Name = msg.Name
 	}
+
 	provider.Identity = msg.Identity
 	provider.Website = msg.Website
 	provider.Description = msg.Description
@@ -127,6 +128,7 @@ func (k *Keeper) HandleMsgUpdateProviderStatus(ctx sdk.Context, msg *v3.MsgUpdat
 			k.DeleteInactiveProvider(ctx, provAddr)
 		}
 	}
+
 	if msg.Status.Equal(v1base.StatusInactive) {
 		if provider.Status.Equal(v1base.StatusActive) {
 			k.DeleteActiveProvider(ctx, provAddr)

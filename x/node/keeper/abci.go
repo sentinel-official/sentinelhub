@@ -35,6 +35,7 @@ func (k *Keeper) handleInactiveNodes(ctx sdk.Context) {
 
 		// Emit any events generated during the node status update
 		ctx.EventManager().EmitEvents(resp.GetEvents())
+
 		return false
 	})
 }

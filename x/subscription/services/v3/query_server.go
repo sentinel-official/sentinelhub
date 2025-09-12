@@ -30,6 +30,7 @@ func (q *queryServer) QuerySubscription(c context.Context, req *v3.QuerySubscrip
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQuerySubscription(ctx, req)
 }
 
@@ -39,6 +40,7 @@ func (q *queryServer) QuerySubscriptions(c context.Context, req *v3.QuerySubscri
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQuerySubscriptions(ctx, req)
 }
 
@@ -48,6 +50,7 @@ func (q *queryServer) QuerySubscriptionsForAccount(c context.Context, req *v3.Qu
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQuerySubscriptionsForAccount(ctx, req)
 }
 
@@ -57,6 +60,7 @@ func (q *queryServer) QuerySubscriptionsForPlan(c context.Context, req *v3.Query
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQuerySubscriptionsForPlan(ctx, req)
 }
 
@@ -66,5 +70,6 @@ func (q *queryServer) QueryParams(c context.Context, req *v3.QueryParamsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryParams(ctx, req)
 }

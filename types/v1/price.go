@@ -169,9 +169,11 @@ func (p Price) Validate() error {
 	if err := sdk.ValidateDenom(p.Denom); err != nil {
 		return fmt.Errorf("invalid denom: %w", err)
 	}
+
 	if p.BaseValue.IsNegative() {
 		return errors.New("base value cannot be negative")
 	}
+
 	if p.QuoteValue.IsNegative() {
 		return errors.New("quote value cannot be negative")
 	}
@@ -336,10 +338,11 @@ func (p Prices) IsSorted() bool {
 
 // Validate checks that the Prices slice is sorted and all prices are valid.
 func (p Prices) Validate() error {
-	for i := 0; i < len(p); i++ {
+	for i := range p {
 		if i > 0 && p[i].Denom <= p[i-1].Denom {
 			return errors.New("denoms must be sorted")
 		}
+
 		if err := p[i].Validate(); err != nil {
 			return fmt.Errorf("invalid price: %w", err)
 		}
@@ -371,6 +374,7 @@ func (p Prices) Less(i, j int) bool {
 // Sort sorts the Prices by denom.
 func (p Prices) Sort() Prices {
 	sort.Sort(p)
+
 	return p
 }
 

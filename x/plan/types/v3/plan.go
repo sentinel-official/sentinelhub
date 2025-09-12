@@ -51,30 +51,39 @@ func (m *Plan) Validate() error {
 	if m.ID == 0 {
 		return errors.New("id cannot be zero")
 	}
+
 	if m.ProvAddress == "" {
 		return errors.New("prov_address cannot be empty")
 	}
+
 	if _, err := base.ProvAddressFromBech32(m.ProvAddress); err != nil {
 		return fmt.Errorf("invalid prov_address: %w", err)
 	}
+
 	if m.Gigabytes < 0 {
 		return errors.New("gigabytes cannot be negative")
 	}
+
 	if m.Gigabytes == 0 {
 		return errors.New("gigabytes cannot be zero")
 	}
+
 	if m.Hours < 0 {
 		return errors.New("hours cannot be negative")
 	}
+
 	if m.Hours == 0 {
 		return errors.New("hours cannot be zero")
 	}
+
 	if prices := m.GetPrices(); !prices.IsValid() {
 		return errors.New("prices must be valid")
 	}
+
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {
 		return errors.New("status must be one of [active, inactive]")
 	}
+
 	if m.StatusAt.IsZero() {
 		return errors.New("status_at cannot be zero")
 	}

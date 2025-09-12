@@ -8,6 +8,7 @@ func TestStatusFromString(t *testing.T) {
 	type args struct {
 		s string
 	}
+
 	tests := []struct {
 		name string
 		args args
@@ -69,6 +70,7 @@ func TestStatus_Equal(t *testing.T) {
 	type args struct {
 		v Status
 	}
+
 	tests := []struct {
 		name string
 		s    Status

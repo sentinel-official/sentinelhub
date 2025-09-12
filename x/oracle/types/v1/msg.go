@@ -6,7 +6,7 @@ import (
 	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
 )
 
-// Ensure the message types implement sdk.Msg interface
+// Ensure the message types implement sdk.Msg interface.
 var (
 	_ sdk.Msg = (*MsgCreateAssetRequest)(nil)
 	_ sdk.Msg = (*MsgDeleteAssetRequest)(nil)
@@ -30,21 +30,27 @@ func (m *MsgCreateAssetRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.Denom == "" {
 		return types.NewErrorInvalidMessage("denom cannot be empty")
 	}
+
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.Decimals < 0 {
 		return types.NewErrorInvalidMessage("decimals cannot be negative")
 	}
+
 	if m.BaseAssetDenom == "" {
 		return types.NewErrorInvalidMessage("base_asset_denom cannot be empty")
 	}
+
 	if m.QuoteAssetDenom == "" {
 		return types.NewErrorInvalidMessage("quote_asset_denom cannot be empty")
 	}
@@ -75,12 +81,15 @@ func (m *MsgDeleteAssetRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.Denom == "" {
 		return types.NewErrorInvalidMessage("denom cannot be empty")
 	}
+
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
@@ -114,21 +123,27 @@ func (m *MsgUpdateAssetRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.Denom == "" {
 		return types.NewErrorInvalidMessage("denom cannot be empty")
 	}
+
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if m.Decimals < 0 {
 		return types.NewErrorInvalidMessage("decimals cannot be negative")
 	}
+
 	if m.BaseAssetDenom == "" {
 		return types.NewErrorInvalidMessage("base_asset_denom cannot be empty")
 	}
+
 	if m.QuoteAssetDenom == "" {
 		return types.NewErrorInvalidMessage("quote_asset_denom cannot be empty")
 	}
@@ -159,9 +174,11 @@ func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	if m.From == "" {
 		return types.NewErrorInvalidMessage("from cannot be empty")
 	}
+
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}
+
 	if err := m.Params.Validate(); err != nil {
 		return types.NewErrorInvalidMessage(err)
 	}

@@ -24,6 +24,7 @@ func (k *Keeper) GetParams(ctx sdk.Context) (v v1.Params) {
 	value := store.Get(key)
 
 	k.cdc.MustUnmarshal(value, &v)
+
 	return v
 }
 
@@ -47,6 +48,7 @@ func (k *Keeper) IsValidHours(ctx sdk.Context, hours int64) bool {
 	if hours > k.MaxHours(ctx) {
 		return false
 	}
+
 	if hours < k.MinHours(ctx) {
 		return false
 	}

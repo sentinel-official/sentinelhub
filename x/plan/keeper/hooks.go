@@ -54,6 +54,7 @@ func (k *Keeper) LeaseInactivePreHook(ctx sdk.Context, id uint64) error {
 
 		// Emit any events generated during the unlink process.
 		ctx.EventManager().EmitEvents(resp.GetEvents())
+
 		return false, nil
 	})
 }
@@ -90,6 +91,7 @@ func (k *Keeper) ProviderInactivePreHook(ctx sdk.Context, addr base.ProvAddress)
 
 		// Emit any events generated during the status update process.
 		ctx.EventManager().EmitEvents(resp.GetEvents())
+
 		return false, nil
 	})
 }

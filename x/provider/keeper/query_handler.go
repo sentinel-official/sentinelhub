@@ -59,9 +59,9 @@ func (k *Keeper) HandleQueryProviders(ctx sdk.Context, req *v2.QueryProvidersReq
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -73,5 +73,6 @@ func (k *Keeper) HandleQueryProviders(ctx sdk.Context, req *v2.QueryProvidersReq
 // Returns the Params object directly from the keeper.
 func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v3.QueryParamsRequest) (*v3.QueryParamsResponse, error) {
 	params := k.GetParams(ctx)
+
 	return &v3.QueryParamsResponse{Params: params}, nil
 }

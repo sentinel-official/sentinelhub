@@ -17,6 +17,7 @@ func TestProvider_Validate(t *testing.T) {
 		Description string
 		Status      v1base.Status
 	}
+
 	tests := []struct {
 		name    string
 		fields  fields

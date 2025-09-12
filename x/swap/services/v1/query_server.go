@@ -29,6 +29,7 @@ func (q *queryServer) QuerySwap(c context.Context, req *v1.QuerySwapRequest) (*v
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQuerySwap(ctx, req)
 }
 
@@ -38,6 +39,7 @@ func (q *queryServer) QuerySwaps(c context.Context, req *v1.QuerySwapsRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQuerySwaps(ctx, req)
 }
 
@@ -47,5 +49,6 @@ func (q *queryServer) QueryParams(c context.Context, req *v1.QueryParamsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryParams(ctx, req)
 }

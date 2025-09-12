@@ -26,6 +26,7 @@ func (k *Keeper) GetParams(ctx sdk.Context) (v v3.Params) {
 	value := store.Get(key)
 
 	k.cdc.MustUnmarshal(value, &v)
+
 	return v
 }
 
@@ -61,6 +62,7 @@ func (k *Keeper) IsValidGigabytePrices(ctx sdk.Context, prices v1base.Prices) bo
 		if !baseValue.IsZero() && baseValue.LT(price.BaseValue) {
 			return false
 		}
+
 		if !quoteValue.IsZero() && quoteValue.LT(price.QuoteValue) {
 			return false
 		}
@@ -81,6 +83,7 @@ func (k *Keeper) IsValidHourlyPrices(ctx sdk.Context, prices v1base.Prices) bool
 		if !baseValue.IsZero() && baseValue.LT(price.BaseValue) {
 			return false
 		}
+
 		if !quoteValue.IsZero() && quoteValue.LT(price.QuoteValue) {
 			return false
 		}
@@ -92,5 +95,6 @@ func (k *Keeper) IsValidHourlyPrices(ctx sdk.Context, prices v1base.Prices) bool
 // GetInactiveAt returns the inactive time by adding ActiveDuration to the current block time.
 func (k *Keeper) GetInactiveAt(ctx sdk.Context) time.Time {
 	d := k.ActiveDuration(ctx)
+
 	return ctx.BlockTime().Add(d)
 }

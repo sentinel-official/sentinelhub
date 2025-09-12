@@ -19,12 +19,14 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) {
 	portID := k.GetPortID(ctx)
 	if portID == "" {
 		k.Logger(ctx).Info("PortID is empty, skipping BeginBlock execution")
+
 		return
 	}
 
 	channelID := k.GetChannelID(ctx)
 	if channelID == "" {
 		k.Logger(ctx).Info("ChannelID is empty, skipping BeginBlock execution")
+
 		return
 	}
 
@@ -34,6 +36,7 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) {
 	channelCap, found := k.capability.GetCapability(ctx, ibchost.ChannelCapabilityPath(portID, channelID))
 	if !found {
 		k.Logger(ctx).Info("Channel capability not found, skipping BeginBlock execution")
+
 		return
 	}
 
@@ -54,11 +57,13 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) {
 		sequence, err := k.SendQueryPacket(ctx, channelCap, portID, channelID, uint64(timeout), req)
 		if err != nil {
 			k.Logger(ctx).Error("Failed to send query packet", "asset", item.Denom, "msg", err)
+
 			return false
 		}
 
 		// Map the sequence number to the asset denom for tracking.
 		k.SetDenomForPacket(ctx, portID, channelID, sequence, item.Denom)
+
 		return false
 	})
 }

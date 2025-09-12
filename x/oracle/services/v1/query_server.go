@@ -29,6 +29,7 @@ func (q *queryServer) QueryAssets(c context.Context, req *v1.QueryAssetsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryAssets(ctx, req)
 }
 
@@ -38,6 +39,7 @@ func (q *queryServer) QueryAsset(c context.Context, req *v1.QueryAssetRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryAsset(ctx, req)
 }
 
@@ -47,5 +49,6 @@ func (q *queryServer) QueryParams(c context.Context, req *v1.QueryParamsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryParams(ctx, req)
 }

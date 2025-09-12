@@ -15,6 +15,7 @@ func GetPrices(flags *pflag.FlagSet) (v1base.Prices, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if s == "" {
 		return nil, nil
 	}

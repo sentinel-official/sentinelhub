@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"errors"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -30,7 +31,7 @@ func (k *Keeper) VerifySignature(ctx sdk.Context, addr sdk.AccAddress, proof *v3
 
 	// Verify the signature against the marshaled message and public key.
 	if !pubKey.VerifySignature(message, signature) {
-		return fmt.Errorf("invalid signature for message")
+		return errors.New("invalid signature for message")
 	}
 
 	// Signature is valid

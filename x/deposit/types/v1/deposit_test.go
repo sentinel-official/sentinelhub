@@ -13,6 +13,7 @@ func TestDeposit_Validate(t *testing.T) {
 		Address string
 		Coins   sdk.Coins
 	}
+
 	tests := []struct {
 		name    string
 		fields  fields

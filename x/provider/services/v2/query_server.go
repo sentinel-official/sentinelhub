@@ -29,6 +29,7 @@ func (q *queryServer) QueryProvider(c context.Context, req *v2.QueryProviderRequ
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryProvider(ctx, req)
 }
 
@@ -38,6 +39,7 @@ func (q *queryServer) QueryProviders(c context.Context, req *v2.QueryProvidersRe
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryProviders(ctx, req)
 }
 

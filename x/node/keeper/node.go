@@ -47,6 +47,7 @@ func (k *Keeper) GetActiveNode(ctx sdk.Context, addr base.NodeAddress) (v v3.Nod
 	}
 
 	k.cdc.MustUnmarshal(value, &v)
+
 	return v, true
 }
 
@@ -92,6 +93,7 @@ func (k *Keeper) GetInactiveNode(ctx sdk.Context, addr base.NodeAddress) (v v3.N
 	}
 
 	k.cdc.MustUnmarshal(value, &v)
+
 	return v, true
 }
 
@@ -168,6 +170,7 @@ func (k *Keeper) IterateNodes(ctx sdk.Context, fn func(index int, item v3.Node) 
 		if stop := fn(i, node); stop {
 			break
 		}
+
 		i++
 	}
 }
@@ -214,6 +217,7 @@ func (k *Keeper) IterateNodesForInactiveAt(ctx sdk.Context, at time.Time, fn fun
 		if stop := fn(i, node); stop {
 			break
 		}
+
 		i++
 	}
 }

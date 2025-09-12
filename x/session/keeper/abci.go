@@ -41,6 +41,7 @@ func (k *Keeper) handleInactivePendingSessions(ctx sdk.Context) {
 
 		// Emit any events generated during the cancel process
 		ctx.EventManager().EmitEvents(resp.GetEvents())
+
 		return false
 	})
 }

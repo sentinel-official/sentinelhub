@@ -38,7 +38,6 @@ func (k *Keeper) HandleQuerySwaps(ctx sdk.Context, req *v1.QuerySwapsRequest) (*
 
 		return true, nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -48,5 +47,6 @@ func (k *Keeper) HandleQuerySwaps(ctx sdk.Context, req *v1.QuerySwapsRequest) (*
 
 func (k *Keeper) HandleQueryParams(ctx sdk.Context, _ *v1.QueryParamsRequest) (*v1.QueryParamsResponse, error) {
 	params := k.GetParams(ctx)
+
 	return &v1.QueryParamsResponse{Params: params}, nil
 }

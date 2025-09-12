@@ -21,6 +21,7 @@ func (m *GenesisState) Validate() error {
 	}
 
 	swaps := make(map[string]bool)
+
 	for _, item := range m.Swaps {
 		txHash := item.GetTxHash().String()
 		if swaps[txHash] {

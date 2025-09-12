@@ -11,9 +11,10 @@ import (
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
 
-// DepositAmount calculates the total amount to be deposited for the lease
+// DepositAmount calculates the total amount to be deposited for the lease.
 func (m *Lease) DepositAmount() sdk.Coin {
 	amount := m.Price.QuoteValue.MulRaw(m.MaxHours)
+
 	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
 }
 
@@ -27,7 +28,7 @@ func (m *Lease) GetMaxHours() time.Duration {
 	return time.Duration(m.MaxHours) * time.Hour
 }
 
-// InactiveAt returns the time when the lease becomes inactive,
+// InactiveAt returns the time when the lease becomes inactive,.
 func (m *Lease) InactiveAt() time.Time {
 	return m.StartAt.Add(m.GetMaxHours())
 }
@@ -49,6 +50,7 @@ func (m *Lease) RefundAmount() sdk.Coin {
 	}
 
 	amount := m.Price.QuoteValue.MulRaw(diff)
+
 	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
 }
 
@@ -75,36 +77,47 @@ func (m *Lease) Validate() error {
 	if m.ID == 0 {
 		return errors.New("id cannot be zero")
 	}
+
 	if m.ProvAddress == "" {
 		return errors.New("prov_address cannot be empty")
 	}
+
 	if _, err := base.ProvAddressFromBech32(m.ProvAddress); err != nil {
 		return fmt.Errorf("invalid prov_address %s: %w", m.ProvAddress, err)
 	}
+
 	if m.NodeAddress == "" {
 		return errors.New("node_address cannot be empty")
 	}
+
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
 		return fmt.Errorf("invalid node_address %s: %w", m.NodeAddress, err)
 	}
+
 	if err := m.Price.Validate(); err != nil {
 		return fmt.Errorf("invalid price %s: %w", m.Price, err)
 	}
+
 	if m.Hours < 0 {
 		return errors.New("hours cannot be negative")
 	}
+
 	if m.MaxHours < 0 {
 		return errors.New("max_hours cannot be negative")
 	}
+
 	if m.MaxHours == 0 {
 		return errors.New("max_hours cannot be zero")
 	}
+
 	if m.MaxHours < m.Hours {
 		return errors.New("max_hours cannot be less than hours")
 	}
+
 	if !m.RenewalPricePolicy.IsValid() {
 		return errors.New("renewal_price_policy must be valid")
 	}
+
 	if m.StartAt.IsZero() {
 		return errors.New("start_at cannot be zero")
 	}

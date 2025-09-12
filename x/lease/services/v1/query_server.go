@@ -29,6 +29,7 @@ func (q *queryServer) QueryLease(c context.Context, req *v1.QueryLeaseRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryLease(ctx, req)
 }
 
@@ -38,6 +39,7 @@ func (q *queryServer) QueryLeases(c context.Context, req *v1.QueryLeasesRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryLeases(ctx, req)
 }
 
@@ -47,6 +49,7 @@ func (q *queryServer) QueryLeasesForNode(c context.Context, req *v1.QueryLeasesF
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryLeasesForNode(ctx, req)
 }
 
@@ -56,6 +59,7 @@ func (q *queryServer) QueryLeasesForProvider(c context.Context, req *v1.QueryLea
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryLeasesForProvider(ctx, req)
 }
 
@@ -65,5 +69,6 @@ func (q *queryServer) QueryParams(c context.Context, req *v1.QueryParamsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryParams(ctx, req)
 }

@@ -12,6 +12,7 @@ const (
 func BytesToHash(b []byte) EthereumHash {
 	var a EthereumHash
 	a.SetBytes(b)
+
 	return a
 }
 
@@ -37,6 +38,7 @@ func (e EthereumHash) MarshalJSON() ([]byte, error) { return json.Marshal(e.Stri
 
 func (e *EthereumHash) Unmarshal(data []byte) error {
 	*e = BytesToHash(data)
+
 	return nil
 }
 
@@ -52,5 +54,6 @@ func (e *EthereumHash) UnmarshalJSON(data []byte) error {
 	}
 
 	*e = BytesToHash(hash)
+
 	return nil
 }

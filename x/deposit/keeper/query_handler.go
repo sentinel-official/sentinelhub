@@ -44,9 +44,9 @@ func (k *Keeper) HandleQueryDeposits(ctx sdk.Context, req *v1.QueryDepositsReque
 		}
 
 		items = append(items, item)
+
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

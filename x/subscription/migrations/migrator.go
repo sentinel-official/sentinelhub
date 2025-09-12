@@ -93,6 +93,7 @@ func (k *Migrator) getPayout(ctx sdk.Context, id uint64) v2.Payout {
 
 	var payout v2.Payout
 	k.cdc.MustUnmarshal(value, &payout)
+
 	return payout
 }
 
@@ -134,6 +135,7 @@ func (k *Migrator) migrateSubscriptions(ctx sdk.Context) {
 
 				k.subscription.DeleteAllocation(ctx, item.GetID(), accAddr)
 			}
+
 			if item.Hours != 0 {
 				payout := k.getPayout(ctx, item.ID)
 				if ok := k.provider.HasProvider(ctx, accAddr.Bytes()); !ok {
@@ -189,6 +191,7 @@ func (k *Migrator) migrateSubscriptions(ctx sdk.Context) {
 				}
 			}
 		}
+
 		if item, ok := item.(*v2.PlanSubscription); ok {
 			if !item.Status.Equal(v1base.StatusActive) {
 				k.subscription.IterateAllocationsForSubscription(ctx, item.ID, func(_ int, item v2.Allocation) (stop bool) {
@@ -198,6 +201,7 @@ func (k *Migrator) migrateSubscriptions(ctx sdk.Context) {
 					}
 
 					k.subscription.DeleteAllocation(ctx, item.ID, addr)
+
 					return false
 				})
 			} else {

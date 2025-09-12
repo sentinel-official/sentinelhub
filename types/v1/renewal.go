@@ -126,21 +126,27 @@ func (r RenewalPricePolicy) Validate(curr, prev Price) error {
 	if prev.BaseValue.IsZero() && prev.QuoteValue.IsZero() && curr.BaseValue.IsZero() && curr.QuoteValue.IsZero() {
 		return r.validate(prev.BaseValue, curr.BaseValue)
 	}
+
 	if prev.BaseValue.IsZero() && prev.QuoteValue.IsZero() && curr.BaseValue.IsZero() && !curr.QuoteValue.IsZero() {
 		return r.validate(prev.QuoteValue.ToLegacyDec(), curr.QuoteValue.ToLegacyDec())
 	}
+
 	if prev.BaseValue.IsZero() && prev.QuoteValue.IsZero() && !curr.BaseValue.IsZero() {
 		return r.validate(prev.BaseValue, curr.BaseValue)
 	}
+
 	if prev.BaseValue.IsZero() && !prev.QuoteValue.IsZero() {
 		return r.validate(prev.QuoteValue.ToLegacyDec(), curr.QuoteValue.ToLegacyDec())
 	}
+
 	if !prev.BaseValue.IsZero() && curr.BaseValue.IsZero() && curr.QuoteValue.IsZero() {
 		return r.validate(prev.BaseValue, curr.BaseValue)
 	}
+
 	if !prev.BaseValue.IsZero() && curr.BaseValue.IsZero() && !curr.QuoteValue.IsZero() {
 		return r.validate(prev.QuoteValue.ToLegacyDec(), curr.QuoteValue.ToLegacyDec())
 	}
+
 	if !prev.BaseValue.IsZero() && !curr.BaseValue.IsZero() {
 		return r.validate(prev.BaseValue, curr.BaseValue)
 	}

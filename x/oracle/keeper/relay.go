@@ -93,7 +93,7 @@ func (k *Keeper) OnAcknowledgementPacket(
 	}
 
 	// Iterate through each request-response pair and update the asset accordingly.
-	for i := 0; i < len(reqs); i++ {
+	for i := range reqs {
 		// Handle specific query paths to extract the required data and update the asset.
 		switch reqs[i].Path {
 		case "/osmosis.poolmanager.v1beta1.Query/SpotPrice":
@@ -191,5 +191,6 @@ func (k *Keeper) OnTimeoutPacket(ctx sdk.Context, packet ibcchanneltypes.Packet)
 
 	// Delete the denom mapping associated with the timed-out packet.
 	k.DeleteDenomForPacket(ctx, portID, channelID, sequence)
+
 	return nil
 }

@@ -21,6 +21,7 @@ func GetGigabytePrices(flags *pflag.FlagSet) (v1base.Prices, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if s == "" {
 		return nil, nil
 	}
@@ -33,6 +34,7 @@ func GetHourlyPrices(flags *pflag.FlagSet) (v1base.Prices, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if s == "" {
 		return nil, nil
 	}
@@ -45,6 +47,7 @@ func GetMaxPrice(flags *pflag.FlagSet) (v1base.Price, error) {
 	if err != nil {
 		return v1base.Price{}, err
 	}
+
 	if s == "" {
 		return v1base.ZeroPrice(""), nil
 	}

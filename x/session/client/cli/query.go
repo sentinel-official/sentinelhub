@@ -87,6 +87,7 @@ func querySessions() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			case id != 0:
 				res, err := qc.QuerySessionsForSubscription(
@@ -96,6 +97,7 @@ func querySessions() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			case accAddr != nil:
 				res, err := qc.QuerySessionsForAccount(
@@ -105,6 +107,7 @@ func querySessions() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			case nodeAddr != nil:
 				res, err := qc.QuerySessionsForNode(
@@ -114,6 +117,7 @@ func querySessions() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			default:
 				res, err := qc.QuerySessions(
@@ -123,6 +127,7 @@ func querySessions() *cobra.Command {
 				if err != nil {
 					return err
 				}
+
 				return ctx.PrintProto(res)
 			}
 		},

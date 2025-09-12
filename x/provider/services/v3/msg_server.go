@@ -23,20 +23,24 @@ func NewMsgServiceServer(k keeper.Keeper) v3.MsgServiceServer {
 
 func (m *msgServer) MsgRegisterProvider(c context.Context, req *v3.MsgRegisterProviderRequest) (*v3.MsgRegisterProviderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgRegisterProvider(ctx, req)
 }
 
 func (m *msgServer) MsgUpdateProviderDetails(c context.Context, req *v3.MsgUpdateProviderDetailsRequest) (*v3.MsgUpdateProviderDetailsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgUpdateProviderDetails(ctx, req)
 }
 
 func (m *msgServer) MsgUpdateProviderStatus(c context.Context, req *v3.MsgUpdateProviderStatusRequest) (*v3.MsgUpdateProviderStatusResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgUpdateProviderStatus(ctx, req)
 }
 
 func (m *msgServer) MsgUpdateParams(c context.Context, req *v3.MsgUpdateParamsRequest) (*v3.MsgUpdateParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return m.HandleMsgUpdateParams(ctx, req)
 }

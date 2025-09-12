@@ -35,6 +35,7 @@ func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) err
 
 		// Emit any events generated during the lease termination process
 		ctx.EventManager().EmitEvents(resp.GetEvents())
+
 		return false, nil
 	})
 }
@@ -65,6 +66,7 @@ func (k *Keeper) ProviderInactivePreHook(ctx sdk.Context, addr base.ProvAddress)
 
 		// Emit any events generated during the lease termination process
 		ctx.EventManager().EmitEvents(resp.GetEvents())
+
 		return false, nil
 	})
 }

@@ -16,6 +16,7 @@ func GetMaxPrice(flags *pflag.FlagSet) (v1base.Price, error) {
 	if err != nil {
 		return v1base.Price{}, err
 	}
+
 	if s == "" {
 		return v1base.ZeroPrice(""), nil
 	}
@@ -28,6 +29,7 @@ func GetRenewalPricePolicy(flags *pflag.FlagSet) (v1base.RenewalPricePolicy, err
 	if err != nil {
 		return v1base.RenewalPricePolicyUnspecified, err
 	}
+
 	if s == "" {
 		return v1base.RenewalPricePolicyUnspecified, nil
 	}

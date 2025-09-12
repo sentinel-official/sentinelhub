@@ -33,7 +33,7 @@ func TestNewQueryDepositsRequest(t *testing.T) {
 		pagination *sdkquery.PageRequest
 	)
 
-	for i := 0; i < 20; i++ {
+	for i := range 20 {
 		pagination = &sdkquery.PageRequest{
 			Key:        make([]byte, i),
 			Offset:     uint64(i),

@@ -77,6 +77,7 @@ func UpgradeHandler(
 			if !ok {
 				return nil, fmt.Errorf("params subspace does not exist for module: %s", name)
 			}
+
 			if subspace.HasKeyTable() {
 				continue
 			}
@@ -98,12 +99,14 @@ func UpgradeHandler(
 		}
 
 		govParams := keepers.GovKeeper.GetParams(ctx)
+
 		govParams.MinInitialDepositRatio = sdkmath.LegacyNewDecWithPrec(2, 1).String()
 		if err := keepers.GovKeeper.SetParams(ctx, govParams); err != nil {
 			return nil, err
 		}
 
 		stakingParams := keepers.StakingKeeper.GetParams(ctx)
+
 		stakingParams.MinCommissionRate = sdkmath.LegacyNewDecWithPrec(5, 2)
 		if err := keepers.StakingKeeper.SetParams(ctx, stakingParams); err != nil {
 			return nil, err
@@ -116,6 +119,7 @@ func UpgradeHandler(
 			}
 
 			validator.Commission.Rate = stakingParams.MinCommissionRate
+
 			validator.Commission.UpdateTime = ctx.BlockTime()
 			if validator.Commission.MaxRate.LT(validator.Commission.Rate) {
 				validator.Commission.MaxRate = validator.Commission.Rate

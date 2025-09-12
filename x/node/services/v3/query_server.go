@@ -29,6 +29,7 @@ func (q *queryServer) QueryNode(c context.Context, req *v3.QueryNodeRequest) (*v
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryNode(ctx, req)
 }
 
@@ -38,6 +39,7 @@ func (q *queryServer) QueryNodes(c context.Context, req *v3.QueryNodesRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryNodes(ctx, req)
 }
 
@@ -47,6 +49,7 @@ func (q *queryServer) QueryNodesForPlan(c context.Context, req *v3.QueryNodesFor
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryNodesForPlan(ctx, req)
 }
 
@@ -56,5 +59,6 @@ func (q *queryServer) QueryParams(c context.Context, req *v3.QueryParamsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryParams(ctx, req)
 }

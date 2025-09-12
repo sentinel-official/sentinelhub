@@ -29,5 +29,6 @@ func (q *queryServer) QueryParams(c context.Context, req *v3.QueryParamsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryParams(ctx, req)
 }

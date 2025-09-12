@@ -11,7 +11,7 @@ import (
 	sessiontypes "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
 )
 
-// Ensure that Session implements the sessiontypes.Session interface
+// Ensure that Session implements the sessiontypes.Session interface.
 var _ sessiontypes.Session = (*Session)(nil)
 
 // depositAmount calculates the deposit amount for the session.
@@ -103,6 +103,7 @@ func (m *Session) Validate() error {
 	if err := m.BaseSession.Validate(); err != nil {
 		return err
 	}
+
 	if err := m.Price.Validate(); err != nil {
 		return fmt.Errorf("invalid price: %w", err)
 	}

@@ -114,6 +114,7 @@ func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) err
 	if err := k.lease.NodeInactivePreHook(ctx, addr); err != nil {
 		return err
 	}
+
 	if err := k.session.NodeInactivePreHook(ctx, addr); err != nil {
 		return err
 	}

@@ -29,6 +29,7 @@ func (q *queryServer) QuerySession(c context.Context, req *v3.QuerySessionReques
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQuerySession(ctx, req)
 }
 
@@ -38,6 +39,7 @@ func (q *queryServer) QuerySessions(c context.Context, req *v3.QuerySessionsRequ
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQuerySessions(ctx, req)
 }
 
@@ -47,6 +49,7 @@ func (q *queryServer) QuerySessionsForAccount(c context.Context, req *v3.QuerySe
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQuerySessionsForAccount(ctx, req)
 }
 
@@ -56,6 +59,7 @@ func (q *queryServer) QuerySessionsForNode(c context.Context, req *v3.QuerySessi
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQuerySessionsForNode(ctx, req)
 }
 
@@ -65,6 +69,7 @@ func (q *queryServer) QuerySessionsForSubscription(c context.Context, req *v3.Qu
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQuerySessionsForSubscription(ctx, req)
 }
 
@@ -74,6 +79,7 @@ func (q *queryServer) QuerySessionsForAllocation(c context.Context, req *v3.Quer
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQuerySessionsForAllocation(ctx, req)
 }
 
@@ -83,5 +89,6 @@ func (q *queryServer) QueryParams(c context.Context, req *v3.QueryParamsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
 	return q.HandleQueryParams(ctx, req)
 }

@@ -30,6 +30,7 @@ func (k *Keeper) GetAsset(ctx sdk.Context, denom string) (v v1.Asset, found bool
 	}
 
 	k.cdc.MustUnmarshal(value, &v)
+
 	return v, true
 }
 
@@ -64,6 +65,7 @@ func (k *Keeper) IterateAssets(ctx sdk.Context, fn func(int, v1.Asset) bool) {
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }

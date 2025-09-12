@@ -21,6 +21,7 @@ func AccAddrFromFlags(flags *pflag.FlagSet) (sdk.AccAddress, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if s == "" {
 		return nil, err
 	}
@@ -33,6 +34,7 @@ func NodeAddrFromFlags(flags *pflag.FlagSet) (NodeAddress, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if s == "" {
 		return nil, err
 	}
@@ -49,6 +51,7 @@ func ProvAddrFromFlags(flags *pflag.FlagSet) (ProvAddress, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if s == "" {
 		return nil, err
 	}

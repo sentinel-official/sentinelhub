@@ -1,4 +1,4 @@
-name: "CodeQL Analysis"
+name: "CodeQL"
 
 on:
   schedule:
@@ -7,29 +7,34 @@ on:
 
 jobs:
   analyze:
-    name: CodeQL Analyze
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
-
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
     strategy:
       fail-fast: false
       matrix:
-        languages:
-          - go
+        include:
+          - language: actions
+            build-mode: none
+          - language: go
+            build-mode: autobuild
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v5
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: ${{ matrix.languages }}
-          queries: security-extended, security-and-quality
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          queries: security-extended,security-and-quality
 
-      - name: Autobuild Project
-        uses: github/codeql-action/autobuild@v3
-
-      - name: Run CodeQL Analysis
+      - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: /language:${{ matrix.languages }}
+          category: "/language:${{matrix.language}}"

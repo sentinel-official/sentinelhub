@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -34,7 +33,7 @@ func (m *Params) Validate() error {
 	}
 
 	if err := sdk.ValidateDenom(m.SwapDenom); err != nil {
-		return sdkerrors.Wrapf(err, "invalid swap_denom %s", m.SwapDenom)
+		return fmt.Errorf("invalid swap_denom %s: %w", m.SwapDenom, err)
 	}
 
 	if m.ApproveBy == "" {
@@ -42,7 +41,7 @@ func (m *Params) Validate() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.ApproveBy); err != nil {
-		return sdkerrors.Wrapf(err, "invalid approve_by %s", m.ApproveBy)
+		return fmt.Errorf("invalid approve_by %s: %w", m.ApproveBy, err)
 	}
 
 	return nil
@@ -75,7 +74,7 @@ func (m *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 					return errors.New("value cannot be empty")
 				}
 				if err := sdk.ValidateDenom(value); err != nil {
-					return sdkerrors.Wrapf(err, "invalid value %s", value)
+					return fmt.Errorf("invalid value %s: %w", value, err)
 				}
 
 				return nil
@@ -94,7 +93,7 @@ func (m *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 					return errors.New("value cannot be empty")
 				}
 				if _, err := sdk.AccAddressFromBech32(value); err != nil {
-					return sdkerrors.Wrapf(err, "invalid value %s", value)
+					return fmt.Errorf("invalid value %s: %w", value, err)
 				}
 
 				return nil

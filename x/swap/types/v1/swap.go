@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sentinel-official/sentinelhub/v12/x/swap/types"
@@ -36,7 +35,7 @@ func (m *Swap) Validate() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Receiver); err != nil {
-		return sdkerrors.Wrapf(err, "invalid receiver %s", m.Receiver)
+		return fmt.Errorf("invalid receiver %s: %w", m.Receiver, err)
 	}
 
 	if m.Amount.IsNegative() {

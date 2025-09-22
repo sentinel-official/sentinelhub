@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/url"
 
-	sdkerrors "cosmossdk.io/errors"
-
 	base "github.com/sentinel-official/sentinelhub/v12/types"
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
@@ -17,7 +15,7 @@ func (m *Provider) Validate() error {
 	}
 
 	if _, err := base.ProvAddressFromBech32(m.Address); err != nil {
-		return sdkerrors.Wrapf(err, "invalid address %s", m.Address)
+		return fmt.Errorf("invalid address %s: %w", m.Address, err)
 	}
 
 	if m.Name == "" {
@@ -38,7 +36,7 @@ func (m *Provider) Validate() error {
 
 	if m.Website != "" {
 		if _, err := url.ParseRequestURI(m.Website); err != nil {
-			return sdkerrors.Wrapf(err, "invalid website %s", m.Website)
+			return fmt.Errorf("invalid website %s: %w", m.Website, err)
 		}
 	}
 

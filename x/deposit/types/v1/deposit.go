@@ -2,8 +2,8 @@ package v1
 
 import (
 	"errors"
+	"fmt"
 
-	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -13,7 +13,7 @@ func (m *Deposit) Validate() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Address); err != nil {
-		return sdkerrors.Wrapf(err, "invalid address %s", m.Address)
+		return fmt.Errorf("invalid address %s: %w", m.Address, err)
 	}
 
 	if m.Coins == nil {

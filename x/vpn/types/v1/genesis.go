@@ -1,7 +1,7 @@
 package v1
 
 import (
-	sdkerrors "cosmossdk.io/errors"
+	"fmt"
 
 	deposittypes "github.com/sentinel-official/sentinelhub/v12/x/deposit/types/v1"
 	leasetypes "github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
@@ -46,31 +46,31 @@ func DefaultGenesisState() *GenesisState {
 
 func (m *GenesisState) Validate() error {
 	if err := deposittypes.ValidateGenesisState(m.Deposit); err != nil {
-		return sdkerrors.Wrapf(err, "invalid deposit genesis state")
+		return fmt.Errorf("invalid deposit genesis state: %w", err)
 	}
 
 	if err := leasetypes.ValidateGenesis(m.Lease); err != nil {
-		return sdkerrors.Wrapf(err, "invalid lease genesis state")
+		return fmt.Errorf("invalid lease genesis state: %w", err)
 	}
 
 	if err := nodetypes.ValidateGenesis(m.Node); err != nil {
-		return sdkerrors.Wrapf(err, "invalid node genesis state")
+		return fmt.Errorf("invalid node genesis state: %w", err)
 	}
 
 	if err := plantypes.ValidateGenesis(m.Plan); err != nil {
-		return sdkerrors.Wrapf(err, "invalid plan genesis state")
+		return fmt.Errorf("invalid plan genesis state: %w", err)
 	}
 
 	if err := providertypes.ValidateGenesis(m.Provider); err != nil {
-		return sdkerrors.Wrapf(err, "invalid provider genesis state")
+		return fmt.Errorf("invalid provider genesis state: %w", err)
 	}
 
 	if err := sessiontypes.ValidateGenesis(m.Session); err != nil {
-		return sdkerrors.Wrapf(err, "invalid session genesis state")
+		return fmt.Errorf("invalid session genesis state: %w", err)
 	}
 
 	if err := subscriptiontypes.ValidateGenesis(m.Subscription); err != nil {
-		return sdkerrors.Wrapf(err, "invalid subscription genesis state")
+		return fmt.Errorf("invalid subscription genesis state: %w", err)
 	}
 
 	return nil

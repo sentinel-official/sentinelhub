@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
@@ -32,7 +34,7 @@ func (m *MsgCreateAssetRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.Denom == "" {
@@ -40,7 +42,7 @@ func (m *MsgCreateAssetRequest) ValidateBasic() error {
 	}
 
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid denom: %w", err))
 	}
 
 	if m.Decimals < 0 {
@@ -83,7 +85,7 @@ func (m *MsgDeleteAssetRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.Denom == "" {
@@ -91,7 +93,7 @@ func (m *MsgDeleteAssetRequest) ValidateBasic() error {
 	}
 
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid denom: %w", err))
 	}
 
 	return nil
@@ -125,7 +127,7 @@ func (m *MsgUpdateAssetRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.Denom == "" {
@@ -133,7 +135,7 @@ func (m *MsgUpdateAssetRequest) ValidateBasic() error {
 	}
 
 	if err := sdk.ValidateDenom(m.Denom); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid denom: %w", err))
 	}
 
 	if m.Decimals < 0 {
@@ -176,11 +178,11 @@ func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if err := m.Params.Validate(); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid params: %w", err))
 	}
 
 	return nil

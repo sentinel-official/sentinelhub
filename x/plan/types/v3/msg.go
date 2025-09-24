@@ -1,6 +1,8 @@
 package v3
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/sentinelhub/v12/types"
@@ -39,18 +41,26 @@ func (m *MsgCreatePlanRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
-	if m.Gigabytes <= 0 {
-		return types.NewErrorInvalidMessage("gigabytes must be positive")
+	if m.Gigabytes == 0 {
+		return types.NewErrorInvalidMessage("gigabytes cannot be zero")
 	}
 
-	if m.Hours <= 0 {
-		return types.NewErrorInvalidMessage("hours must be positive")
+	if m.Gigabytes < 0 {
+		return types.NewErrorInvalidMessage("gigabytes cannot be negative")
 	}
 
-	if !m.GetPrices().IsValid() {
+	if m.Hours == 0 {
+		return types.NewErrorInvalidMessage("hours cannot be zero")
+	}
+
+	if m.Hours < 0 {
+		return types.NewErrorInvalidMessage("hours cannot be negative")
+	}
+
+	if prices := m.GetPrices(); !prices.IsValid() {
 		return types.NewErrorInvalidMessage("prices must be valid")
 	}
 
@@ -83,7 +93,7 @@ func (m *MsgLinkNodeRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -95,7 +105,7 @@ func (m *MsgLinkNodeRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid node_address: %w", err))
 	}
 
 	return nil
@@ -127,7 +137,7 @@ func (m *MsgUnlinkNodeRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -139,7 +149,7 @@ func (m *MsgUnlinkNodeRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid node_address: %w", err))
 	}
 
 	return nil
@@ -171,7 +181,7 @@ func (m *MsgUpdatePlanStatusRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -213,7 +223,7 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -222,7 +232,7 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 
 	if m.Denom != "" {
 		if err := sdk.ValidateDenom(m.Denom); err != nil {
-			return types.NewErrorInvalidMessage(err)
+			return types.NewErrorInvalidMessage(fmt.Errorf("invalid denom: %w", err))
 		}
 	}
 
@@ -235,7 +245,7 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid node_address: %w", err))
 	}
 
 	return nil

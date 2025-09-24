@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net"
 	"strconv"
-	"strings"
 
 	base "github.com/sentinel-official/sentinelhub/v12/types"
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
@@ -123,6 +122,14 @@ func validateRemoteAddrs(addrs []string) error {
 			return fmt.Errorf("invalid format: %w", err)
 		}
 
+		if host == "" {
+			return errors.New("missing host")
+		}
+
+		if len(host) > 64 {
+			return errors.New("host length exceeds 64 chars")
+		}
+
 		if port == "" {
 			return errors.New("missing port")
 		}
@@ -134,11 +141,6 @@ func validateRemoteAddrs(addrs []string) error {
 
 		if portNum < 1 || portNum > 65535 {
 			return errors.New("invalid port range")
-		}
-
-		host = strings.Trim(host, "[]")
-		if len(host) > 64 {
-			return errors.New("host exceeds 64 characters")
 		}
 	}
 

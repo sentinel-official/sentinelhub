@@ -1,6 +1,7 @@
 package v3
 
 import (
+	"fmt"
 	"time"
 
 	sdkmath "cosmossdk.io/math"
@@ -32,7 +33,7 @@ func (m *MsgCancelSessionRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -86,7 +87,7 @@ func (m *MsgUpdateSessionRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.NodeAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -147,11 +148,11 @@ func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if err := m.Params.Validate(); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid params: %w", err))
 	}
 
 	return nil

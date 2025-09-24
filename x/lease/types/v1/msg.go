@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/sentinelhub/v12/types"
@@ -32,7 +34,7 @@ func (m *MsgEndLeaseRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -69,7 +71,7 @@ func (m *MsgRenewLeaseRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -86,7 +88,7 @@ func (m *MsgRenewLeaseRequest) ValidateBasic() error {
 
 	if m.MaxPrice.Denom != "" {
 		if err := m.MaxPrice.Validate(); err != nil {
-			return types.NewErrorInvalidMessage(err)
+			return types.NewErrorInvalidMessage(fmt.Errorf("invalid max_price: %w", err))
 		}
 	}
 
@@ -121,7 +123,7 @@ func (m *MsgStartLeaseRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.NodeAddress == "" {
@@ -129,7 +131,7 @@ func (m *MsgStartLeaseRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid node_address: %w", err))
 	}
 
 	if m.Hours == 0 {
@@ -142,12 +144,12 @@ func (m *MsgStartLeaseRequest) ValidateBasic() error {
 
 	if m.MaxPrice.Denom != "" {
 		if err := m.MaxPrice.Validate(); err != nil {
-			return types.NewErrorInvalidMessage(err)
+			return types.NewErrorInvalidMessage(fmt.Errorf("invalid max_price: %w", err))
 		}
 	}
 
 	if !m.RenewalPricePolicy.IsValid() {
-		return types.NewErrorInvalidMessage("renewal price policy must be valid")
+		return types.NewErrorInvalidMessage("renewal_price_policy must be valid")
 	}
 
 	return nil
@@ -179,7 +181,7 @@ func (m *MsgUpdateLeaseRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -187,7 +189,7 @@ func (m *MsgUpdateLeaseRequest) ValidateBasic() error {
 	}
 
 	if !m.RenewalPricePolicy.IsValid() {
-		return types.NewErrorInvalidMessage("renewal price policy must be valid")
+		return types.NewErrorInvalidMessage("renewal_price_policy must be valid")
 	}
 
 	return nil
@@ -218,11 +220,11 @@ func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if err := m.Params.Validate(); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid params: %w", err))
 	}
 
 	return nil

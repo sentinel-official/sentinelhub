@@ -1,6 +1,8 @@
 package v3
 
 import (
+	"fmt"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -35,7 +37,7 @@ func (m *MsgCancelSubscriptionRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -71,7 +73,7 @@ func (m *MsgRenewSubscriptionRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -80,7 +82,7 @@ func (m *MsgRenewSubscriptionRequest) ValidateBasic() error {
 
 	if m.Denom != "" {
 		if err := sdk.ValidateDenom(m.Denom); err != nil {
-			return types.NewErrorInvalidMessage(err)
+			return types.NewErrorInvalidMessage(fmt.Errorf("invalid denom: %w", err))
 		}
 	}
 
@@ -114,7 +116,7 @@ func (m *MsgShareSubscriptionRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -126,7 +128,7 @@ func (m *MsgShareSubscriptionRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.AccAddress); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid acc_address: %w", err))
 	}
 
 	if m.Bytes.IsNil() {
@@ -167,7 +169,7 @@ func (m *MsgStartSubscriptionRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -176,7 +178,7 @@ func (m *MsgStartSubscriptionRequest) ValidateBasic() error {
 
 	if m.Denom != "" {
 		if err := sdk.ValidateDenom(m.Denom); err != nil {
-			return types.NewErrorInvalidMessage(err)
+			return types.NewErrorInvalidMessage(fmt.Errorf("invalid denom: %w", err))
 		}
 	}
 
@@ -213,7 +215,7 @@ func (m *MsgUpdateSubscriptionRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -253,7 +255,7 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.ID == 0 {
@@ -265,7 +267,7 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid node_address: %w", err))
 	}
 
 	return nil
@@ -296,11 +298,11 @@ func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if err := m.Params.Validate(); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid params: %w", err))
 	}
 
 	return nil

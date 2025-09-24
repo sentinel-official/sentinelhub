@@ -1,6 +1,7 @@
 package v3
 
 import (
+	"fmt"
 	"net/url"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -36,7 +37,7 @@ func (m *MsgRegisterProviderRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.Name == "" {
@@ -57,7 +58,7 @@ func (m *MsgRegisterProviderRequest) ValidateBasic() error {
 
 	if m.Website != "" {
 		if _, err := url.ParseRequestURI(m.Website); err != nil {
-			return types.NewErrorInvalidMessage(err)
+			return types.NewErrorInvalidMessage(fmt.Errorf("invalid website: %w", err))
 		}
 	}
 
@@ -96,7 +97,7 @@ func (m *MsgUpdateProviderDetailsRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if len(m.Name) > 64 {
@@ -113,7 +114,7 @@ func (m *MsgUpdateProviderDetailsRequest) ValidateBasic() error {
 
 	if m.Website != "" {
 		if _, err := url.ParseRequestURI(m.Website); err != nil {
-			return types.NewErrorInvalidMessage(err)
+			return types.NewErrorInvalidMessage(fmt.Errorf("invalid website: %w", err))
 		}
 	}
 
@@ -149,7 +150,7 @@ func (m *MsgUpdateProviderStatusRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {
@@ -184,11 +185,11 @@ func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if err := m.Params.Validate(); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid params: %w", err))
 	}
 
 	return nil

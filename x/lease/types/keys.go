@@ -15,8 +15,9 @@ const (
 )
 
 var (
-	CountKey                    = []byte{0x00}
-	ParamsKey                   = []byte{0x01}
+	CountKey  = []byte{0x00}
+	ParamsKey = []byte{0x01}
+
 	LeaseKeyPrefix              = []byte{0x10}
 	LeaseForNodeKeyPrefix       = []byte{0x11}
 	LeaseForProviderKeyPrefix   = []byte{0x12}

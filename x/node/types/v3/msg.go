@@ -1,6 +1,7 @@
 package v3
 
 import (
+	"fmt"
 	"time"
 
 	sdkmath "cosmossdk.io/math"
@@ -47,7 +48,7 @@ func (m *MsgRegisterNodeRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if prices := m.GetGigabytePrices(); !prices.IsValid() {
@@ -59,7 +60,7 @@ func (m *MsgRegisterNodeRequest) ValidateBasic() error {
 	}
 
 	if err := validateRemoteAddrs(m.RemoteAddrs); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid remote_addrs: %w", err))
 	}
 
 	return nil
@@ -102,7 +103,7 @@ func (m *MsgUpdateNodeDetailsRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.NodeAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if prices := m.GetGigabytePrices(); !prices.IsValid() {
@@ -115,7 +116,7 @@ func (m *MsgUpdateNodeDetailsRequest) ValidateBasic() error {
 
 	if len(m.RemoteAddrs) > 0 {
 		if err := validateRemoteAddrs(m.RemoteAddrs); err != nil {
-			return types.NewErrorInvalidMessage(err)
+			return types.NewErrorInvalidMessage(fmt.Errorf("invalid remote_addrs: %w", err))
 		}
 	}
 
@@ -147,7 +148,7 @@ func (m *MsgUpdateNodeStatusRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.NodeAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {
@@ -195,7 +196,7 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if m.NodeAddress == "" {
@@ -203,7 +204,7 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 	}
 
 	if _, err := base.NodeAddressFromBech32(m.NodeAddress); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid node_address: %w", err))
 	}
 
 	if m.Gigabytes == 0 && m.Hours == 0 {
@@ -224,7 +225,7 @@ func (m *MsgStartSessionRequest) ValidateBasic() error {
 
 	if m.MaxPrice.Denom != "" {
 		if err := m.MaxPrice.Validate(); err != nil {
-			return types.NewErrorInvalidMessage(err)
+			return types.NewErrorInvalidMessage(fmt.Errorf("invalid max_price: %w", err))
 		}
 	}
 
@@ -256,11 +257,11 @@ func (m *MsgUpdateParamsRequest) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
 	if err := m.Params.Validate(); err != nil {
-		return types.NewErrorInvalidMessage(err)
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid params: %w", err))
 	}
 
 	return nil

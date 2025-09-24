@@ -15,7 +15,7 @@ var (
 // Validate checks that all parameters in Params are valid.
 func (m *Params) Validate() error {
 	if err := validateDeposit(m.Deposit); err != nil {
-		return err
+		return fmt.Errorf("invalid deposit: %w", err)
 	}
 
 	return nil
@@ -36,15 +36,15 @@ func DefaultParams() Params {
 // validateDeposit checks that the deposit is a valid, non-negative, non-nil coin.
 func validateDeposit(v sdk.Coin) error {
 	if v.IsNil() {
-		return errors.New("deposit cannot be nil")
+		return errors.New("value cannot be nil")
 	}
 
 	if v.IsNegative() {
-		return errors.New("deposit cannot be negative")
+		return errors.New("value cannot be negative")
 	}
 
 	if err := v.Validate(); err != nil {
-		return fmt.Errorf("invalid deposit: %w", err)
+		return fmt.Errorf("invalid value: %w", err)
 	}
 
 	return nil

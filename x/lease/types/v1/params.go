@@ -2,6 +2,7 @@ package v1
 
 import (
 	"errors"
+	"fmt"
 
 	sdkmath "cosmossdk.io/math"
 )
@@ -16,15 +17,15 @@ var (
 // Validate checks whether the Params fields are valid according to defined rules.
 func (m *Params) Validate() error {
 	if err := validateMaxHours(m.MaxHours); err != nil {
-		return err
+		return fmt.Errorf("invalid max_hours: %w", err)
 	}
 
 	if err := validateMinHours(m.MinHours); err != nil {
-		return err
+		return fmt.Errorf("invalid min_hours: %w", err)
 	}
 
 	if err := validateStakingShare(m.StakingShare); err != nil {
-		return err
+		return fmt.Errorf("invalid staking_share: %w", err)
 	}
 
 	if m.MinHours > m.MaxHours {
@@ -54,12 +55,12 @@ func DefaultParams() Params {
 
 // validateMaxHours checks that maxHours is a positive integer.
 func validateMaxHours(v int64) error {
-	if v < 0 {
-		return errors.New("max_hours cannot be negative")
+	if v == 0 {
+		return errors.New("value cannot be zero")
 	}
 
-	if v == 0 {
-		return errors.New("max_hours cannot be zero")
+	if v < 0 {
+		return errors.New("value cannot be negative")
 	}
 
 	return nil
@@ -67,12 +68,12 @@ func validateMaxHours(v int64) error {
 
 // validateMinHours checks that minHours is a positive integer.
 func validateMinHours(v int64) error {
-	if v < 0 {
-		return errors.New("min_hours cannot be negative")
+	if v == 0 {
+		return errors.New("value cannot be zero")
 	}
 
-	if v == 0 {
-		return errors.New("min_hours cannot be zero")
+	if v < 0 {
+		return errors.New("value cannot be negative")
 	}
 
 	return nil
@@ -84,15 +85,15 @@ func validateMinHours(v int64) error {
 // - Not greater than 1 (100%).
 func validateStakingShare(v sdkmath.LegacyDec) error {
 	if v.IsNil() {
-		return errors.New("staking_share cannot be nil")
+		return errors.New("value cannot be nil")
 	}
 
 	if v.IsNegative() {
-		return errors.New("staking_share cannot be negative")
+		return errors.New("value cannot be negative")
 	}
 
 	if v.GT(sdkmath.LegacyOneDec()) {
-		return errors.New("staking_share cannot be greater than 1")
+		return errors.New("value cannot be greater than 1")
 	}
 
 	return nil

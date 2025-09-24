@@ -2,6 +2,7 @@ package v1
 
 import (
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -15,15 +16,15 @@ var (
 // Validate checks whether the Params fields are valid according to defined rules.
 func (m *Params) Validate() error {
 	if err := validateBlockInterval(m.BlockInterval); err != nil {
-		return err
+		return fmt.Errorf("invalid block_interval: %w", err)
 	}
 
 	if err := validateChannelID(m.ChannelID); err != nil {
-		return err
+		return fmt.Errorf("invalid channel_id: %w", err)
 	}
 
 	if err := validateTimeout(m.Timeout); err != nil {
-		return err
+		return fmt.Errorf("invalid timeout: %w", err)
 	}
 
 	return nil
@@ -49,12 +50,12 @@ func DefaultParams() Params {
 
 // validateBlockInterval checks that the block interval is a positive value.
 func validateBlockInterval(v int64) error {
-	if v < 0 {
-		return errors.New("block_interval cannot be negative")
+	if v == 0 {
+		return errors.New("value cannot not be zero")
 	}
 
-	if v == 0 {
-		return errors.New("block_interval cannot not be zero")
+	if v < 0 {
+		return errors.New("value cannot be negative")
 	}
 
 	return nil
@@ -67,12 +68,12 @@ func validateChannelID(_ string) error {
 
 // validateTimeout ensures the timeout duration is positive.
 func validateTimeout(v time.Duration) error {
-	if v < 0 {
-		return errors.New("timeout cannot be negative")
+	if v == 0 {
+		return errors.New("value cannot be zero")
 	}
 
-	if v == 0 {
-		return errors.New("timeout cannot be zero")
+	if v < 0 {
+		return errors.New("value cannot be negative")
 	}
 
 	return nil

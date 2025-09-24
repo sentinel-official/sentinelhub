@@ -2,6 +2,7 @@ package v3
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	sdkmath "cosmossdk.io/math"
@@ -16,11 +17,11 @@ var (
 // Validate checks whether the Params fields are valid according to defined rules.
 func (m *Params) Validate() error {
 	if err := validateStakingShare(m.StakingShare); err != nil {
-		return err
+		return fmt.Errorf("invalid staking_share: %w", err)
 	}
 
 	if err := validateStatusChangeDelay(m.StatusChangeDelay); err != nil {
-		return err
+		return fmt.Errorf("invalid status_change_delay: %w", err)
 	}
 
 	return nil
@@ -48,15 +49,15 @@ func DefaultParams() Params {
 // - Not greater than 1 (100%).
 func validateStakingShare(v sdkmath.LegacyDec) error {
 	if v.IsNil() {
-		return errors.New("staking_share cannot be nil")
+		return errors.New("value cannot be nil")
 	}
 
 	if v.IsNegative() {
-		return errors.New("staking_share cannot be negative")
+		return errors.New("value cannot be negative")
 	}
 
 	if v.GT(sdkmath.LegacyOneDec()) {
-		return errors.New("staking_share cannot be greater than 1")
+		return errors.New("value cannot be greater than 1")
 	}
 
 	return nil
@@ -64,12 +65,12 @@ func validateStakingShare(v sdkmath.LegacyDec) error {
 
 // validateStatusChangeDelay checks that statusChangeDelay is a positive duration.
 func validateStatusChangeDelay(v time.Duration) error {
-	if v < 0 {
-		return errors.New("status_change_delay cannot be negative")
+	if v == 0 {
+		return errors.New("value cannot be zero")
 	}
 
-	if v == 0 {
-		return errors.New("status_change_delay cannot be zero")
+	if v < 0 {
+		return errors.New("value cannot be negative")
 	}
 
 	return nil

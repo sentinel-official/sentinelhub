@@ -2,6 +2,7 @@ package v3
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"cosmossdk.io/math"
@@ -21,31 +22,31 @@ var (
 // Validate checks whether the Params fields are valid according to defined rules.
 func (m *Params) Validate() error {
 	if err := validateMaxGigabytes(m.MaxGigabytes); err != nil {
-		return err
+		return fmt.Errorf("invalid max_gigabytes: %w", err)
 	}
 
 	if err := validateMinGigabytes(m.MinGigabytes); err != nil {
-		return err
+		return fmt.Errorf("invalid min_gigabytes: %w", err)
 	}
 
 	if err := validateMaxHours(m.MaxHours); err != nil {
-		return err
+		return fmt.Errorf("invalid max_hours: %w", err)
 	}
 
 	if err := validateMinHours(m.MinHours); err != nil {
-		return err
+		return fmt.Errorf("invalid min_hours: %w", err)
 	}
 
 	if err := validateProofVerificationEnabled(m.ProofVerificationEnabled); err != nil {
-		return err
+		return fmt.Errorf("invalid proof_verification_enabled: %w", err)
 	}
 
 	if err := validateStakingShare(m.StakingShare); err != nil {
-		return err
+		return fmt.Errorf("invalid staking_share: %w", err)
 	}
 
 	if err := validateStatusChangeDelay(m.StatusChangeDelay); err != nil {
-		return err
+		return fmt.Errorf("invalid status_change_delay: %w", err)
 	}
 
 	return nil
@@ -82,12 +83,12 @@ func DefaultParams() Params {
 
 // validateMaxGigabytes ensures maxGigabytes is a positive non-zero integer.
 func validateMaxGigabytes(v int64) error {
-	if v < 0 {
-		return errors.New("max_gigabytes cannot be negative")
+	if v == 0 {
+		return errors.New("value cannot be zero")
 	}
 
-	if v == 0 {
-		return errors.New("max_gigabytes cannot be zero")
+	if v < 0 {
+		return errors.New("value cannot be negative")
 	}
 
 	return nil
@@ -95,12 +96,12 @@ func validateMaxGigabytes(v int64) error {
 
 // validateMinGigabytes ensures minGigabytes is a positive non-zero integer.
 func validateMinGigabytes(v int64) error {
-	if v < 0 {
-		return errors.New("min_gigabytes cannot be negative")
+	if v == 0 {
+		return errors.New("value cannot be zero")
 	}
 
-	if v == 0 {
-		return errors.New("min_gigabytes cannot be zero")
+	if v < 0 {
+		return errors.New("value cannot be negative")
 	}
 
 	return nil
@@ -108,12 +109,12 @@ func validateMinGigabytes(v int64) error {
 
 // validateMaxHours ensures maxHours is a positive non-zero integer.
 func validateMaxHours(v int64) error {
-	if v < 0 {
-		return errors.New("max_hours cannot be negative")
+	if v == 0 {
+		return errors.New("value cannot be zero")
 	}
 
-	if v == 0 {
-		return errors.New("max_hours cannot be zero")
+	if v < 0 {
+		return errors.New("value cannot be negative")
 	}
 
 	return nil
@@ -121,12 +122,12 @@ func validateMaxHours(v int64) error {
 
 // validateMinHours ensures minHours is a positive non-zero integer.
 func validateMinHours(v int64) error {
-	if v < 0 {
-		return errors.New("min_hours cannot be negative")
+	if v == 0 {
+		return errors.New("value cannot be zero")
 	}
 
-	if v == 0 {
-		return errors.New("min_hours cannot be zero")
+	if v < 0 {
+		return errors.New("value cannot be negative")
 	}
 
 	return nil
@@ -141,15 +142,15 @@ func validateProofVerificationEnabled(v bool) error {
 // validateStakingShare ensures stakingShare is not nil, not negative, and ≤ 1.
 func validateStakingShare(v math.LegacyDec) error {
 	if v.IsNil() {
-		return errors.New("staking_share cannot be nil")
+		return errors.New("value cannot be nil")
 	}
 
 	if v.IsNegative() {
-		return errors.New("staking_share cannot be negative")
+		return errors.New("value cannot be negative")
 	}
 
 	if v.GT(math.LegacyOneDec()) {
-		return errors.New("staking_share cannot be greater than 1")
+		return errors.New("value cannot be greater than 1")
 	}
 
 	return nil
@@ -157,12 +158,12 @@ func validateStakingShare(v math.LegacyDec) error {
 
 // validateStatusChangeDelay ensures the delay is positive and non-zero.
 func validateStatusChangeDelay(v time.Duration) error {
-	if v < 0 {
-		return errors.New("status_change_delay cannot be negative")
+	if v == 0 {
+		return errors.New("value cannot be zero")
 	}
 
-	if v == 0 {
-		return errors.New("status_change_delay cannot be zero")
+	if v < 0 {
+		return errors.New("value cannot be negative")
 	}
 
 	return nil

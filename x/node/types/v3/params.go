@@ -50,19 +50,19 @@ func (m *Params) GetMinHourlyPrices() v1base.Prices {
 // Validate validates all parameters to ensure they conform to expected rules.
 func (m *Params) Validate() error {
 	if err := validateActiveDuration(m.ActiveDuration); err != nil {
-		return err
+		return fmt.Errorf("invalid active_duration: %w", err)
 	}
 
 	if err := validateDeposit(m.Deposit); err != nil {
-		return err
+		return fmt.Errorf("invalid deposit: %w", err)
 	}
 
 	if err := validateMinGigabytePrices(m.MinGigabytePrices); err != nil {
-		return err
+		return fmt.Errorf("invalid min_gigabyte_prices: %w", err)
 	}
 
 	if err := validateMinHourlyPrices(m.MinHourlyPrices); err != nil {
-		return err
+		return fmt.Errorf("invalid min_hourly_prices: %w", err)
 	}
 
 	return nil
@@ -92,12 +92,12 @@ func DefaultParams() Params {
 
 // validateActiveDuration checks that the active duration is greater than zero.
 func validateActiveDuration(v time.Duration) error {
-	if v < 0 {
-		return errors.New("active_duration cannot be negative")
+	if v == 0 {
+		return errors.New("value cannot be zero")
 	}
 
-	if v == 0 {
-		return errors.New("active_duration cannot be zero")
+	if v < 0 {
+		return errors.New("value cannot be negative")
 	}
 
 	return nil
@@ -106,15 +106,15 @@ func validateActiveDuration(v time.Duration) error {
 // validateDeposit checks that the deposit is not nil, not negative, and valid.
 func validateDeposit(v sdk.Coin) error {
 	if v.IsNil() {
-		return errors.New("deposit cannot be nil")
+		return errors.New("value cannot be nil")
 	}
 
 	if v.IsNegative() {
-		return errors.New("deposit cannot be negative")
+		return errors.New("value cannot be negative")
 	}
 
 	if !v.IsValid() {
-		return fmt.Errorf("invalid deposit %s", v)
+		return errors.New("invalid value")
 	}
 
 	return nil
@@ -127,7 +127,7 @@ func validateMinGigabytePrices(v []v1base.Price) error {
 	}
 
 	if err := v1base.Prices(v).Validate(); err != nil {
-		return fmt.Errorf("invalid min_gigabyte_prices: %w", err)
+		return fmt.Errorf("invalid value: %w", err)
 	}
 
 	return nil
@@ -140,7 +140,7 @@ func validateMinHourlyPrices(v []v1base.Price) error {
 	}
 
 	if err := v1base.Prices(v).Validate(); err != nil {
-		return fmt.Errorf("invalid min_hourly_prices: %w", err)
+		return fmt.Errorf("invalid value: %w", err)
 	}
 
 	return nil

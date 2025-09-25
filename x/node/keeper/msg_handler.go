@@ -220,7 +220,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	}
 
 	// Determine appropriate price based on requested denomination and service type
-	price := v1base.ZeroPrice(msg.MaxPrice.Denom)
+	var price v1base.Price
 	if msg.Gigabytes != 0 {
 		price, found = node.GigabytePrice(msg.MaxPrice.Denom)
 		if !found {

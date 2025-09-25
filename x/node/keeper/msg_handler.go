@@ -17,13 +17,13 @@ import (
 // It validates the pricing fields, checks for duplicates, collects deposit, and stores the new node in an inactive state.
 func (k *Keeper) HandleMsgRegisterNode(ctx sdk.Context, msg *v3.MsgRegisterNodeRequest) (*v3.MsgRegisterNodeResponse, error) {
 	// Validate submitted gigabyte prices
-	if !k.IsValidGigabytePrices(ctx, msg.GigabytePrices) {
-		return nil, types.NewErrorInvalidPrices(msg.GigabytePrices)
+	if err := k.ValidateGigabytePrices(ctx, msg.GigabytePrices); err != nil {
+		return nil, types.NewErrorInvalidPrices(err)
 	}
 
 	// Validate submitted hourly prices
-	if !k.IsValidHourlyPrices(ctx, msg.HourlyPrices) {
-		return nil, types.NewErrorInvalidPrices(msg.HourlyPrices)
+	if err := k.ValidateHourlyPrices(ctx, msg.HourlyPrices); err != nil {
+		return nil, types.NewErrorInvalidPrices(err)
 	}
 
 	// Parse the account address from the sender string
@@ -78,13 +78,13 @@ func (k *Keeper) HandleMsgRegisterNode(ctx sdk.Context, msg *v3.MsgRegisterNodeR
 // It verifies node existence and applies new pricing and metadata, emitting an update event.
 func (k *Keeper) HandleMsgUpdateNodeDetails(ctx sdk.Context, msg *v3.MsgUpdateNodeDetailsRequest) (*v3.MsgUpdateNodeDetailsResponse, error) {
 	// Validate new gigabyte prices
-	if !k.IsValidGigabytePrices(ctx, msg.GigabytePrices) {
-		return nil, types.NewErrorInvalidPrices(msg.GigabytePrices)
+	if err := k.ValidateGigabytePrices(ctx, msg.GigabytePrices); err != nil {
+		return nil, types.NewErrorInvalidPrices(err)
 	}
 
 	// Validate new hourly prices
-	if !k.IsValidHourlyPrices(ctx, msg.HourlyPrices) {
-		return nil, types.NewErrorInvalidPrices(msg.HourlyPrices)
+	if err := k.ValidateHourlyPrices(ctx, msg.HourlyPrices); err != nil {
+		return nil, types.NewErrorInvalidPrices(err)
 	}
 
 	// Parse sender's node address

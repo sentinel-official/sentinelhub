@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -50,46 +51,18 @@ func (k *Keeper) MinHourlyPrices(ctx sdk.Context) v1base.Prices {
 	return k.GetParams(ctx).MinHourlyPrices
 }
 
-// IsValidGigabytePrices checks if the provided gigabyte prices are valid based on the minimum prices defined in the module's parameters.
-func (k *Keeper) IsValidGigabytePrices(ctx sdk.Context, prices v1base.Prices) bool {
-	if prices.Len() == 0 {
-		return true
-	}
-
+// ValidateGigabytePrices validates prices against the minimum gigabyte prices.
+func (k *Keeper) ValidateGigabytePrices(ctx sdk.Context, prices v1base.Prices) error {
 	minPrices := k.MinGigabytePrices(ctx)
-	for _, price := range minPrices {
-		baseValue, quoteValue := prices.AmountOf(price.Denom)
-		if !baseValue.IsZero() && baseValue.LT(price.BaseValue) {
-			return false
-		}
 
-		if !quoteValue.IsZero() && quoteValue.LT(price.QuoteValue) {
-			return false
-		}
-	}
-
-	return true
+	return validatePrices(prices, minPrices)
 }
 
-// IsValidHourlyPrices checks if the provided hourly prices are valid based on the minimum prices defined in the module's parameters.
-func (k *Keeper) IsValidHourlyPrices(ctx sdk.Context, prices v1base.Prices) bool {
-	if prices.Len() == 0 {
-		return true
-	}
-
+// ValidateHourlyPrices validates prices against the minimum hourly prices.
+func (k *Keeper) ValidateHourlyPrices(ctx sdk.Context, prices v1base.Prices) error {
 	minPrices := k.MinHourlyPrices(ctx)
-	for _, price := range minPrices {
-		baseValue, quoteValue := prices.AmountOf(price.Denom)
-		if !baseValue.IsZero() && baseValue.LT(price.BaseValue) {
-			return false
-		}
 
-		if !quoteValue.IsZero() && quoteValue.LT(price.QuoteValue) {
-			return false
-		}
-	}
-
-	return true
+	return validatePrices(prices, minPrices)
 }
 
 // GetInactiveAt returns the inactive time by adding ActiveDuration to the current block time.
@@ -97,4 +70,36 @@ func (k *Keeper) GetInactiveAt(ctx sdk.Context) time.Time {
 	d := k.ActiveDuration(ctx)
 
 	return ctx.BlockTime().Add(d)
+}
+
+// validatePrices checks that all provided prices use allowed denoms and
+// meet or exceed the given minimums (zero values and empty lists are valid).
+func validatePrices(prices v1base.Prices, minPrices v1base.Prices) error {
+	// Empty set of prices is valid: treated as zero prices for all denoms.
+	if prices.Len() == 0 {
+		return nil
+	}
+
+	// Build a lookup map for minPrices
+	m := minPrices.Map()
+
+	for _, price := range prices {
+		minPrice, ok := m[price.Denom]
+		if !ok {
+			return fmt.Errorf("denom %s is not allowed", price.Denom)
+		}
+
+		// Only check non-zero values
+		if !price.BaseValue.IsZero() && price.BaseValue.LT(minPrice.BaseValue) {
+			return fmt.Errorf("base value %s for denom %s is lesser than %s",
+				price.BaseValue, price.Denom, minPrice.BaseValue)
+		}
+
+		if !price.QuoteValue.IsZero() && price.QuoteValue.LT(minPrice.QuoteValue) {
+			return fmt.Errorf("quote value %s for denom %s is lesser than %s",
+				price.QuoteValue, price.Denom, minPrice.QuoteValue)
+		}
+	}
+
+	return nil
 }

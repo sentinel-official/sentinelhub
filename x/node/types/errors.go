@@ -69,8 +69,8 @@ func NewErrorInvalidPrice(price v1base.Price) error {
 }
 
 // NewErrorInvalidPrices returns an error indicating that the provided prices are invalid.
-func NewErrorInvalidPrices(prices v1base.Prices) error {
-	return sdkerrors.Wrapf(ErrInvalidPrices, "invalid prices %s", prices)
+func NewErrorInvalidPrices(err error) error {
+	return sdkerrors.Wrap(ErrInvalidPrices, err.Error())
 }
 
 // NewErrorInvalidSessionStatus returns an error indicating that the provided status is invalid for the session.

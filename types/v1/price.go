@@ -302,7 +302,7 @@ func (p Prices) Copy() Prices {
 
 // String converts the Prices slice to a semicolon-separated string.
 func (p Prices) String() string {
-	var parts []string
+	parts := make([]string, 0, len(p))
 	for _, price := range p {
 		parts = append(parts, price.String())
 	}
@@ -410,6 +410,36 @@ func (p Prices) Find(denom string) (Price, bool) {
 	return Price{}, false
 }
 
+// Add adds multiple Price values to the Prices slice.
+func (p Prices) Add(items ...Price) Prices {
+	return p.add(items)
+}
+
+// Sub subtracts multiple Price values from the Prices slice.
+func (p Prices) Sub(items ...Price) Prices {
+	return p.sub(items)
+}
+
+// Map converts the Prices slice into a map[denom]Price.
+// Panics if a duplicate denom exists in the result.
+func (p Prices) Map() map[string]Price {
+	m := make(map[string]Price, len(p))
+	for _, price := range p {
+		if _, exists := m[price.Denom]; exists {
+			panic(fmt.Errorf("duplicate denom %s", price.Denom))
+		}
+
+		m[price.Denom] = price
+	}
+
+	return m
+}
+
+// add adds values of another Prices slice to this one.
+func (p Prices) add(v Prices) Prices {
+	return p.merge(v)
+}
+
 // merge merges and sums two Prices slices by denom.
 func (p Prices) merge(v Prices) Prices {
 	m := make(map[string]Price)
@@ -444,22 +474,7 @@ func (p Prices) negative() Prices {
 	return v
 }
 
-// add adds values of another Prices slice to this one.
-func (p Prices) add(v Prices) Prices {
-	return p.merge(v)
-}
-
-// Add adds multiple Price values to the Prices slice.
-func (p Prices) Add(items ...Price) Prices {
-	return p.add(items)
-}
-
 // sub subtracts values of another Prices slice from this one.
 func (p Prices) sub(v Prices) Prices {
 	return p.merge(v.negative())
-}
-
-// Sub subtracts multiple Price values from the Prices slice.
-func (p Prices) Sub(items ...Price) Prices {
-	return p.sub(items)
 }

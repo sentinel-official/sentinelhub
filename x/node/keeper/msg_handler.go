@@ -101,8 +101,8 @@ func (k *Keeper) HandleMsgUpdateNodeDetails(ctx sdk.Context, msg *v3.MsgUpdateNo
 
 	// Apply updated prices and optional remote addrs
 	node.GigabytePrices = msg.GigabytePrices
-
 	node.HourlyPrices = msg.HourlyPrices
+
 	if len(msg.RemoteAddrs) > 0 {
 		node.RemoteAddrs = msg.RemoteAddrs
 	}

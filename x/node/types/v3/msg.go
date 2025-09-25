@@ -59,6 +59,10 @@ func (m *MsgRegisterNodeRequest) ValidateBasic() error {
 		return types.NewErrorInvalidMessage("hourly_prices must be valid")
 	}
 
+	if len(m.RemoteAddrs) == 0 {
+		return types.NewErrorInvalidMessage("remote_addrs cannot be empty")
+	}
+
 	if err := validateRemoteAddrs(m.RemoteAddrs); err != nil {
 		return types.NewErrorInvalidMessage(fmt.Errorf("invalid remote_addrs: %w", err))
 	}

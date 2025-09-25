@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-
-	sdkmath "cosmossdk.io/math"
 )
 
 // String converts a RenewalPricePolicy to its string representation.
@@ -75,80 +73,45 @@ func RenewalPricePolicyFromString(s string) RenewalPricePolicy {
 	}
 }
 
-// Validate validates whether a subscription can be renewed based on the policy and given DecCoin conditions.
-// Returns an error if the renewal is not allowed or invalid.
-func (r RenewalPricePolicy) validate(curr, prev sdkmath.LegacyDec) error {
+// Validate checks whether the current price satisfies the policy conditions
+// when compared to the previous price. Returns an error if the policy is not met
+// or if the policy is invalid or unspecified.
+func (r RenewalPricePolicy) Validate(curr, prev Price) error {
+	if curr.Denom != prev.Denom {
+		return fmt.Errorf("price denom mismatch; current=%s, previous=%s", curr.Denom, prev.Denom)
+	}
+
 	switch r {
 	case RenewalPricePolicyUnspecified:
-		return errors.New("renewal policy unspecified")
+		return errors.New("renewal price policy is unspecified")
 	case RenewalPricePolicyIfLesser:
-		if !curr.LT(prev) {
+		if !curr.IsLT(prev) {
 			return fmt.Errorf("current price %s is not less than previous price %s", curr, prev)
 		}
 	case RenewalPricePolicyIfLesserOrEqual:
-		if !curr.LTE(prev) {
+		if !curr.IsLTE(prev) {
 			return fmt.Errorf("current price %s is not less than or equal to previous price %s", curr, prev)
 		}
 	case RenewalPricePolicyIfEqual:
-		if !curr.Equal(prev) {
+		if !curr.IsEqual(prev) {
 			return fmt.Errorf("current price %s is not equal to previous price %s", curr, prev)
 		}
 	case RenewalPricePolicyIfNotEqual:
-		if curr.Equal(prev) {
+		if curr.IsEqual(prev) {
 			return fmt.Errorf("current price %s is equal to previous price %s", curr, prev)
 		}
 	case RenewalPricePolicyIfGreater:
-		if !curr.GT(prev) {
+		if !curr.IsGT(prev) {
 			return fmt.Errorf("current price %s is not greater than previous price %s", curr, prev)
 		}
 	case RenewalPricePolicyIfGreaterOrEqual:
-		if !curr.GTE(prev) {
+		if !curr.IsGTE(prev) {
 			return fmt.Errorf("current price %s is not greater than or equal to previous price %s", curr, prev)
 		}
 	case RenewalPricePolicyAlways:
 		return nil
 	default:
-		return errors.New("invalid renewal policy")
-	}
-
-	return nil
-}
-
-func (r RenewalPricePolicy) Validate(curr, prev Price) error {
-	if r.Equal(RenewalPricePolicyAlways) {
-		return nil
-	}
-
-	if curr.Denom != prev.Denom {
-		return fmt.Errorf("current price denom %s does not match previous price denom %s", curr.Denom, prev.Denom)
-	}
-
-	if prev.BaseValue.IsZero() && prev.QuoteValue.IsZero() && curr.BaseValue.IsZero() && curr.QuoteValue.IsZero() {
-		return r.validate(prev.BaseValue, curr.BaseValue)
-	}
-
-	if prev.BaseValue.IsZero() && prev.QuoteValue.IsZero() && curr.BaseValue.IsZero() && !curr.QuoteValue.IsZero() {
-		return r.validate(prev.QuoteValue.ToLegacyDec(), curr.QuoteValue.ToLegacyDec())
-	}
-
-	if prev.BaseValue.IsZero() && prev.QuoteValue.IsZero() && !curr.BaseValue.IsZero() {
-		return r.validate(prev.BaseValue, curr.BaseValue)
-	}
-
-	if prev.BaseValue.IsZero() && !prev.QuoteValue.IsZero() {
-		return r.validate(prev.QuoteValue.ToLegacyDec(), curr.QuoteValue.ToLegacyDec())
-	}
-
-	if !prev.BaseValue.IsZero() && curr.BaseValue.IsZero() && curr.QuoteValue.IsZero() {
-		return r.validate(prev.BaseValue, curr.BaseValue)
-	}
-
-	if !prev.BaseValue.IsZero() && curr.BaseValue.IsZero() && !curr.QuoteValue.IsZero() {
-		return r.validate(prev.QuoteValue.ToLegacyDec(), curr.QuoteValue.ToLegacyDec())
-	}
-
-	if !prev.BaseValue.IsZero() && !curr.BaseValue.IsZero() {
-		return r.validate(prev.BaseValue, curr.BaseValue)
+		return fmt.Errorf("unsupported renewal price policy %v", r)
 	}
 
 	return nil

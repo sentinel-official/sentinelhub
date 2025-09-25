@@ -263,15 +263,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 	}
 
 	// Check if a lease already exists between this provider and node
-	leaseExists := false
-
-	k.IterateLeasesForNodeByProvider(ctx, nodeAddr, provAddr, func(_ int, _ v1.Lease) bool {
-		leaseExists = true
-
-		return true
-	})
-
-	if leaseExists {
+	if k.HasAnyLeaseForNodeByProvider(ctx, nodeAddr, provAddr) {
 		return nil, types.NewErrorDuplicateLease(nodeAddr, provAddr)
 	}
 

@@ -5,7 +5,6 @@ import (
 
 	base "github.com/sentinel-official/sentinelhub/v12/types"
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
-	"github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
 	"github.com/sentinel-official/sentinelhub/v12/x/plan/types"
 	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
 	subscriptiontypes "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
@@ -99,15 +98,7 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 	}
 
 	// Ensure an active lease exists between the node and provider
-	leaseExists := false
-
-	k.IterateLeasesForNodeByProvider(ctx, nodeAddr, provAddr, func(_ int, _ v1.Lease) bool {
-		leaseExists = true
-
-		return true
-	})
-
-	if !leaseExists {
+	if !k.HasAnyLeaseForNodeByProvider(ctx, nodeAddr, provAddr) {
 		return nil, types.NewErrorLeaseForNodeByProviderNotFound(nodeAddr, provAddr)
 	}
 

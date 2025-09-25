@@ -12,8 +12,8 @@ func (k *Keeper) GetLease(ctx sdk.Context, id uint64) (leasetypes.Lease, bool) {
 	return k.lease.GetLease(ctx, id)
 }
 
-func (k *Keeper) IterateLeasesForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, fn func(index int, item leasetypes.Lease) (stop bool)) {
-	k.lease.IterateLeasesForNodeByProvider(ctx, nodeAddr, provAddr, fn)
+func (k *Keeper) HasAnyLeaseForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress) bool {
+	return k.lease.HasAnyLeaseForNodeByProvider(ctx, nodeAddr, provAddr)
 }
 
 func (k *Keeper) GetNode(ctx sdk.Context, addr base.NodeAddress) (nodetypes.Node, bool) {

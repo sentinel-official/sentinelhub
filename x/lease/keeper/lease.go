@@ -137,6 +137,20 @@ func (k *Keeper) IterateLeasesForNodeByProvider(ctx sdk.Context, nodeAddr base.N
 	}
 }
 
+// HasAnyLeaseForNodeByProvider checks if any lease exists for a given node-provider pair.
+func (k *Keeper) HasAnyLeaseForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress) bool {
+	exists := false
+
+	k.IterateLeasesForNodeByProvider(ctx, nodeAddr, provAddr, func(_ int, _ v1.Lease) bool {
+		exists = true
+
+		// stop iteration after finding the first lease
+		return true
+	})
+
+	return exists
+}
+
 // IterateLeasesForNode iterates over all leases for a specific node and calls the provided function for each lease.
 // The iteration stops when the provided function returns 'true' or an error occurs.
 func (k *Keeper) IterateLeasesForNode(ctx sdk.Context, addr base.NodeAddress, fn func(int, v1.Lease) (bool, error)) error {

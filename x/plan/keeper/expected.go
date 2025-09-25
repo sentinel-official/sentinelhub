@@ -20,7 +20,7 @@ type BankKeeper interface {
 
 type LeaseKeeper interface {
 	GetLease(ctx sdk.Context, id uint64) (leasetypes.Lease, bool)
-	IterateLeasesForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, fn func(index int, item leasetypes.Lease) (stop bool))
+	HasAnyLeaseForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress) bool
 }
 
 type NodeKeeper interface {

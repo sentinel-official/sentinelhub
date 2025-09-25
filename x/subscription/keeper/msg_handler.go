@@ -247,7 +247,7 @@ func (k *Keeper) HandleMsgShareSubscription(ctx sdk.Context, msg *v3.MsgShareSub
 	}
 
 	// Update sender's allocation after subtracting granted bytes
-	fromAlloc.GrantedBytes = availableBytes.Sub(msg.Bytes)
+	fromAlloc.GrantedBytes = grantedBytes.Sub(msg.Bytes)
 	if fromAlloc.GrantedBytes.LT(fromAlloc.UtilisedBytes) {
 		return nil, types.NewErrorInvalidAllocation(subscription.ID, fromAddr)
 	}

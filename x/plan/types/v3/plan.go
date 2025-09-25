@@ -11,13 +11,13 @@ import (
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
 
-// GetGigabytes returns the plan's bandwidth as sdkmath.Int in bytes.
-func (m *Plan) GetGigabytes() sdkmath.Int {
+// GetBytes returns the plan's bandwidth as sdkmath.Int in bytes.
+func (m *Plan) GetBytes() sdkmath.Int {
 	return base.Gigabyte.MulRaw(m.Gigabytes)
 }
 
-// GetHours returns the plan's duration as a time.Duration value.
-func (m *Plan) GetHours() time.Duration {
+// GetDuration returns the plan's duration as a time.Duration value.
+func (m *Plan) GetDuration() time.Duration {
 	return time.Duration(m.Hours) * time.Hour
 }
 

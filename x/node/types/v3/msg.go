@@ -179,13 +179,13 @@ func NewMsgStartSessionRequest(from sdk.AccAddress, nodeAddr base.NodeAddress, g
 	}
 }
 
-// GetGigabytes returns the total data usage in bytes for MsgStartSessionRequest.
-func (m *MsgStartSessionRequest) GetGigabytes() sdkmath.Int {
+// GetBytes returns the total data usage in bytes for MsgStartSessionRequest.
+func (m *MsgStartSessionRequest) GetBytes() sdkmath.Int {
 	return base.Gigabyte.MulRaw(m.Gigabytes)
 }
 
-// GetHours returns the session duration in time.Duration from MsgStartSessionRequest.
-func (m *MsgStartSessionRequest) GetHours() time.Duration {
+// GetDuration returns the session duration in time.Duration from MsgStartSessionRequest.
+func (m *MsgStartSessionRequest) GetDuration() time.Duration {
 	return time.Duration(m.Hours) * time.Hour
 }
 

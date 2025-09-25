@@ -18,25 +18,25 @@ func (m *Lease) DepositAmount() sdk.Coin {
 	return sdk.Coin{Denom: m.Price.Denom, Amount: amount}
 }
 
-// GetHours returns the duration the lease has been used in time.Duration.
-func (m *Lease) GetHours() time.Duration {
+// GetDuration returns the duration the lease has been used in time.Duration.
+func (m *Lease) GetDuration() time.Duration {
 	return time.Duration(m.Hours) * time.Hour
 }
 
-// GetMaxHours returns the total maximum duration of the lease in time.Duration.
-func (m *Lease) GetMaxHours() time.Duration {
+// GetMaxDuration returns the total maximum duration of the lease in time.Duration.
+func (m *Lease) GetMaxDuration() time.Duration {
 	return time.Duration(m.MaxHours) * time.Hour
 }
 
 // InactiveAt returns the time when the lease becomes inactive,.
 func (m *Lease) InactiveAt() time.Time {
-	return m.StartAt.Add(m.GetMaxHours())
+	return m.StartAt.Add(m.GetMaxDuration())
 }
 
 // PayoutAt returns the time when the lease's payout should occur.
 func (m *Lease) PayoutAt() time.Time {
 	if m.Hours < m.MaxHours {
-		return m.StartAt.Add(m.GetHours())
+		return m.StartAt.Add(m.GetDuration())
 	}
 
 	return time.Time{}

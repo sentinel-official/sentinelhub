@@ -180,7 +180,7 @@ func (k *Keeper) HandleMsgUpdateNodeStatus(ctx sdk.Context, msg *v3.MsgUpdateNod
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventUpdateStatus{
 			NodeAddress: node.Address,
-			Status:      node.Status,
+			Status:      node.Status.String(),
 		},
 	)
 

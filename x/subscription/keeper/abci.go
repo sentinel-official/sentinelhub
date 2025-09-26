@@ -84,7 +84,7 @@ func (k *Keeper) handleInactiveSubscriptions(ctx sdk.Context) {
 				ID:         item.ID,
 				PlanID:     item.PlanID,
 				AccAddress: item.AccAddress,
-				Status:     v1base.StatusInactive,
+				Status:     v1base.StatusInactive.String(),
 				StatusAt:   ctx.BlockTime().String(),
 			},
 		)

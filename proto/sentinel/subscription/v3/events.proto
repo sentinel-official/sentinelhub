@@ -2,7 +2,6 @@ syntax = "proto3";
 package sentinel.subscription.v3;
 
 import "gogoproto/gogo.proto";
-import "sentinel/types/v1/status.proto";
 
 option go_package = "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3";
 option (gogoproto.equal_all) = false;
@@ -52,7 +51,7 @@ message EventUpdate {
   uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
   string acc_address = 3;
   string renewal_price_policy = 4;
-  sentinel.types.v1.Status status = 5;
+  string status = 5;
   string inactive_at = 6;
   string status_at = 7;
 }

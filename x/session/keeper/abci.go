@@ -85,7 +85,7 @@ func (k *Keeper) handleInactiveSessions(ctx sdk.Context) {
 				ID:          item.GetID(),
 				AccAddress:  item.GetAccAddress(),
 				NodeAddress: item.GetNodeAddress(),
-				Status:      v1base.StatusInactive,
+				Status:      v1base.StatusInactive.String(),
 				StatusAt:    ctx.BlockTime().String(),
 			},
 		)

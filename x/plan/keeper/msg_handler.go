@@ -206,7 +206,7 @@ func (k *Keeper) HandleMsgUpdatePlanStatus(ctx sdk.Context, msg *v3.MsgUpdatePla
 		&v3.EventUpdate{
 			ID:          plan.ID,
 			ProvAddress: plan.ProvAddress,
-			Status:      plan.Status,
+			Status:      plan.Status.String(),
 		},
 	)
 

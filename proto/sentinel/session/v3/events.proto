@@ -2,8 +2,6 @@ syntax = "proto3";
 package sentinel.session.v3;
 
 import "gogoproto/gogo.proto";
-import "google/protobuf/duration.proto";
-import "sentinel/types/v1/status.proto";
 
 option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3";
 option (gogoproto.equal_all) = false;
@@ -29,16 +27,13 @@ message EventUpdateDetails {
   string node_address = 3;
   string download_bytes = 4;
   string upload_bytes = 5;
-  google.protobuf.Duration duration = 6 [
-    (gogoproto.nullable) = false,
-    (gogoproto.stdduration) = true
-  ];
+  string duration = 6;
 }
 
 message EventUpdateStatus {
   uint64 id = 1 [(gogoproto.customname) = "ID"];
   string acc_address = 2;
   string node_address = 3;
-  sentinel.types.v1.Status status = 4;
+  string status = 4;
   string status_at = 5;
 }

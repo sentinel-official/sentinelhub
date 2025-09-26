@@ -57,7 +57,7 @@ func (k *Keeper) HandleMsgCancelSession(ctx sdk.Context, msg *v3.MsgCancelSessio
 			ID:          session.GetID(),
 			AccAddress:  session.GetAccAddress(),
 			NodeAddress: session.GetNodeAddress(),
-			Status:      session.GetStatus(),
+			Status:      session.GetStatus().String(),
 			StatusAt:    session.GetStatusAt().String(),
 		},
 	)
@@ -140,7 +140,7 @@ func (k *Keeper) HandleMsgUpdateSession(ctx sdk.Context, msg *v3.MsgUpdateSessio
 			NodeAddress:   session.GetNodeAddress(),
 			DownloadBytes: session.GetDownloadBytes().String(),
 			UploadBytes:   session.GetUploadBytes().String(),
-			Duration:      session.GetDuration(),
+			Duration:      session.GetDuration().String(),
 		},
 	)
 

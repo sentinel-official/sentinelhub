@@ -146,7 +146,7 @@ func (k *Keeper) HandleMsgUpdateProviderStatus(ctx sdk.Context, msg *v3.MsgUpdat
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventUpdateStatus{
 			ProvAddress: provider.Address,
-			Status:      provider.Status,
+			Status:      provider.Status.String(),
 		},
 	)
 

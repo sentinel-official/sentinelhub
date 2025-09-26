@@ -57,7 +57,7 @@ func (k *Keeper) HandleMsgCancelSubscription(ctx sdk.Context, msg *v3.MsgCancelS
 			PlanID:             subscription.PlanID,
 			AccAddress:         subscription.AccAddress,
 			RenewalPricePolicy: subscription.RenewalPricePolicy.String(),
-			Status:             subscription.Status,
+			Status:             subscription.Status.String(),
 			InactiveAt:         subscription.InactiveAt.String(),
 			StatusAt:           subscription.StatusAt.String(),
 		},

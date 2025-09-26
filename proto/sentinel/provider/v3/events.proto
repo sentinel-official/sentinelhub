@@ -2,7 +2,6 @@ syntax = "proto3";
 package sentinel.provider.v3;
 
 import "gogoproto/gogo.proto";
-import "sentinel/types/v1/status.proto";
 
 option go_package = "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v3";
 option (gogoproto.equal_all) = false;
@@ -26,5 +25,5 @@ message EventUpdateDetails {
 
 message EventUpdateStatus {
   string prov_address = 1;
-  sentinel.types.v1.Status status = 2;
+  string status = 2;
 }

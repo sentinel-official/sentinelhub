@@ -60,9 +60,9 @@ func (k *Keeper) StakingShare(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).StakingShare
 }
 
-// StatusChangeDelay returns the delay for status changes from the module's parameters.
-func (k *Keeper) StatusChangeDelay(ctx sdk.Context) time.Duration {
-	return k.GetParams(ctx).StatusChangeDelay
+// StatusTimeout returns the status timeout parameter from the module's parameters.
+func (k *Keeper) StatusTimeout(ctx sdk.Context) time.Duration {
+	return k.GetParams(ctx).StatusTimeout
 }
 
 // IsValidGigabytes checks if the provided gigabytes are within the valid range defined by the module's parameters.
@@ -91,9 +91,9 @@ func (k *Keeper) IsValidHours(ctx sdk.Context, hours int64) bool {
 	return true
 }
 
-// GetInactiveAt returns the inactive time by adding StatusChangeDelay to the current block time.
+// GetInactiveAt returns the inactive time by adding StatusTimeout to the current block time.
 func (k *Keeper) GetInactiveAt(ctx sdk.Context) time.Time {
-	d := k.StatusChangeDelay(ctx)
+	d := k.StatusTimeout(ctx)
 
 	return ctx.BlockTime().Add(d)
 }

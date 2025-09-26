@@ -10,8 +10,8 @@ import (
 
 // Default parameter values for the Params struct.
 var (
-	DefaultStakingShare      = sdkmath.LegacyMustNewDecFromStr("0.1") // Default staking share: 0.1
-	DefaultStatusChangeDelay = 2 * time.Minute                        // Default delay before status change
+	DefaultStakingShare  = sdkmath.LegacyMustNewDecFromStr("0.1") // Default staking share: 0.1
+	DefaultStatusTimeout = 2 * time.Minute                        // Default timeout for status change
 )
 
 // Validate checks whether the Params fields are valid according to defined rules.
@@ -20,18 +20,18 @@ func (m *Params) Validate() error {
 		return fmt.Errorf("invalid staking_share: %w", err)
 	}
 
-	if err := validateStatusChangeDelay(m.StatusChangeDelay); err != nil {
-		return fmt.Errorf("invalid status_change_delay: %w", err)
+	if err := validateStatusTimeout(m.StatusTimeout); err != nil {
+		return fmt.Errorf("invalid status_timeout: %w", err)
 	}
 
 	return nil
 }
 
 // NewParams creates a new Params instance with custom values.
-func NewParams(stakingShare sdkmath.LegacyDec, statusChangeDelay time.Duration) Params {
+func NewParams(stakingShare sdkmath.LegacyDec, statusTimeout time.Duration) Params {
 	return Params{
-		StakingShare:      stakingShare,
-		StatusChangeDelay: statusChangeDelay,
+		StakingShare:  stakingShare,
+		StatusTimeout: statusTimeout,
 	}
 }
 
@@ -39,7 +39,7 @@ func NewParams(stakingShare sdkmath.LegacyDec, statusChangeDelay time.Duration) 
 func DefaultParams() Params {
 	return NewParams(
 		DefaultStakingShare,
-		DefaultStatusChangeDelay,
+		DefaultStatusTimeout,
 	)
 }
 
@@ -63,8 +63,8 @@ func validateStakingShare(v sdkmath.LegacyDec) error {
 	return nil
 }
 
-// validateStatusChangeDelay checks that statusChangeDelay is a positive duration.
-func validateStatusChangeDelay(v time.Duration) error {
+// validateStatusTimeout checks that statusTimeout is a positive duration.
+func validateStatusTimeout(v time.Duration) error {
 	if v == 0 {
 		return errors.New("value cannot be zero")
 	}

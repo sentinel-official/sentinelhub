@@ -76,7 +76,7 @@ proto-gen:
 
 .PHONY: proto-lint
 proto-lint:
-	find proto -name *.proto -exec buf format -w {} \;
+	@find proto -name *.proto -exec buf format -w {} \;
 
 .PHONY: build-image
 build-image:

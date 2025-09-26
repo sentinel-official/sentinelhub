@@ -59,7 +59,7 @@ func (k *Migrator) setParams(ctx sdk.Context) {
 		MinHours:                 1,
 		ProofVerificationEnabled: false,
 		StakingShare:             sdkmath.LegacyMustNewDecFromStr("0.2"),
-		StatusChangeDelay:        2 * time.Hour,
+		StatusTimeout:            2 * time.Hour,
 	}
 
 	k.session.SetParams(ctx, params)

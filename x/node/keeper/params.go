@@ -31,11 +31,6 @@ func (k *Keeper) GetParams(ctx sdk.Context) (v v3.Params) {
 	return v
 }
 
-// ActiveDuration retrieves the active duration parameter from the module's parameters.
-func (k *Keeper) ActiveDuration(ctx sdk.Context) time.Duration {
-	return k.GetParams(ctx).ActiveDuration
-}
-
 // Deposit retrieves the deposit parameter from the module's parameters.
 func (k *Keeper) Deposit(ctx sdk.Context) sdk.Coin {
 	return k.GetParams(ctx).Deposit
@@ -49,6 +44,11 @@ func (k *Keeper) MinGigabytePrices(ctx sdk.Context) v1base.Prices {
 // MinHourlyPrices retrieves the minimum hourly prices parameter from the module's parameters.
 func (k *Keeper) MinHourlyPrices(ctx sdk.Context) v1base.Prices {
 	return k.GetParams(ctx).MinHourlyPrices
+}
+
+// StatusTimeout retrieves the status timeout parameter from the module's parameters.
+func (k *Keeper) StatusTimeout(ctx sdk.Context) time.Duration {
+	return k.GetParams(ctx).StatusTimeout
 }
 
 // ValidateGigabytePrices validates prices against the minimum gigabyte prices.
@@ -65,9 +65,9 @@ func (k *Keeper) ValidateHourlyPrices(ctx sdk.Context, prices v1base.Prices) err
 	return validatePrices(prices, minPrices)
 }
 
-// GetInactiveAt returns the inactive time by adding ActiveDuration to the current block time.
+// GetInactiveAt returns the inactive time by adding StatusTimeout to the current block time.
 func (k *Keeper) GetInactiveAt(ctx sdk.Context) time.Time {
-	d := k.ActiveDuration(ctx)
+	d := k.StatusTimeout(ctx)
 
 	return ctx.BlockTime().Add(d)
 }

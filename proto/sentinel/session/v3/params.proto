@@ -18,7 +18,7 @@ message Params {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  google.protobuf.Duration status_change_delay = 7 [
+  google.protobuf.Duration status_timeout = 7 [
     (gogoproto.nullable) = false,
     (gogoproto.stdduration) = true
   ];

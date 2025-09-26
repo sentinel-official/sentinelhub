@@ -16,7 +16,7 @@ var (
 	DefaultMinHours                 int64 = 1                                   // Default minimum allowed hours
 	DefaultProofVerificationEnabled       = false                               // Default proof verification flag
 	DefaultStakingShare                   = math.LegacyMustNewDecFromStr("0.1") // Default staking share: 0.1
-	DefaultStatusChangeDelay              = 1 * time.Minute                     // Default delay before validator status change
+	DefaultStatusTimeout                  = 1 * time.Minute                     // Default timeout for status change
 )
 
 // Validate checks whether the Params fields are valid according to defined rules.
@@ -45,8 +45,8 @@ func (m *Params) Validate() error {
 		return fmt.Errorf("invalid staking_share: %w", err)
 	}
 
-	if err := validateStatusChangeDelay(m.StatusChangeDelay); err != nil {
-		return fmt.Errorf("invalid status_change_delay: %w", err)
+	if err := validateStatusTimeout(m.StatusTimeout); err != nil {
+		return fmt.Errorf("invalid status_timeout: %w", err)
 	}
 
 	return nil
@@ -55,7 +55,7 @@ func (m *Params) Validate() error {
 // NewParams creates a new Params instance with custom values.
 func NewParams(
 	maxGigabytes, minGigabytes, maxHours, minHours int64, proofVerificationEnabled bool, stakingShare math.LegacyDec,
-	statusChangeDelay time.Duration,
+	statusTimeout time.Duration,
 ) Params {
 	return Params{
 		MaxGigabytes:             maxGigabytes,
@@ -64,7 +64,7 @@ func NewParams(
 		MinHours:                 minHours,
 		ProofVerificationEnabled: proofVerificationEnabled,
 		StakingShare:             stakingShare,
-		StatusChangeDelay:        statusChangeDelay,
+		StatusTimeout:            statusTimeout,
 	}
 }
 
@@ -77,7 +77,7 @@ func DefaultParams() Params {
 		DefaultMinHours,
 		DefaultProofVerificationEnabled,
 		DefaultStakingShare,
-		DefaultStatusChangeDelay,
+		DefaultStatusTimeout,
 	)
 }
 
@@ -156,8 +156,8 @@ func validateStakingShare(v math.LegacyDec) error {
 	return nil
 }
 
-// validateStatusChangeDelay ensures the delay is positive and non-zero.
-func validateStatusChangeDelay(v time.Duration) error {
+// validateStatusTimeout ensures the statusTimeout is positive and non-zero.
+func validateStatusTimeout(v time.Duration) error {
 	if v == 0 {
 		return errors.New("value cannot be zero")
 	}

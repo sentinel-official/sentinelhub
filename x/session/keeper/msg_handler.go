@@ -79,11 +79,6 @@ func (k *Keeper) HandleMsgUpdateSession(ctx sdk.Context, msg *v3.MsgUpdateSessio
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
 
-	// Reject updates on already inactive sessions
-	if session.GetStatus().Equal(v1base.StatusInactive) {
-		return nil, types.NewErrorInvalidSessionStatus(session.GetID(), session.GetStatus())
-	}
-
 	// Validate updated usage metrics are not regressing
 	if msg.DownloadBytes.LT(session.GetDownloadBytes()) {
 		return nil, types.NewErrorInvalidDownloadBytes(msg.DownloadBytes)

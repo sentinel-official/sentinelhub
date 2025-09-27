@@ -15,17 +15,17 @@ message EventCreate {
 }
 
 message EventPay {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 session_id = 1 [(gogoproto.customname) = "SessionID"];
   string acc_address = 2;
   string node_address = 3;
-  string amount = 4;
+  string payment = 4;
   string staking_reward = 5;
 }
 
 message EventRefund {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 session_id = 1 [(gogoproto.customname) = "SessionID"];
   string acc_address = 2;
-  string amount = 3;
+  string value = 3;
 }
 
 message EventUpdateDetails {
@@ -41,7 +41,7 @@ message EventUpdateStatus {
 }
 
 message EventCreateSession {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 session_id = 1 [(gogoproto.customname) = "SessionID"];
   string acc_address = 2;
   string node_address = 3;
   string price = 4;

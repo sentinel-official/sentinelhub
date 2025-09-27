@@ -8,29 +8,34 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message EventAllocate {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 subscription_id = 1 [(gogoproto.customname) = "SubscriptionID"];
   string acc_address = 2;
   string granted_bytes = 3;
   string utilised_bytes = 4;
 }
 
 message EventCreate {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 subscription_id = 1 [(gogoproto.customname) = "SubscriptionID"];
   uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
   string acc_address = 3;
-  string prov_address = 4;
-  string price = 5;
+  string price = 4;
 }
 
 message EventCreateSession {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 session_id = 1 [(gogoproto.customname) = "SessionID"];
+  uint64 subscription_id = 4 [(gogoproto.customname) = "SubscriptionID"];
   string acc_address = 2;
   string node_address = 3;
-  uint64 subscription_id = 4 [(gogoproto.customname) = "SubscriptionID"];
+}
+
+message EventEnd {
+  uint64 subscription_id = 1 [(gogoproto.customname) = "SubscriptionID"];
+  uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
+  string acc_address = 3;
 }
 
 message EventPay {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 subscription_id = 1 [(gogoproto.customname) = "SubscriptionID"];
   uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
   string acc_address = 3;
   string prov_address = 4;
@@ -39,19 +44,22 @@ message EventPay {
 }
 
 message EventRenew {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 subscription_id = 1 [(gogoproto.customname) = "SubscriptionID"];
   uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
   string acc_address = 3;
-  string prov_address = 4;
-  string price = 5;
+  string price = 4;
 }
 
-message EventUpdate {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+message EventUpdateDetails {
+  uint64 subscription_id = 1 [(gogoproto.customname) = "SubscriptionID"];
   uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
   string acc_address = 3;
   string renewal_price_policy = 4;
-  string status = 5;
-  string inactive_at = 6;
-  string status_at = 7;
+}
+
+message EventUpdateStatus {
+  uint64 subscription_id = 1 [(gogoproto.customname) = "SubscriptionID"];
+  uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
+  string acc_address = 3;
+  string status = 4;
 }

@@ -94,7 +94,7 @@ func (k *Keeper) HandleMsgUpdateAsset(ctx sdk.Context, msg *v1.MsgUpdateAssetReq
 
 	// Emit event to signal asset update
 	ctx.EventManager().EmitTypedEvent(
-		&v1.EventUpdate{
+		&v1.EventUpdateDetails{
 			Denom:           asset.Denom,
 			Decimals:        asset.Decimals,
 			BaseAssetDenom:  asset.BaseAssetDenom,

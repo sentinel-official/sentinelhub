@@ -5,6 +5,7 @@ import (
 
 	"github.com/sentinel-official/sentinelhub/v12/x/deposit/types"
 	"github.com/sentinel-official/sentinelhub/v12/x/deposit/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/deposit/types/v2"
 )
 
 // SetDeposit stores a deposit in the module's KVStore.
@@ -112,9 +113,9 @@ func (k *Keeper) SendCoinsFromAccountToDeposit(ctx sdk.Context, fromAddr, toAddr
 
 	k.SetDeposit(ctx, deposit)
 	ctx.EventManager().EmitTypedEvent(
-		&v1.EventAdd{
-			Address: toAddr.String(),
-			Coins:   coins.String(),
+		&v2.EventAdd{
+			AccAddress: toAddr.String(),
+			Value:      coins.String(),
 		},
 	)
 
@@ -140,9 +141,9 @@ func (k *Keeper) SendCoinsFromDepositToAccount(ctx sdk.Context, fromAddr, toAddr
 
 	k.SetDeposit(ctx, deposit)
 	ctx.EventManager().EmitTypedEvent(
-		&v1.EventSubtract{
-			Address: fromAddr.String(),
-			Coins:   coins.String(),
+		&v2.EventSubtract{
+			AccAddress: fromAddr.String(),
+			Value:      coins.String(),
 		},
 	)
 
@@ -168,9 +169,9 @@ func (k *Keeper) SendCoinsFromDepositToModule(ctx sdk.Context, fromAddr sdk.AccA
 
 	k.SetDeposit(ctx, deposit)
 	ctx.EventManager().EmitTypedEvent(
-		&v1.EventSubtract{
-			Address: fromAddr.String(),
-			Coins:   coins.String(),
+		&v2.EventSubtract{
+			AccAddress: fromAddr.String(),
+			Value:      coins.String(),
 		},
 	)
 

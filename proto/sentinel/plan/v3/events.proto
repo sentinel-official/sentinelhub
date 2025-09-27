@@ -8,7 +8,7 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message EventCreate {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 plan_id = 1 [(gogoproto.customname) = "PlanID"];
   string prov_address = 2;
   int64 gigabytes = 3;
   int64 hours = 4;
@@ -16,19 +16,19 @@ message EventCreate {
 }
 
 message EventLinkNode {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 plan_id = 1 [(gogoproto.customname) = "PlanID"];
   string prov_address = 2;
   string node_address = 3;
 }
 
 message EventUnlinkNode {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 plan_id = 1 [(gogoproto.customname) = "PlanID"];
   string prov_address = 2;
   string node_address = 3;
 }
 
-message EventUpdate {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+message EventUpdateStatus {
+  uint64 plan_id = 1 [(gogoproto.customname) = "PlanID"];
   string prov_address = 2;
   string status = 3;
 }

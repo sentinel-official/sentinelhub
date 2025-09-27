@@ -7,22 +7,14 @@ option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/type
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
-message EventPay {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+message EventEnd {
+  uint64 session_id = 1 [(gogoproto.customname) = "SessionID"];
   string acc_address = 2;
   string node_address = 3;
-  string payment = 4;
-  string staking_reward = 5;
-}
-
-message EventRefund {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-  string acc_address = 2;
-  string amount = 3;
 }
 
 message EventUpdateDetails {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 session_id = 1 [(gogoproto.customname) = "SessionID"];
   string acc_address = 2;
   string node_address = 3;
   string download_bytes = 4;
@@ -31,9 +23,8 @@ message EventUpdateDetails {
 }
 
 message EventUpdateStatus {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 session_id = 1 [(gogoproto.customname) = "SessionID"];
   string acc_address = 2;
   string node_address = 3;
   string status = 4;
-  string status_at = 5;
 }

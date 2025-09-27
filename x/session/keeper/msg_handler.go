@@ -54,11 +54,10 @@ func (k *Keeper) HandleMsgCancelSession(ctx sdk.Context, msg *v3.MsgCancelSessio
 	// Emit event indicating session status change
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventUpdateStatus{
-			ID:          session.GetID(),
+			SessionID:   session.GetID(),
 			AccAddress:  session.GetAccAddress(),
 			NodeAddress: session.GetNodeAddress(),
 			Status:      session.GetStatus().String(),
-			StatusAt:    session.GetStatusAt().String(),
 		},
 	)
 
@@ -135,7 +134,7 @@ func (k *Keeper) HandleMsgUpdateSession(ctx sdk.Context, msg *v3.MsgUpdateSessio
 	// Emit event reflecting the updated session usage
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventUpdateDetails{
-			ID:            session.GetID(),
+			SessionID:     session.GetID(),
 			AccAddress:    session.GetAccAddress(),
 			NodeAddress:   session.GetNodeAddress(),
 			DownloadBytes: session.GetDownloadBytes().String(),

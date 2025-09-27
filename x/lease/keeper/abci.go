@@ -44,7 +44,7 @@ func (k *Keeper) handleInactiveLeases(ctx sdk.Context) {
 // handleLeasePayouts processes payouts for leases that are due at the current block time.
 func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 	// Get the staking share to calculate the reward portion
-	share := k.StakingShare(ctx)
+	stakingShare := k.StakingShare(ctx)
 
 	// Iterate through leases that are due for payout at the current block time
 	k.IterateLeasesForPayoutAt(ctx, ctx.BlockTime(), func(_ int, item v1.Lease) bool {
@@ -64,13 +64,13 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 		total := item.Price.QuotePrice()
 
 		// Calculate the staking reward and send it to the module
-		reward := baseutils.GetProportionOfCoin(total, share)
-		if err := k.SendCoinFromDepositToModule(ctx, provAddr.Bytes(), k.feeCollectorName, reward); err != nil {
+		stakingReward := baseutils.GetProportionOfCoin(total, stakingShare)
+		if err := k.SendCoinFromDepositToModule(ctx, provAddr.Bytes(), k.feeCollectorName, stakingReward); err != nil {
 			panic(err)
 		}
 
 		// Calculate the remaining payment and send it to the node address
-		payment := total.Sub(reward)
+		payment := total.Sub(stakingReward)
 		if err := k.SendCoinFromDepositToAccount(ctx, provAddr.Bytes(), nodeAddr.Bytes(), payment); err != nil {
 			panic(err)
 		}
@@ -78,11 +78,11 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 		// Emit an event for the payment processing
 		ctx.EventManager().EmitTypedEvent(
 			&v1.EventPay{
-				ID:            item.ID,
+				LeaseID:       item.ID,
 				NodeAddress:   item.NodeAddress,
 				ProvAddress:   item.ProvAddress,
-				Amount:        payment.String(),
-				StakingReward: reward.String(),
+				Payment:       payment.String(),
+				StakingReward: stakingReward.String(),
 			},
 		)
 
@@ -95,17 +95,6 @@ func (k *Keeper) handleLeasePayouts(ctx sdk.Context) {
 		// Update the lease in the store with new details
 		k.SetLease(ctx, item)
 		k.SetLeaseForPayoutAt(ctx, item.PayoutAt(), item.ID)
-
-		// Emit an event for the updated lease details
-		ctx.EventManager().EmitTypedEvent(
-			&v1.EventUpdate{
-				ID:          item.ID,
-				NodeAddress: item.NodeAddress,
-				ProvAddress: item.ProvAddress,
-				Hours:       item.Hours,
-				PayoutAt:    item.PayoutAt().String(),
-			},
-		)
 
 		return false
 	})

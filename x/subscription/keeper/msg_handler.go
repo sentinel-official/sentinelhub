@@ -51,15 +51,18 @@ func (k *Keeper) HandleMsgCancelSubscription(ctx sdk.Context, msg *v3.MsgCancelS
 	k.SetSubscriptionForInactiveAt(ctx, subscription.InactiveAt, subscription.ID)
 
 	// Emit event to signal subscription status update
-	ctx.EventManager().EmitTypedEvent(
-		&v3.EventUpdate{
-			ID:                 subscription.ID,
+	ctx.EventManager().EmitTypedEvents(
+		&v3.EventUpdateDetails{
+			SubscriptionID:     subscription.ID,
 			PlanID:             subscription.PlanID,
 			AccAddress:         subscription.AccAddress,
 			RenewalPricePolicy: subscription.RenewalPricePolicy.String(),
-			Status:             subscription.Status.String(),
-			InactiveAt:         subscription.InactiveAt.String(),
-			StatusAt:           subscription.StatusAt.String(),
+		},
+		&v3.EventUpdateStatus{
+			SubscriptionID: subscription.ID,
+			PlanID:         subscription.PlanID,
+			AccAddress:     subscription.AccAddress,
+			Status:         subscription.Status.String(),
 		},
 	)
 
@@ -113,8 +116,8 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	k.DeleteSubscriptionForInactiveAt(ctx, subscription.InactiveAt, subscription.ID)
 	k.DeleteSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
 
-	// Calculate payment and reward amounts
-	share := k.StakingShare(ctx)
+	// Calculate payment and staking reward amounts
+	stakingShare := k.StakingShare(ctx)
 	total := price.QuotePrice()
 
 	accAddr, err := sdk.AccAddressFromBech32(msg.From)
@@ -122,8 +125,8 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		return nil, err
 	}
 
-	reward := baseutils.GetProportionOfCoin(total, share)
-	if err := k.SendCoinFromAccountToModule(ctx, accAddr, k.feeCollectorName, reward); err != nil {
+	stakingReward := baseutils.GetProportionOfCoin(total, stakingShare)
+	if err := k.SendCoinFromAccountToModule(ctx, accAddr, k.feeCollectorName, stakingReward); err != nil {
 		return nil, err
 	}
 
@@ -133,7 +136,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		return nil, err
 	}
 
-	payment := total.Sub(reward)
+	payment := total.Sub(stakingReward)
 	if err := k.SendCoin(ctx, accAddr, provAddr.Bytes(), payment); err != nil {
 		return nil, err
 	}
@@ -160,19 +163,18 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	// Emit renewal and payment events
 	ctx.EventManager().EmitTypedEvents(
 		&v3.EventRenew{
-			ID:          subscription.ID,
-			PlanID:      subscription.PlanID,
-			AccAddress:  subscription.AccAddress,
-			ProvAddress: provAddr.String(),
-			Price:       subscription.Price.String(),
+			SubscriptionID: subscription.ID,
+			PlanID:         subscription.PlanID,
+			AccAddress:     subscription.AccAddress,
+			Price:          subscription.Price.String(),
 		},
 		&v3.EventPay{
-			ID:            subscription.ID,
-			PlanID:        subscription.PlanID,
-			AccAddress:    subscription.AccAddress,
-			ProvAddress:   provAddr.String(),
-			Payment:       payment.String(),
-			StakingReward: reward.String(),
+			SubscriptionID: subscription.ID,
+			PlanID:         subscription.PlanID,
+			AccAddress:     subscription.AccAddress,
+			ProvAddress:    provAddr.String(),
+			Payment:        payment.String(),
+			StakingReward:  stakingReward.String(),
 		},
 	)
 
@@ -183,10 +185,10 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		k.SetAllocation(ctx, item)
 		ctx.EventManager().EmitTypedEvent(
 			&v3.EventAllocate{
-				ID:            item.ID,
-				AccAddress:    item.Address,
-				GrantedBytes:  item.GrantedBytes.String(),
-				UtilisedBytes: item.UtilisedBytes.String(),
+				SubscriptionID: item.ID,
+				AccAddress:     item.Address,
+				GrantedBytes:   item.GrantedBytes.String(),
+				UtilisedBytes:  item.UtilisedBytes.String(),
 			},
 		)
 
@@ -261,10 +263,10 @@ func (k *Keeper) HandleMsgShareSubscription(ctx sdk.Context, msg *v3.MsgShareSub
 	k.SetAllocation(ctx, fromAlloc)
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventAllocate{
-			ID:            fromAlloc.ID,
-			AccAddress:    fromAlloc.Address,
-			GrantedBytes:  fromAlloc.GrantedBytes.String(),
-			UtilisedBytes: fromAlloc.GrantedBytes.String(),
+			SubscriptionID: fromAlloc.ID,
+			AccAddress:     fromAlloc.Address,
+			GrantedBytes:   fromAlloc.GrantedBytes.String(),
+			UtilisedBytes:  fromAlloc.GrantedBytes.String(),
 		},
 	)
 
@@ -277,10 +279,10 @@ func (k *Keeper) HandleMsgShareSubscription(ctx sdk.Context, msg *v3.MsgShareSub
 	k.SetAllocation(ctx, toAlloc)
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventAllocate{
-			ID:            toAlloc.ID,
-			AccAddress:    toAlloc.Address,
-			GrantedBytes:  toAlloc.GrantedBytes.String(),
-			UtilisedBytes: toAlloc.GrantedBytes.String(),
+			SubscriptionID: toAlloc.ID,
+			AccAddress:     toAlloc.Address,
+			GrantedBytes:   toAlloc.GrantedBytes.String(),
+			UtilisedBytes:  toAlloc.GrantedBytes.String(),
 		},
 	)
 
@@ -342,16 +344,16 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		StatusAt:           ctx.BlockTime(),
 	}
 
-	// Process payment and reward
-	share := k.StakingShare(ctx)
+	// Process payment and staking reward
+	stakingShare := k.StakingShare(ctx)
 	total := price.QuotePrice()
 
-	reward := baseutils.GetProportionOfCoin(total, share)
-	if err := k.SendCoinFromAccountToModule(ctx, accAddr, k.feeCollectorName, reward); err != nil {
+	stakingReward := baseutils.GetProportionOfCoin(total, stakingShare)
+	if err := k.SendCoinFromAccountToModule(ctx, accAddr, k.feeCollectorName, stakingReward); err != nil {
 		return nil, err
 	}
 
-	payment := total.Sub(reward)
+	payment := total.Sub(stakingReward)
 	if err := k.SendCoin(ctx, accAddr, provAddr.Bytes(), payment); err != nil {
 		return nil, err
 	}
@@ -367,19 +369,18 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 	// Emit subscription creation and payment events
 	ctx.EventManager().EmitTypedEvents(
 		&v3.EventCreate{
-			ID:          subscription.ID,
-			PlanID:      subscription.PlanID,
-			AccAddress:  subscription.AccAddress,
-			ProvAddress: provAddr.String(),
-			Price:       subscription.Price.String(),
+			SubscriptionID: subscription.ID,
+			PlanID:         subscription.PlanID,
+			AccAddress:     subscription.AccAddress,
+			Price:          subscription.Price.String(),
 		},
 		&v3.EventPay{
-			ID:            subscription.ID,
-			PlanID:        subscription.PlanID,
-			AccAddress:    subscription.AccAddress,
-			ProvAddress:   provAddr.String(),
-			Payment:       payment.String(),
-			StakingReward: reward.String(),
+			SubscriptionID: subscription.ID,
+			PlanID:         subscription.PlanID,
+			AccAddress:     subscription.AccAddress,
+			ProvAddress:    provAddr.String(),
+			Payment:        payment.String(),
+			StakingReward:  stakingReward.String(),
 		},
 	)
 
@@ -394,10 +395,10 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 	k.SetAllocation(ctx, alloc)
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventAllocate{
-			ID:            alloc.ID,
-			AccAddress:    alloc.Address,
-			GrantedBytes:  alloc.GrantedBytes.String(),
-			UtilisedBytes: alloc.UtilisedBytes.String(),
+			SubscriptionID: alloc.ID,
+			AccAddress:     alloc.Address,
+			GrantedBytes:   alloc.GrantedBytes.String(),
+			UtilisedBytes:  alloc.UtilisedBytes.String(),
 		},
 	)
 
@@ -435,8 +436,8 @@ func (k *Keeper) HandleMsgUpdateSubscription(ctx sdk.Context, msg *v3.MsgUpdateS
 
 	// Emit subscription update event
 	ctx.EventManager().EmitTypedEvent(
-		&v3.EventUpdate{
-			ID:                 subscription.ID,
+		&v3.EventUpdateDetails{
+			SubscriptionID:     subscription.ID,
 			PlanID:             subscription.PlanID,
 			AccAddress:         subscription.AccAddress,
 			RenewalPricePolicy: subscription.RenewalPricePolicy.String(),
@@ -528,10 +529,10 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	// Emit session creation event
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventCreateSession{
-			ID:             session.ID,
+			SessionID:      session.ID,
+			SubscriptionID: session.SubscriptionID,
 			AccAddress:     session.AccAddress,
 			NodeAddress:    session.NodeAddress,
-			SubscriptionID: session.SubscriptionID,
 		},
 	)
 

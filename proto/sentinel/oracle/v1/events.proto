@@ -18,7 +18,7 @@ message EventDelete {
   string denom = 2;
 }
 
-message EventUpdate {
+message EventUpdateDetails {
   string denom = 2;
   int64 decimals = 3;
   string base_asset_denom = 4;

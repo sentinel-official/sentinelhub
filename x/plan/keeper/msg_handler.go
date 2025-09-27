@@ -44,7 +44,7 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 	// Emit event to indicate plan creation
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventCreate{
-			ID:          plan.ID,
+			PlanID:      plan.ID,
 			ProvAddress: plan.ProvAddress,
 			Gigabytes:   plan.Gigabytes,
 			Hours:       plan.Hours,
@@ -109,7 +109,7 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 	// Emit event to signal node linkage
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventLinkNode{
-			ID:          plan.ID,
+			PlanID:      plan.ID,
 			ProvAddress: plan.ProvAddress,
 			NodeAddress: node.Address,
 		},
@@ -160,7 +160,7 @@ func (k *Keeper) HandleMsgUnlinkNode(ctx sdk.Context, msg *v3.MsgUnlinkNodeReque
 	// Emit event to indicate node unlink
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventUnlinkNode{
-			ID:          plan.ID,
+			PlanID:      plan.ID,
 			ProvAddress: plan.ProvAddress,
 			NodeAddress: nodeAddr.String(),
 		},
@@ -203,8 +203,8 @@ func (k *Keeper) HandleMsgUpdatePlanStatus(ctx sdk.Context, msg *v3.MsgUpdatePla
 
 	// Emit event to indicate status update
 	ctx.EventManager().EmitTypedEvent(
-		&v3.EventUpdate{
-			ID:          plan.ID,
+		&v3.EventUpdateStatus{
+			PlanID:      plan.ID,
 			ProvAddress: plan.ProvAddress,
 			Status:      plan.Status.String(),
 		},

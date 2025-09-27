@@ -8,7 +8,7 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message EventCreate {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 lease_id = 1 [(gogoproto.customname) = "LeaseID"];
   string node_address = 2;
   string prov_address = 3;
   int64 max_hours = 4;
@@ -17,38 +17,36 @@ message EventCreate {
 }
 
 message EventEnd {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 lease_id = 1 [(gogoproto.customname) = "LeaseID"];
   string node_address = 2;
   string prov_address = 3;
 }
 
 message EventPay {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 lease_id = 1 [(gogoproto.customname) = "LeaseID"];
   string node_address = 2;
   string prov_address = 3;
-  string amount = 4;
+  string payment = 4;
   string staking_reward = 5;
 }
 
 message EventRefund {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 lease_id = 1 [(gogoproto.customname) = "LeaseID"];
   string prov_address = 2;
-  string amount = 3;
+  string value = 3;
 }
 
 message EventRenew {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 lease_id = 1 [(gogoproto.customname) = "LeaseID"];
   string node_address = 2;
   string prov_address = 3;
   int64 max_hours = 4;
   string price = 5;
 }
 
-message EventUpdate {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+message EventUpdateDetails {
+  uint64 lease_id = 1 [(gogoproto.customname) = "LeaseID"];
   string node_address = 2;
   string prov_address = 3;
-  int64 hours = 4;
-  string renewal_price_policy = 5;
-  string payout_at = 6;
+  string renewal_price_policy = 4;
 }

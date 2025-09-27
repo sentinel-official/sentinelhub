@@ -80,12 +80,10 @@ func (k *Keeper) handleInactiveSubscriptions(ctx sdk.Context) {
 
 		// Emit an event indicating the update of the subscription status to inactive
 		ctx.EventManager().EmitTypedEvent(
-			&v3.EventUpdate{
-				ID:         item.ID,
-				PlanID:     item.PlanID,
-				AccAddress: item.AccAddress,
-				Status:     v1base.StatusInactive.String(),
-				StatusAt:   ctx.BlockTime().String(),
+			&v3.EventEnd{
+				SubscriptionID: item.ID,
+				PlanID:         item.PlanID,
+				AccAddress:     item.AccAddress,
 			},
 		)
 

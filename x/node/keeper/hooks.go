@@ -38,12 +38,12 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 	}
 
 	// Retrieve the staking share and compute the total payment amount for the session.
-	share := k.SessionStakingShare(ctx)
+	stakingShare := k.SessionStakingShare(ctx)
 	total := session.PaymentAmount()
 
 	// Calculate the staking reward and transfer it to the fee collector module.
-	reward := baseutils.GetProportionOfCoin(total, share)
-	if err := k.SendCoinFromDepositToModule(ctx, accAddr, k.feeCollectorName, reward); err != nil {
+	stakingReward := baseutils.GetProportionOfCoin(total, stakingShare)
+	if err := k.SendCoinFromDepositToModule(ctx, accAddr, k.feeCollectorName, stakingReward); err != nil {
 		return err
 	}
 
@@ -54,7 +54,7 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 	}
 
 	// Transfer the remaining payment to the node's account.
-	payment := total.Sub(reward)
+	payment := total.Sub(stakingReward)
 	if err := k.SendCoinFromDepositToAccount(ctx, accAddr, nodeAddr.Bytes(), payment); err != nil {
 		return err
 	}
@@ -62,11 +62,11 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 	// Emit an event indicating the payment and staking reward details.
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventPay{
-			ID:            session.ID,
+			SessionID:     session.ID,
 			AccAddress:    session.AccAddress,
 			NodeAddress:   session.NodeAddress,
-			Amount:        payment.String(),
-			StakingReward: reward.String(),
+			Payment:       payment.String(),
+			StakingReward: stakingReward.String(),
 		},
 	)
 
@@ -79,9 +79,9 @@ func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
 	// Emit an event indicating the refund processing details.
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventRefund{
-			ID:         session.ID,
+			SessionID:  session.ID,
 			AccAddress: session.AccAddress,
-			Amount:     refund.String(),
+			Value:      refund.String(),
 		},
 	)
 

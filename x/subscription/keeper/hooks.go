@@ -100,10 +100,10 @@ func (k *Keeper) SessionUpdatePreHook(ctx sdk.Context, id uint64, currBytes sdkm
 	// Emit an event logging the updated allocation details.
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventAllocate{
-			ID:            alloc.ID,
-			AccAddress:    alloc.Address,
-			GrantedBytes:  alloc.GrantedBytes.String(),
-			UtilisedBytes: alloc.UtilisedBytes.String(),
+			SubscriptionID: alloc.ID,
+			AccAddress:     alloc.Address,
+			GrantedBytes:   alloc.GrantedBytes.String(),
+			UtilisedBytes:  alloc.UtilisedBytes.String(),
 		},
 	)
 

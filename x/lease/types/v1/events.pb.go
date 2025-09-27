@@ -24,7 +24,7 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type EventCreate struct {
-	ID                 uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	LeaseID            uint64 `protobuf:"varint,1,opt,name=lease_id,json=leaseId,proto3" json:"lease_id,omitempty"`
 	NodeAddress        string `protobuf:"bytes,2,opt,name=node_address,json=nodeAddress,proto3" json:"node_address,omitempty"`
 	ProvAddress        string `protobuf:"bytes,3,opt,name=prov_address,json=provAddress,proto3" json:"prov_address,omitempty"`
 	MaxHours           int64  `protobuf:"varint,4,opt,name=max_hours,json=maxHours,proto3" json:"max_hours,omitempty"`
@@ -66,7 +66,7 @@ func (m *EventCreate) XXX_DiscardUnknown() {
 var xxx_messageInfo_EventCreate proto.InternalMessageInfo
 
 type EventEnd struct {
-	ID          uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	LeaseID     uint64 `protobuf:"varint,1,opt,name=lease_id,json=leaseId,proto3" json:"lease_id,omitempty"`
 	NodeAddress string `protobuf:"bytes,2,opt,name=node_address,json=nodeAddress,proto3" json:"node_address,omitempty"`
 	ProvAddress string `protobuf:"bytes,3,opt,name=prov_address,json=provAddress,proto3" json:"prov_address,omitempty"`
 }
@@ -105,10 +105,10 @@ func (m *EventEnd) XXX_DiscardUnknown() {
 var xxx_messageInfo_EventEnd proto.InternalMessageInfo
 
 type EventPay struct {
-	ID            uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	LeaseID       uint64 `protobuf:"varint,1,opt,name=lease_id,json=leaseId,proto3" json:"lease_id,omitempty"`
 	NodeAddress   string `protobuf:"bytes,2,opt,name=node_address,json=nodeAddress,proto3" json:"node_address,omitempty"`
 	ProvAddress   string `protobuf:"bytes,3,opt,name=prov_address,json=provAddress,proto3" json:"prov_address,omitempty"`
-	Amount        string `protobuf:"bytes,4,opt,name=amount,proto3" json:"amount,omitempty"`
+	Payment       string `protobuf:"bytes,4,opt,name=payment,proto3" json:"payment,omitempty"`
 	StakingReward string `protobuf:"bytes,5,opt,name=staking_reward,json=stakingReward,proto3" json:"staking_reward,omitempty"`
 }
 
@@ -146,9 +146,9 @@ func (m *EventPay) XXX_DiscardUnknown() {
 var xxx_messageInfo_EventPay proto.InternalMessageInfo
 
 type EventRefund struct {
-	ID          uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	LeaseID     uint64 `protobuf:"varint,1,opt,name=lease_id,json=leaseId,proto3" json:"lease_id,omitempty"`
 	ProvAddress string `protobuf:"bytes,2,opt,name=prov_address,json=provAddress,proto3" json:"prov_address,omitempty"`
-	Amount      string `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	Value       string `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (m *EventRefund) Reset()         { *m = EventRefund{} }
@@ -185,7 +185,7 @@ func (m *EventRefund) XXX_DiscardUnknown() {
 var xxx_messageInfo_EventRefund proto.InternalMessageInfo
 
 type EventRenew struct {
-	ID          uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	LeaseID     uint64 `protobuf:"varint,1,opt,name=lease_id,json=leaseId,proto3" json:"lease_id,omitempty"`
 	NodeAddress string `protobuf:"bytes,2,opt,name=node_address,json=nodeAddress,proto3" json:"node_address,omitempty"`
 	ProvAddress string `protobuf:"bytes,3,opt,name=prov_address,json=provAddress,proto3" json:"prov_address,omitempty"`
 	MaxHours    int64  `protobuf:"varint,4,opt,name=max_hours,json=maxHours,proto3" json:"max_hours,omitempty"`
@@ -225,27 +225,25 @@ func (m *EventRenew) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EventRenew proto.InternalMessageInfo
 
-type EventUpdate struct {
-	ID                 uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+type EventUpdateDetails struct {
+	LeaseID            uint64 `protobuf:"varint,1,opt,name=lease_id,json=leaseId,proto3" json:"lease_id,omitempty"`
 	NodeAddress        string `protobuf:"bytes,2,opt,name=node_address,json=nodeAddress,proto3" json:"node_address,omitempty"`
 	ProvAddress        string `protobuf:"bytes,3,opt,name=prov_address,json=provAddress,proto3" json:"prov_address,omitempty"`
-	Hours              int64  `protobuf:"varint,4,opt,name=hours,proto3" json:"hours,omitempty"`
-	RenewalPricePolicy string `protobuf:"bytes,5,opt,name=renewal_price_policy,json=renewalPricePolicy,proto3" json:"renewal_price_policy,omitempty"`
-	PayoutAt           string `protobuf:"bytes,6,opt,name=payout_at,json=payoutAt,proto3" json:"payout_at,omitempty"`
+	RenewalPricePolicy string `protobuf:"bytes,4,opt,name=renewal_price_policy,json=renewalPricePolicy,proto3" json:"renewal_price_policy,omitempty"`
 }
 
-func (m *EventUpdate) Reset()         { *m = EventUpdate{} }
-func (m *EventUpdate) String() string { return proto.CompactTextString(m) }
-func (*EventUpdate) ProtoMessage()    {}
-func (*EventUpdate) Descriptor() ([]byte, []int) {
+func (m *EventUpdateDetails) Reset()         { *m = EventUpdateDetails{} }
+func (m *EventUpdateDetails) String() string { return proto.CompactTextString(m) }
+func (*EventUpdateDetails) ProtoMessage()    {}
+func (*EventUpdateDetails) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6f24c117a246dd71, []int{5}
 }
-func (m *EventUpdate) XXX_Unmarshal(b []byte) error {
+func (m *EventUpdateDetails) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventUpdate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventUpdateDetails) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventUpdate.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventUpdateDetails.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -255,17 +253,17 @@ func (m *EventUpdate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (m *EventUpdate) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventUpdate.Merge(m, src)
+func (m *EventUpdateDetails) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventUpdateDetails.Merge(m, src)
 }
-func (m *EventUpdate) XXX_Size() int {
+func (m *EventUpdateDetails) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventUpdate) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventUpdate.DiscardUnknown(m)
+func (m *EventUpdateDetails) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventUpdateDetails.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventUpdate proto.InternalMessageInfo
+var xxx_messageInfo_EventUpdateDetails proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*EventCreate)(nil), "sentinel.lease.v1.EventCreate")
@@ -273,41 +271,42 @@ func init() {
 	proto.RegisterType((*EventPay)(nil), "sentinel.lease.v1.EventPay")
 	proto.RegisterType((*EventRefund)(nil), "sentinel.lease.v1.EventRefund")
 	proto.RegisterType((*EventRenew)(nil), "sentinel.lease.v1.EventRenew")
-	proto.RegisterType((*EventUpdate)(nil), "sentinel.lease.v1.EventUpdate")
+	proto.RegisterType((*EventUpdateDetails)(nil), "sentinel.lease.v1.EventUpdateDetails")
 }
 
 func init() { proto.RegisterFile("sentinel/lease/v1/events.proto", fileDescriptor_6f24c117a246dd71) }
 
 var fileDescriptor_6f24c117a246dd71 = []byte{
-	// 444 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x54, 0xc1, 0x8e, 0xd3, 0x30,
-	0x10, 0x8d, 0xd3, 0x6d, 0xd5, 0x7a, 0x01, 0x89, 0xa8, 0x5a, 0x45, 0x20, 0x99, 0x12, 0x09, 0xa9,
-	0x17, 0x1a, 0x0a, 0x67, 0x0e, 0xbb, 0xb0, 0x12, 0xdc, 0xaa, 0x48, 0x5c, 0xb8, 0x04, 0xb7, 0x99,
-	0xb6, 0x16, 0xa9, 0x1d, 0xd9, 0x4e, 0xda, 0xfe, 0x05, 0x3f, 0xc0, 0x19, 0x3e, 0x65, 0x8f, 0x3d,
-	0x72, 0x42, 0x90, 0xfe, 0x08, 0xb2, 0xe3, 0x2e, 0xcb, 0x61, 0xf7, 0x56, 0x89, 0x5b, 0xe6, 0xbd,
-	0x67, 0xcd, 0xcc, 0xcb, 0xd3, 0x60, 0xa2, 0x80, 0x6b, 0xc6, 0x21, 0x8f, 0x73, 0xa0, 0x0a, 0xe2,
-	0x6a, 0x1c, 0x43, 0x05, 0x5c, 0xab, 0x51, 0x21, 0x85, 0x16, 0xc1, 0xc3, 0x03, 0x3f, 0xb2, 0xfc,
-	0xa8, 0x1a, 0x3f, 0xea, 0x2f, 0xc4, 0x42, 0x58, 0x36, 0x36, 0x5f, 0x8d, 0x30, 0xda, 0x21, 0x7c,
-	0x7a, 0x69, 0x5e, 0xbe, 0x91, 0x40, 0x35, 0x04, 0x67, 0xd8, 0x67, 0x59, 0x88, 0x06, 0x68, 0x78,
-	0x72, 0xd1, 0xa9, 0x7f, 0x3e, 0xf1, 0xdf, 0xbf, 0x4d, 0x7c, 0x96, 0x05, 0x4f, 0xf1, 0x3d, 0x2e,
-	0x32, 0x48, 0x69, 0x96, 0x49, 0x50, 0x2a, 0xf4, 0x07, 0x68, 0xd8, 0x4b, 0x4e, 0x0d, 0x76, 0xde,
-	0x40, 0x46, 0x52, 0x48, 0x51, 0x5d, 0x4b, 0x5a, 0x8d, 0xc4, 0x60, 0x07, 0xc9, 0x63, 0xdc, 0x5b,
-	0xd1, 0x4d, 0xba, 0x14, 0xa5, 0x54, 0xe1, 0xc9, 0x00, 0x0d, 0x5b, 0x49, 0x77, 0x45, 0x37, 0xef,
-	0x4c, 0x1d, 0xf4, 0x71, 0xbb, 0x90, 0x6c, 0x06, 0x61, 0xdb, 0x3e, 0x6c, 0x8a, 0xe0, 0x05, 0xee,
-	0x4b, 0xe0, 0xb0, 0xa6, 0x79, 0x6a, 0x81, 0xb4, 0x10, 0x39, 0x9b, 0x6d, 0xc3, 0x8e, 0x15, 0x05,
-	0x8e, 0x9b, 0x18, 0x6a, 0x62, 0x99, 0x68, 0x89, 0xbb, 0x76, 0xa3, 0x4b, 0x9e, 0x1d, 0x77, 0x9d,
-	0xe8, 0x1b, 0x72, 0xad, 0x26, 0x74, 0x7b, 0x64, 0xe7, 0xce, 0x70, 0x87, 0xae, 0x44, 0xc9, 0xb5,
-	0xb5, 0xad, 0x97, 0xb8, 0x2a, 0x78, 0x86, 0x1f, 0x28, 0x4d, 0x3f, 0x33, 0xbe, 0x48, 0x25, 0xac,
-	0xa9, 0xcc, 0x9c, 0x7b, 0xf7, 0x1d, 0x9a, 0x58, 0x30, 0xfa, 0xe4, 0xfe, 0x72, 0x02, 0xf3, 0xf2,
-	0x6e, 0x5b, 0xfe, 0x19, 0xc4, 0xbf, 0x6b, 0x90, 0xd6, 0xcd, 0x41, 0xa2, 0xaf, 0x08, 0x63, 0xd7,
-	0x82, 0xc3, 0xfa, 0xbf, 0xcb, 0xd1, 0xdf, 0xa0, 0x7f, 0x28, 0xb2, 0xe3, 0x07, 0xbd, 0x8f, 0xdb,
-	0x37, 0x87, 0x6b, 0x8a, 0x5b, 0xb3, 0xdc, 0xbe, 0x2d, 0xcb, 0x66, 0xd1, 0x82, 0x6e, 0x45, 0xa9,
-	0x53, 0xaa, 0x5d, 0xe4, 0xbb, 0x0d, 0x70, 0xae, 0x2f, 0xd2, 0xab, 0xdf, 0xc4, 0xfb, 0x5e, 0x13,
-	0xef, 0xaa, 0x26, 0x68, 0x57, 0x13, 0xf4, 0xab, 0x26, 0xe8, 0xcb, 0x9e, 0x78, 0xbb, 0x3d, 0xf1,
-	0x7e, 0xec, 0x89, 0xf7, 0xf1, 0xf5, 0x82, 0xe9, 0x65, 0x39, 0x1d, 0xcd, 0xc4, 0x2a, 0x3e, 0x5c,
-	0x84, 0xe7, 0x62, 0x3e, 0x67, 0x33, 0x46, 0xf3, 0x6b, 0x64, 0x59, 0x4e, 0xe3, 0x6a, 0xfc, 0x32,
-	0xde, 0xb8, 0x63, 0xa2, 0xb7, 0x05, 0xa8, 0xb8, 0x1a, 0x4f, 0x3b, 0xf6, 0x46, 0xbc, 0xfa, 0x13,
-	0x00, 0x00, 0xff, 0xff, 0x86, 0x96, 0x13, 0xe5, 0x6e, 0x04, 0x00, 0x00,
+	// 451 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x54, 0x31, 0x8f, 0xd3, 0x30,
+	0x14, 0x8e, 0xef, 0xda, 0x6b, 0xeb, 0x02, 0x12, 0x51, 0x87, 0x08, 0x24, 0x53, 0x22, 0x81, 0xba,
+	0xd0, 0x50, 0x98, 0x19, 0x38, 0xee, 0x24, 0x4e, 0x62, 0xa8, 0x22, 0xb1, 0xb0, 0x44, 0x6e, 0xf3,
+	0xda, 0x5a, 0xa4, 0x76, 0x64, 0x3b, 0x69, 0xfb, 0x2f, 0xf8, 0x19, 0x2c, 0x6c, 0x2c, 0xfc, 0x83,
+	0x1b, 0x6f, 0x64, 0x42, 0x47, 0xfa, 0x47, 0x90, 0x1d, 0xe7, 0x24, 0x84, 0x6e, 0x60, 0xa9, 0x6e,
+	0xf3, 0xfb, 0xbe, 0xef, 0xc9, 0x9f, 0x3f, 0xf9, 0x3d, 0x4c, 0x14, 0x70, 0xcd, 0x38, 0x64, 0x51,
+	0x06, 0x54, 0x41, 0x54, 0x4e, 0x22, 0x28, 0x81, 0x6b, 0x35, 0xce, 0xa5, 0xd0, 0xc2, 0x7f, 0xd8,
+	0xf0, 0x63, 0xcb, 0x8f, 0xcb, 0xc9, 0xa3, 0xc1, 0x52, 0x2c, 0x85, 0x65, 0x23, 0x73, 0xaa, 0x85,
+	0xe1, 0x35, 0xc2, 0xfd, 0x73, 0xd3, 0xf9, 0x4e, 0x02, 0xd5, 0xe0, 0x3f, 0xc7, 0x5d, 0xdb, 0x91,
+	0xb0, 0x34, 0x40, 0x43, 0x34, 0x6a, 0x9d, 0xf6, 0xab, 0x5f, 0x4f, 0x3a, 0x1f, 0x0c, 0x76, 0x71,
+	0x16, 0x77, 0x2c, 0x79, 0x91, 0xfa, 0x4f, 0xf1, 0x3d, 0x2e, 0x52, 0x48, 0x68, 0x9a, 0x4a, 0x50,
+	0x2a, 0x38, 0x1a, 0xa2, 0x51, 0x2f, 0xee, 0x1b, 0xec, 0x6d, 0x0d, 0x19, 0x49, 0x2e, 0x45, 0x79,
+	0x23, 0x39, 0xae, 0x25, 0x06, 0x6b, 0x24, 0x8f, 0x71, 0x6f, 0x4d, 0xb7, 0xc9, 0x4a, 0x14, 0x52,
+	0x05, 0xad, 0x21, 0x1a, 0x1d, 0xc7, 0xdd, 0x35, 0xdd, 0xbe, 0x37, 0xb5, 0x3f, 0xc0, 0xed, 0x5c,
+	0xb2, 0x39, 0x04, 0x6d, 0xdb, 0x58, 0x17, 0xfe, 0x4b, 0x3c, 0x90, 0xc0, 0x61, 0x43, 0xb3, 0xc4,
+	0x02, 0x49, 0x2e, 0x32, 0x36, 0xdf, 0x05, 0x27, 0x56, 0xe4, 0x3b, 0x6e, 0x6a, 0xa8, 0xa9, 0x65,
+	0xc2, 0x2d, 0xee, 0xda, 0x17, 0x9e, 0xf3, 0xf4, 0xb0, 0xcf, 0x0b, 0x7f, 0x20, 0x77, 0xf5, 0x94,
+	0xee, 0x0e, 0x9c, 0x6c, 0x80, 0x3b, 0x39, 0xdd, 0xad, 0x81, 0x6b, 0x9b, 0x6b, 0x2f, 0x6e, 0x4a,
+	0xff, 0x19, 0x7e, 0xa0, 0x34, 0xfd, 0xcc, 0xf8, 0x32, 0x91, 0xb0, 0xa1, 0x32, 0x75, 0xf9, 0xde,
+	0x77, 0x68, 0x6c, 0xc1, 0x90, 0xbb, 0x7f, 0x11, 0xc3, 0xa2, 0xf8, 0xbf, 0xe0, 0xfe, 0xb2, 0x76,
+	0xf4, 0xaf, 0xb5, 0x01, 0x6e, 0x97, 0x34, 0x2b, 0xc0, 0xd9, 0xae, 0x8b, 0xf0, 0x1b, 0xc2, 0xd8,
+	0x5d, 0xc8, 0x61, 0x73, 0xe7, 0xff, 0x61, 0xf8, 0x1d, 0x61, 0xdf, 0xfa, 0xfd, 0x98, 0xa7, 0x54,
+	0xc3, 0x19, 0x68, 0xca, 0x32, 0x75, 0x60, 0xdf, 0xb7, 0x0d, 0x43, 0xeb, 0xb6, 0x61, 0x38, 0x4d,
+	0x2e, 0x7f, 0x13, 0xef, 0x6b, 0x45, 0xbc, 0xcb, 0x8a, 0xa0, 0xab, 0x8a, 0xa0, 0xeb, 0x8a, 0xa0,
+	0x2f, 0x7b, 0xe2, 0x5d, 0xed, 0x89, 0xf7, 0x73, 0x4f, 0xbc, 0x4f, 0x6f, 0x96, 0x4c, 0xaf, 0x8a,
+	0xd9, 0x78, 0x2e, 0xd6, 0x51, 0xb3, 0x45, 0x5e, 0x88, 0xc5, 0x82, 0xcd, 0x19, 0xcd, 0x6e, 0x90,
+	0x55, 0x31, 0x8b, 0xca, 0xc9, 0xab, 0x68, 0xeb, 0x16, 0x90, 0xde, 0xe5, 0xa0, 0xa2, 0x72, 0x32,
+	0x3b, 0xb1, 0x7b, 0xe5, 0xf5, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x62, 0xd3, 0x1b, 0xbf, 0xa2,
+	0x04, 0x00, 0x00,
 }
 
 func (m *EventCreate) Marshal() (dAtA []byte, err error) {
@@ -363,8 +362,8 @@ func (m *EventCreate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.ID != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.ID))
+	if m.LeaseID != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.LeaseID))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -405,8 +404,8 @@ func (m *EventEnd) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.ID != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.ID))
+	if m.LeaseID != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.LeaseID))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -440,10 +439,10 @@ func (m *EventPay) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x2a
 	}
-	if len(m.Amount) > 0 {
-		i -= len(m.Amount)
-		copy(dAtA[i:], m.Amount)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.Amount)))
+	if len(m.Payment) > 0 {
+		i -= len(m.Payment)
+		copy(dAtA[i:], m.Payment)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Payment)))
 		i--
 		dAtA[i] = 0x22
 	}
@@ -461,8 +460,8 @@ func (m *EventPay) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.ID != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.ID))
+	if m.LeaseID != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.LeaseID))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -489,10 +488,10 @@ func (m *EventRefund) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Amount) > 0 {
-		i -= len(m.Amount)
-		copy(dAtA[i:], m.Amount)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.Amount)))
+	if len(m.Value) > 0 {
+		i -= len(m.Value)
+		copy(dAtA[i:], m.Value)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Value)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -503,8 +502,8 @@ func (m *EventRefund) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.ID != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.ID))
+	if m.LeaseID != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.LeaseID))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -557,15 +556,15 @@ func (m *EventRenew) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.ID != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.ID))
+	if m.LeaseID != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.LeaseID))
 		i--
 		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *EventUpdate) Marshal() (dAtA []byte, err error) {
+func (m *EventUpdateDetails) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -575,34 +574,22 @@ func (m *EventUpdate) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventUpdate) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventUpdateDetails) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventUpdate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventUpdateDetails) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.PayoutAt) > 0 {
-		i -= len(m.PayoutAt)
-		copy(dAtA[i:], m.PayoutAt)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.PayoutAt)))
-		i--
-		dAtA[i] = 0x32
-	}
 	if len(m.RenewalPricePolicy) > 0 {
 		i -= len(m.RenewalPricePolicy)
 		copy(dAtA[i:], m.RenewalPricePolicy)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.RenewalPricePolicy)))
 		i--
-		dAtA[i] = 0x2a
-	}
-	if m.Hours != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.Hours))
-		i--
-		dAtA[i] = 0x20
+		dAtA[i] = 0x22
 	}
 	if len(m.ProvAddress) > 0 {
 		i -= len(m.ProvAddress)
@@ -618,8 +605,8 @@ func (m *EventUpdate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.ID != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.ID))
+	if m.LeaseID != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.LeaseID))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -643,8 +630,8 @@ func (m *EventCreate) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.ID != 0 {
-		n += 1 + sovEvents(uint64(m.ID))
+	if m.LeaseID != 0 {
+		n += 1 + sovEvents(uint64(m.LeaseID))
 	}
 	l = len(m.NodeAddress)
 	if l > 0 {
@@ -674,8 +661,8 @@ func (m *EventEnd) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.ID != 0 {
-		n += 1 + sovEvents(uint64(m.ID))
+	if m.LeaseID != 0 {
+		n += 1 + sovEvents(uint64(m.LeaseID))
 	}
 	l = len(m.NodeAddress)
 	if l > 0 {
@@ -694,8 +681,8 @@ func (m *EventPay) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.ID != 0 {
-		n += 1 + sovEvents(uint64(m.ID))
+	if m.LeaseID != 0 {
+		n += 1 + sovEvents(uint64(m.LeaseID))
 	}
 	l = len(m.NodeAddress)
 	if l > 0 {
@@ -705,7 +692,7 @@ func (m *EventPay) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
-	l = len(m.Amount)
+	l = len(m.Payment)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
@@ -722,14 +709,14 @@ func (m *EventRefund) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.ID != 0 {
-		n += 1 + sovEvents(uint64(m.ID))
+	if m.LeaseID != 0 {
+		n += 1 + sovEvents(uint64(m.LeaseID))
 	}
 	l = len(m.ProvAddress)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
-	l = len(m.Amount)
+	l = len(m.Value)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
@@ -742,8 +729,8 @@ func (m *EventRenew) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.ID != 0 {
-		n += 1 + sovEvents(uint64(m.ID))
+	if m.LeaseID != 0 {
+		n += 1 + sovEvents(uint64(m.LeaseID))
 	}
 	l = len(m.NodeAddress)
 	if l > 0 {
@@ -763,14 +750,14 @@ func (m *EventRenew) Size() (n int) {
 	return n
 }
 
-func (m *EventUpdate) Size() (n int) {
+func (m *EventUpdateDetails) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.ID != 0 {
-		n += 1 + sovEvents(uint64(m.ID))
+	if m.LeaseID != 0 {
+		n += 1 + sovEvents(uint64(m.LeaseID))
 	}
 	l = len(m.NodeAddress)
 	if l > 0 {
@@ -780,14 +767,7 @@ func (m *EventUpdate) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
-	if m.Hours != 0 {
-		n += 1 + sovEvents(uint64(m.Hours))
-	}
 	l = len(m.RenewalPricePolicy)
-	if l > 0 {
-		n += 1 + l + sovEvents(uint64(l))
-	}
-	l = len(m.PayoutAt)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
@@ -831,9 +811,9 @@ func (m *EventCreate) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LeaseID", wireType)
 			}
-			m.ID = 0
+			m.LeaseID = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowEvents
@@ -843,7 +823,7 @@ func (m *EventCreate) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ID |= uint64(b&0x7F) << shift
+				m.LeaseID |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1047,9 +1027,9 @@ func (m *EventEnd) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LeaseID", wireType)
 			}
-			m.ID = 0
+			m.LeaseID = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowEvents
@@ -1059,7 +1039,7 @@ func (m *EventEnd) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ID |= uint64(b&0x7F) << shift
+				m.LeaseID |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1180,9 +1160,9 @@ func (m *EventPay) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LeaseID", wireType)
 			}
-			m.ID = 0
+			m.LeaseID = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowEvents
@@ -1192,7 +1172,7 @@ func (m *EventPay) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ID |= uint64(b&0x7F) << shift
+				m.LeaseID |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1263,7 +1243,7 @@ func (m *EventPay) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Payment", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1291,7 +1271,7 @@ func (m *EventPay) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Amount = string(dAtA[iNdEx:postIndex])
+			m.Payment = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
@@ -1377,9 +1357,9 @@ func (m *EventRefund) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LeaseID", wireType)
 			}
-			m.ID = 0
+			m.LeaseID = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowEvents
@@ -1389,7 +1369,7 @@ func (m *EventRefund) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ID |= uint64(b&0x7F) << shift
+				m.LeaseID |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1428,7 +1408,7 @@ func (m *EventRefund) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1456,7 +1436,7 @@ func (m *EventRefund) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Amount = string(dAtA[iNdEx:postIndex])
+			m.Value = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1510,9 +1490,9 @@ func (m *EventRenew) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LeaseID", wireType)
 			}
-			m.ID = 0
+			m.LeaseID = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowEvents
@@ -1522,7 +1502,7 @@ func (m *EventRenew) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ID |= uint64(b&0x7F) << shift
+				m.LeaseID |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1663,7 +1643,7 @@ func (m *EventRenew) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventUpdate) Unmarshal(dAtA []byte) error {
+func (m *EventUpdateDetails) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1686,17 +1666,17 @@ func (m *EventUpdate) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventUpdate: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventUpdateDetails: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventUpdate: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventUpdateDetails: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LeaseID", wireType)
 			}
-			m.ID = 0
+			m.LeaseID = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowEvents
@@ -1706,7 +1686,7 @@ func (m *EventUpdate) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ID |= uint64(b&0x7F) << shift
+				m.LeaseID |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1776,25 +1756,6 @@ func (m *EventUpdate) Unmarshal(dAtA []byte) error {
 			m.ProvAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Hours", wireType)
-			}
-			m.Hours = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Hours |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field RenewalPricePolicy", wireType)
 			}
@@ -1825,38 +1786,6 @@ func (m *EventUpdate) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.RenewalPricePolicy = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PayoutAt", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthEvents
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEvents
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PayoutAt = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

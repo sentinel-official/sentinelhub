@@ -43,9 +43,9 @@ func (k *Keeper) HandleMsgEndLease(ctx sdk.Context, msg *v1.MsgEndLeaseRequest) 
 	// Emit an event indicating refund details to subscribers
 	ctx.EventManager().EmitTypedEvent(
 		&v1.EventRefund{
-			ID:          lease.ID,
+			LeaseID:     lease.ID,
 			ProvAddress: lease.ProvAddress,
-			Amount:      refund.String(),
+			Value:       refund.String(),
 		},
 	)
 
@@ -66,7 +66,7 @@ func (k *Keeper) HandleMsgEndLease(ctx sdk.Context, msg *v1.MsgEndLeaseRequest) 
 	// Emit an event indicating lease termination
 	ctx.EventManager().EmitTypedEvent(
 		&v1.EventEnd{
-			ID:          lease.ID,
+			LeaseID:     lease.ID,
 			NodeAddress: lease.NodeAddress,
 			ProvAddress: lease.ProvAddress,
 		},
@@ -156,9 +156,9 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 	// Emit refund event to subscribers
 	ctx.EventManager().EmitTypedEvent(
 		&v1.EventRefund{
-			ID:          lease.ID,
+			LeaseID:     lease.ID,
 			ProvAddress: lease.ProvAddress,
-			Amount:      refund.String(),
+			Value:       refund.String(),
 		},
 	)
 
@@ -194,7 +194,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 	// Emit lease renewal event
 	ctx.EventManager().EmitTypedEvent(
 		&v1.EventRenew{
-			ID:          lease.ID,
+			LeaseID:     lease.ID,
 			NodeAddress: lease.NodeAddress,
 			ProvAddress: lease.ProvAddress,
 			MaxHours:    lease.MaxHours,
@@ -298,7 +298,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 	// Emit event indicating successful lease creation
 	ctx.EventManager().EmitTypedEvent(
 		&v1.EventCreate{
-			ID:                 lease.ID,
+			LeaseID:            lease.ID,
 			NodeAddress:        lease.NodeAddress,
 			ProvAddress:        lease.ProvAddress,
 			MaxHours:           lease.MaxHours,
@@ -337,8 +337,8 @@ func (k *Keeper) HandleMsgUpdateLease(ctx sdk.Context, msg *v1.MsgUpdateLeaseReq
 
 	// Emit event to signal lease update
 	ctx.EventManager().EmitTypedEvent(
-		&v1.EventUpdate{
-			ID:                 lease.ID,
+		&v1.EventUpdateDetails{
+			LeaseID:            lease.ID,
 			NodeAddress:        lease.NodeAddress,
 			ProvAddress:        lease.ProvAddress,
 			RenewalPricePolicy: lease.RenewalPricePolicy.String(),

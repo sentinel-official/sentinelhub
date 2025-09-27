@@ -81,12 +81,10 @@ func (k *Keeper) handleInactiveSessions(ctx sdk.Context) {
 
 		// Emit an event indicating the update of the session status to inactive
 		ctx.EventManager().EmitTypedEvent(
-			&v3.EventUpdateStatus{
-				ID:          item.GetID(),
+			&v3.EventEnd{
+				SessionID:   item.GetID(),
 				AccAddress:  item.GetAccAddress(),
 				NodeAddress: item.GetNodeAddress(),
-				Status:      v1base.StatusInactive.String(),
-				StatusAt:    ctx.BlockTime().String(),
 			},
 		)
 

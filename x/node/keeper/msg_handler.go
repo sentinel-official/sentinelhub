@@ -291,7 +291,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	// Emit event indicating session creation
 	ctx.EventManager().EmitTypedEvent(
 		&v3.EventCreateSession{
-			ID:          session.ID,
+			SessionID:   session.ID,
 			AccAddress:  session.AccAddress,
 			NodeAddress: session.NodeAddress,
 			Price:       session.Price.String(),

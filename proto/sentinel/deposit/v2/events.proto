@@ -1,0 +1,18 @@
+syntax = "proto3";
+package sentinel.deposit.v2;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/deposit/types/v2";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message EventAdd {
+  string acc_address = 1;
+  string value = 2;
+}
+
+message EventSubtract {
+  string acc_address = 1;
+  string value = 2;
+}

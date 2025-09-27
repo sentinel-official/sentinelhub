@@ -2,7 +2,6 @@ package migrations
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -75,8 +74,8 @@ func (k *Migrator) migratePlans(ctx sdk.Context) {
 		plan := v3.Plan{
 			ID:          item.ID,
 			ProvAddress: item.ProviderAddress,
-			Gigabytes:   item.Gigabytes,
-			Hours:       int64(item.Duration / time.Hour),
+			Bytes:       base.Gigabyte.MulRaw(item.Gigabytes),
+			Duration:    item.Duration,
 			Prices:      prices,
 			Status:      item.Status,
 			StatusAt:    item.StatusAt,

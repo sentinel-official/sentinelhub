@@ -10,8 +10,8 @@ option (gogoproto.goproto_getters_all) = false;
 message EventCreate {
   uint64 plan_id = 1 [(gogoproto.customname) = "PlanID"];
   string prov_address = 2;
-  int64 gigabytes = 3;
-  int64 hours = 4;
+  string bytes = 3;
+  string duration = 4;
   string prices = 5;
 }
 

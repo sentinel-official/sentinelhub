@@ -3,23 +3,10 @@ package v3
 import (
 	"errors"
 	"fmt"
-	"time"
-
-	sdkmath "cosmossdk.io/math"
 
 	base "github.com/sentinel-official/sentinelhub/v12/types"
 	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
-
-// GetBytes returns the plan's bandwidth as sdkmath.Int in bytes.
-func (m *Plan) GetBytes() sdkmath.Int {
-	return base.Gigabyte.MulRaw(m.Gigabytes)
-}
-
-// GetDuration returns the plan's duration as a time.Duration value.
-func (m *Plan) GetDuration() time.Duration {
-	return time.Duration(m.Hours) * time.Hour
-}
 
 // GetPrices returns the list of prices associated with the plan.
 func (m *Plan) GetPrices() v1base.Prices {
@@ -60,20 +47,24 @@ func (m *Plan) Validate() error {
 		return fmt.Errorf("invalid prov_address: %w", err)
 	}
 
-	if m.Gigabytes < 0 {
-		return errors.New("gigabytes cannot be negative")
+	if m.Bytes.IsNil() {
+		return errors.New("bytes cannot be nil")
 	}
 
-	if m.Gigabytes == 0 {
-		return errors.New("gigabytes cannot be zero")
+	if m.Bytes.IsZero() {
+		return errors.New("bytes cannot be zero")
 	}
 
-	if m.Hours < 0 {
-		return errors.New("hours cannot be negative")
+	if m.Bytes.IsNegative() {
+		return errors.New("bytes cannot be negative")
 	}
 
-	if m.Hours == 0 {
-		return errors.New("hours cannot be zero")
+	if m.Duration == 0 {
+		return errors.New("duration cannot be zero")
+	}
+
+	if m.Duration < 0 {
+		return errors.New("duration cannot be negative")
 	}
 
 	if prices := m.GetPrices(); !prices.IsValid() {

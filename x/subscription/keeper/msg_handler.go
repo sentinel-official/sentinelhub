@@ -142,7 +142,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 	}
 
 	// Construct the renewed subscription with updated times and pricing
-	inactiveAt := ctx.BlockTime().Add(plan.GetDuration())
+	inactiveAt := ctx.BlockTime().Add(plan.Duration)
 	subscription = v3.Subscription{
 		ID:                 subscription.ID,
 		AccAddress:         subscription.AccAddress,
@@ -331,7 +331,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 
 	// Build the subscription object with a new ID
 	count := k.GetSubscriptionCount(ctx)
-	inactiveAt := ctx.BlockTime().Add(plan.GetDuration())
+	inactiveAt := ctx.BlockTime().Add(plan.Duration)
 	subscription := v3.Subscription{
 		ID:                 count + 1,
 		AccAddress:         accAddr.String(),
@@ -388,7 +388,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 	alloc := v2.Allocation{
 		ID:            subscription.ID,
 		Address:       subscription.AccAddress,
-		GrantedBytes:  plan.GetBytes(),
+		GrantedBytes:  plan.Bytes,
 		UtilisedBytes: sdkmath.ZeroInt(),
 	}
 

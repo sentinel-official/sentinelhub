@@ -1,8 +1,11 @@
 package cli
 
 import (
+	"fmt"
 	"strconv"
+	"time"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -15,8 +18,8 @@ import (
 
 func txCreatePlan() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-plan [gigabytes] [hours]",
-		Short: "Create a new subscription plan with gigabytes, hours and pricing details",
+		Use:   "create-plan [bytes] [duration]",
+		Short: "Create a new subscription plan with bytes, duration and pricing details",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
@@ -24,12 +27,12 @@ func txCreatePlan() *cobra.Command {
 				return err
 			}
 
-			gigabytes, err := strconv.ParseInt(args[0], 10, 64)
-			if err != nil {
-				return err
+			bytes, ok := sdkmath.NewIntFromString(args[0])
+			if !ok {
+				return fmt.Errorf("invalid bytes %s", args[0])
 			}
 
-			hours, err := strconv.ParseInt(args[1], 10, 64)
+			duration, err := time.ParseDuration(args[1])
 			if err != nil {
 				return err
 			}
@@ -41,8 +44,8 @@ func txCreatePlan() *cobra.Command {
 
 			msg := v3.NewMsgCreatePlanRequest(
 				ctx.FromAddress.Bytes(),
-				gigabytes,
-				hours,
+				bytes,
+				duration,
 				prices,
 			)
 			if err := msg.ValidateBasic(); err != nil {

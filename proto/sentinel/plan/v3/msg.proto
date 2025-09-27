@@ -2,6 +2,7 @@ syntax = "proto3";
 package sentinel.plan.v3;
 
 import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
 import "sentinel/types/v1/price.proto";
 import "sentinel/types/v1/renewal.proto";
 import "sentinel/types/v1/status.proto";
@@ -12,8 +13,14 @@ option (gogoproto.goproto_getters_all) = false;
 
 message MsgCreatePlanRequest {
   string from = 1;
-  int64 gigabytes = 2;
-  int64 hours = 3;
+  string bytes = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Duration duration = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true
+  ];
   repeated sentinel.types.v1.Price prices = 4 [(gogoproto.nullable) = false];
 }
 

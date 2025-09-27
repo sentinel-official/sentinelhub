@@ -2,7 +2,9 @@ package v3
 
 import (
 	"fmt"
+	"time"
 
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/sentinelhub/v12/types"
@@ -20,12 +22,12 @@ var (
 )
 
 // NewMsgCreatePlanRequest creates a new MsgCreatePlanRequest instance.
-func NewMsgCreatePlanRequest(from base.ProvAddress, gigabytes, hours int64, prices v1base.Prices) *MsgCreatePlanRequest {
+func NewMsgCreatePlanRequest(from base.ProvAddress, bytes sdkmath.Int, duration time.Duration, prices v1base.Prices) *MsgCreatePlanRequest {
 	return &MsgCreatePlanRequest{
-		From:      from.String(),
-		Gigabytes: gigabytes,
-		Hours:     hours,
-		Prices:    prices,
+		From:     from.String(),
+		Bytes:    bytes,
+		Duration: duration,
+		Prices:   prices,
 	}
 }
 
@@ -44,20 +46,24 @@ func (m *MsgCreatePlanRequest) ValidateBasic() error {
 		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
-	if m.Gigabytes == 0 {
-		return types.NewErrorInvalidMessage("gigabytes cannot be zero")
+	if m.Bytes.IsNil() {
+		return types.NewErrorInvalidMessage("bytes cannot be nil")
 	}
 
-	if m.Gigabytes < 0 {
-		return types.NewErrorInvalidMessage("gigabytes cannot be negative")
+	if m.Bytes.IsZero() {
+		return types.NewErrorInvalidMessage("bytes cannot be zero")
 	}
 
-	if m.Hours == 0 {
-		return types.NewErrorInvalidMessage("hours cannot be zero")
+	if m.Bytes.IsNegative() {
+		return types.NewErrorInvalidMessage("bytes cannot be negative")
 	}
 
-	if m.Hours < 0 {
-		return types.NewErrorInvalidMessage("hours cannot be negative")
+	if m.Duration == 0 {
+		return types.NewErrorInvalidMessage("duration cannot be zero")
+	}
+
+	if m.Duration < 0 {
+		return types.NewErrorInvalidMessage("duration cannot be negative")
 	}
 
 	if prices := m.GetPrices(); !prices.IsValid() {

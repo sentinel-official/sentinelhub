@@ -3,10 +3,10 @@ modules:
   - path: proto
   - path: third_party/osmosis/proto
 deps:
-  - buf.build/cosmos/cosmos-proto
+  - buf.build/cosmos/cosmos-proto:1935555c206d4afb9e94615dfd0fad31
   - buf.build/cosmos/cosmos-sdk:v0.47.0
-  - buf.build/cosmos/gogo-proto
-  - buf.build/googleapis/googleapis
+  - buf.build/cosmos/gogo-proto:34d970b699f84aa382f3c29773a60836
+  - buf.build/googleapis/googleapis:75b4300737fb4efca0831636be94e517
 lint:
   use:
     - STANDARD

@@ -20,6 +20,7 @@ const (
 	ErrCodeInvalidRenewalPolicy
 	ErrCodeInvalidSessionStatus
 	ErrCodeInvalidSubscriptionStatus
+	ErrCodeMaxAllocationsReached
 	ErrCodeNodeForPlanNotFound
 	ErrCodeNodeNotFound
 	ErrCodePlanNotFound
@@ -39,6 +40,7 @@ var (
 	ErrInvalidRenewalPolicy      = sdkerrors.Register(ModuleName, ErrCodeInvalidRenewalPolicy, "invalid renewal policy")
 	ErrInvalidSessionStatus      = sdkerrors.Register(ModuleName, ErrCodeInvalidSessionStatus, "invalid session status")
 	ErrInvalidSubscriptionStatus = sdkerrors.Register(ModuleName, ErrCodeInvalidSubscriptionStatus, "invalid subscription status")
+	ErrMaxAllocationsReached     = sdkerrors.Register(ModuleName, ErrCodeMaxAllocationsReached, "max allocations reached")
 	ErrNodeForPlanNotFound       = sdkerrors.Register(ModuleName, ErrCodeNodeForPlanNotFound, "node for plan not found")
 	ErrNodeNotFound              = sdkerrors.Register(ModuleName, ErrCodeNodeNotFound, "node not found")
 	ErrPlanNotFound              = sdkerrors.Register(ModuleName, ErrCodePlanNotFound, "plan not found")
@@ -86,6 +88,11 @@ func NewErrorInvalidSessionStatus(id uint64, status v1base.Status) error {
 // NewErrorInvalidSubscriptionStatus returns an error indicating that the provided status is invalid for the subscription.
 func NewErrorInvalidSubscriptionStatus(id uint64, status v1base.Status) error {
 	return sdkerrors.Wrapf(ErrInvalidSubscriptionStatus, "invalid status %s for subscription %d", status, id)
+}
+
+// NewErrorMaxAllocationsReached returns an error indicating that the specified subscription has reached maximum allocations.
+func NewErrorMaxAllocationsReached(id uint64) error {
+	return sdkerrors.Wrapf(ErrNodeForPlanNotFound, "subscription %d has reached maximum allocations", id)
 }
 
 // NewErrorNodeForPlanNotFound returns an error indicating that the specified node does not exist for the plan.

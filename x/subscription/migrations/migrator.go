@@ -76,8 +76,9 @@ func (k *Migrator) deleteKeys(ctx sdk.Context, keyPrefix []byte) (keys [][]byte)
 
 func (k *Migrator) setParams(ctx sdk.Context) {
 	params := v3.Params{
-		StakingShare:  sdkmath.LegacyMustNewDecFromStr("0.2"),
-		StatusTimeout: 4 * time.Hour,
+		MaxAllocations: 8,
+		StakingShare:   sdkmath.LegacyMustNewDecFromStr("0.2"),
+		StatusTimeout:  4 * time.Hour,
 	}
 
 	k.subscription.SetParams(ctx, params)

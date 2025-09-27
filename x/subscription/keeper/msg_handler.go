@@ -209,6 +209,11 @@ func (k *Keeper) HandleMsgShareSubscription(ctx sdk.Context, msg *v3.MsgShareSub
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
 
+	// Check if the subscription has reached maximum allocations
+	if k.IsMaxAllocationsReached(ctx, subscription.ID) {
+		return nil, types.NewErrorMaxAllocationsReached(subscription.ID)
+	}
+
 	// Load allocation from sender and parse both account addresses
 	fromAddr, err := sdk.AccAddressFromBech32(msg.From)
 	if err != nil {

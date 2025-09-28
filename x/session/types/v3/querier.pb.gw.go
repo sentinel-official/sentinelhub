@@ -803,19 +803,19 @@ func RegisterQueryServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 }
 
 var (
-	pattern_QueryService_QuerySessions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sentinel", "session", "v3", "sessions"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryService_QuerySessions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sentinel", "session", "v3", "sessions"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_QueryService_QuerySessionsForAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"sentinel", "session", "v3", "accounts", "address", "sessions"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryService_QuerySessionsForAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"sentinel", "session", "v3", "accounts", "address", "sessions"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_QueryService_QuerySessionsForNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"sentinel", "session", "v3", "nodes", "address", "sessions"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryService_QuerySessionsForNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"sentinel", "session", "v3", "nodes", "address", "sessions"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_QueryService_QuerySessionsForSubscription_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"sentinel", "session", "v3", "subscriptions", "id", "sessions"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryService_QuerySessionsForSubscription_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"sentinel", "session", "v3", "subscriptions", "id", "sessions"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_QueryService_QuerySessionsForAllocation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6, 2, 7}, []string{"sentinel", "session", "v3", "subscriptions", "id", "allocations", "address", "sessions"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryService_QuerySessionsForAllocation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6, 2, 7}, []string{"sentinel", "session", "v3", "subscriptions", "id", "allocations", "address", "sessions"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_QueryService_QuerySession_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sentinel", "session", "v3", "sessions", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryService_QuerySession_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sentinel", "session", "v3", "sessions", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_QueryService_QueryParams_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sentinel", "session", "v3", "params"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryService_QueryParams_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sentinel", "session", "v3", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

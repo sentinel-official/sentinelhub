@@ -5,4 +5,4 @@ plugins:
     opt: plugins=grpc,Mgoogle/protobuf/any.proto=github.com/cosmos/cosmos-sdk/codec/types
   - local: protoc-gen-grpc-gateway
     out: ..
-    opt: logtostderr=true
+    opt: logtostderr=true,allow_colon_final_segments=true

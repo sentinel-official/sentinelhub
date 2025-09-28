@@ -551,15 +551,15 @@ func RegisterQueryServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 }
 
 var (
-	pattern_QueryService_QueryLeases_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sentinel", "lease", "v1", "leases"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryService_QueryLeases_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sentinel", "lease", "v1", "leases"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_QueryService_QueryLeasesForNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"sentinel", "lease", "v1", "nodes", "address", "leases"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryService_QueryLeasesForNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"sentinel", "lease", "v1", "nodes", "address", "leases"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_QueryService_QueryLeasesForProvider_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"sentinel", "lease", "v1", "providers", "address", "leases"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryService_QueryLeasesForProvider_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"sentinel", "lease", "v1", "providers", "address", "leases"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_QueryService_QueryLease_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sentinel", "lease", "v1", "leases", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryService_QueryLease_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sentinel", "lease", "v1", "leases", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_QueryService_QueryParams_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sentinel", "lease", "v1", "params"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryService_QueryParams_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sentinel", "lease", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

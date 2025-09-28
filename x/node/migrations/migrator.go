@@ -1,6 +1,8 @@
 package migrations
 
 import (
+	"net"
+	"net/url"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -86,11 +88,18 @@ func (k *Migrator) migrateNodes(ctx sdk.Context) {
 			panic(err)
 		}
 
+		remoteURL, err := url.ParseRequestURI(item.RemoteURL)
+		if err != nil {
+			panic(err)
+		}
+
+		remoteAddr := net.JoinHostPort(remoteURL.Hostname(), remoteURL.Port())
+
 		node := v3.Node{
 			Address:        item.Address,
 			GigabytePrices: gigabytePrices,
 			HourlyPrices:   hourlyPrices,
-			RemoteAddrs:    []string{item.RemoteURL},
+			RemoteAddrs:    []string{remoteAddr},
 			InactiveAt:     item.InactiveAt,
 			Status:         item.Status,
 			StatusAt:       item.StatusAt,

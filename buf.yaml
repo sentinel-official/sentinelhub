@@ -1,7 +1,9 @@
 version: v2
 modules:
   - path: proto
+    name: buf.build/sentinel-official/sentinelhub
   - path: third_party/osmosis/proto
+    name: buf.build/sentinel-official/osmosis
 deps:
   - buf.build/cosmos/cosmos-proto:1935555c206d4afb9e94615dfd0fad31
   - buf.build/cosmos/cosmos-sdk:v0.47.0

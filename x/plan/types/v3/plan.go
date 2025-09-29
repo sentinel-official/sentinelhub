@@ -62,8 +62,9 @@ func (m *Plan) Validate() error {
 		return errors.New("duration cannot be negative")
 	}
 
-	if prices := m.GetPrices(); !prices.IsValid() {
-		return errors.New("prices must be valid")
+	prices := m.GetPrices()
+	if err := prices.Validate(); err != nil {
+		return fmt.Errorf("invalid prices: %w", err)
 	}
 
 	if !m.Status.IsOneOf(v1base.StatusActive, v1base.StatusInactive) {

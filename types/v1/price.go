@@ -181,11 +181,6 @@ func (p Price) Validate() error {
 	return nil
 }
 
-// IsValid returns true if the Price passes validation.
-func (p Price) IsValid() bool {
-	return p.Validate() == nil
-}
-
 // negative returns the negated Price (both base and quote).
 func (p Price) negative() Price {
 	return Price{
@@ -354,11 +349,6 @@ func (p Prices) Validate() error {
 	}
 
 	return nil
-}
-
-// IsValid checks if the Prices slice is valid.
-func (p Prices) IsValid() bool {
-	return p.Validate() == nil
 }
 
 // Len returns the number of Prices.

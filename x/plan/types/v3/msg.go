@@ -68,8 +68,9 @@ func (m *MsgCreatePlanRequest) ValidateBasic() error {
 		return types.NewErrorInvalidMessage("duration cannot be negative")
 	}
 
-	if prices := m.GetPrices(); !prices.IsValid() {
-		return types.NewErrorInvalidMessage("prices must be valid")
+	prices := m.GetPrices()
+	if err := prices.Validate(); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid prices: %w", err))
 	}
 
 	return nil

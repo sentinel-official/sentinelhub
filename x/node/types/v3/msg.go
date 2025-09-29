@@ -51,12 +51,14 @@ func (m *MsgRegisterNodeRequest) ValidateBasic() error {
 		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
-	if prices := m.GetGigabytePrices(); !prices.IsValid() {
-		return types.NewErrorInvalidMessage("gigabyte_prices must be valid")
+	gigabytePrices := m.GetGigabytePrices()
+	if err := gigabytePrices.Validate(); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid gigabyte_prices: %w", err))
 	}
 
-	if prices := m.GetHourlyPrices(); !prices.IsValid() {
-		return types.NewErrorInvalidMessage("hourly_prices must be valid")
+	hourlyPrices := m.GetHourlyPrices()
+	if err := hourlyPrices.Validate(); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid hourly_prices: %w", err))
 	}
 
 	if len(m.RemoteAddrs) == 0 {
@@ -110,12 +112,14 @@ func (m *MsgUpdateNodeDetailsRequest) ValidateBasic() error {
 		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
 	}
 
-	if prices := m.GetGigabytePrices(); !prices.IsValid() {
-		return types.NewErrorInvalidMessage("gigabyte_prices must be valid")
+	gigabytePrices := m.GetGigabytePrices()
+	if err := gigabytePrices.Validate(); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid gigabyte_prices: %w", err))
 	}
 
-	if prices := m.GetHourlyPrices(); !prices.IsValid() {
-		return types.NewErrorInvalidMessage("hourly_prices must be valid")
+	hourlyPrices := m.GetHourlyPrices()
+	if err := hourlyPrices.Validate(); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid hourly_prices: %w", err))
 	}
 
 	if len(m.RemoteAddrs) > 0 {

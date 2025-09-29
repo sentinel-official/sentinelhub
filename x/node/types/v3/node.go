@@ -30,12 +30,14 @@ func (m *Node) Validate() error {
 		return fmt.Errorf("invalid address: %w", err)
 	}
 
-	if prices := m.GetGigabytePrices(); !prices.IsValid() {
-		return errors.New("gigabyte_prices must be valid")
+	gigabytePrices := m.GetGigabytePrices()
+	if err := gigabytePrices.Validate(); err != nil {
+		return fmt.Errorf("invalid gigabyte_prices: %w", err)
 	}
 
-	if prices := m.GetHourlyPrices(); !prices.IsValid() {
-		return errors.New("hourly_prices must be valid")
+	hourlyPrices := m.GetHourlyPrices()
+	if err := hourlyPrices.Validate(); err != nil {
+		return fmt.Errorf("invalid hourly_prices: %w", err)
 	}
 
 	if err := validateRemoteAddrs(m.RemoteAddrs); err != nil {

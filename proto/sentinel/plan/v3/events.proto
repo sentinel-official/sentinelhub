@@ -13,6 +13,7 @@ message EventCreate {
   string bytes = 3;
   string duration = 4;
   string prices = 5;
+  bool private = 6;
 }
 
 message EventLinkNode {
@@ -25,6 +26,12 @@ message EventUnlinkNode {
   uint64 plan_id = 1 [(gogoproto.customname) = "PlanID"];
   string prov_address = 2;
   string node_address = 3;
+}
+
+message EventUpdateDetails {
+  uint64 plan_id = 1 [(gogoproto.customname) = "PlanID"];
+  string prov_address = 2;
+  bool private = 3;
 }
 
 message EventUpdateStatus {

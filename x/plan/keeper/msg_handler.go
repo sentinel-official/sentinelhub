@@ -37,6 +37,7 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 		Bytes:       msg.Bytes,
 		Duration:    msg.Duration,
 		Prices:      msg.Prices,
+		Private:     msg.Private,
 		Status:      v1base.StatusInactive,
 		StatusAt:    ctx.BlockTime(),
 	}
@@ -164,8 +165,38 @@ func (k *Keeper) HandleMsgUnlinkNode(ctx sdk.Context, msg *v3.MsgUnlinkNodeReque
 	return &v3.MsgUnlinkNodeResponse{}, nil
 }
 
+// HandleMsgUpdatePlanDetails processes a request to update the details of a plan.
+// It updates the plan's privacy setting and ensures that the plan's details are persisted.
+func (k *Keeper) HandleMsgUpdatePlanDetails(ctx sdk.Context, msg *v3.MsgUpdatePlanDetailsRequest) (*v3.MsgUpdatePlanDetailsResponse, error) {
+	// Fetch and authorize the plan
+	plan, found := k.GetPlan(ctx, msg.ID)
+	if !found {
+		return nil, types.NewErrorPlanNotFound(msg.ID)
+	}
+
+	if msg.From != plan.ProvAddress {
+		return nil, types.NewErrorUnauthorized(msg.From)
+	}
+
+	// Apply the plan's privacy setting and persist the changes
+	plan.Private = msg.Private
+
+	k.SetPlan(ctx, plan)
+
+	// Emit event to indicate details update
+	ctx.EventManager().EmitTypedEvent(
+		&v3.EventUpdateDetails{
+			PlanID:      plan.ID,
+			ProvAddress: plan.ProvAddress,
+			Private:     plan.Private,
+		},
+	)
+
+	return &v3.MsgUpdatePlanDetailsResponse{}, nil
+}
+
 // HandleMsgUpdatePlanStatus handles a request to update the activation status of a plan.
-// It updates the plan’s status and cleans up the old status index.
+// It updates the plan's status and cleans up the old status index.
 func (k *Keeper) HandleMsgUpdatePlanStatus(ctx sdk.Context, msg *v3.MsgUpdatePlanStatusRequest) (*v3.MsgUpdatePlanStatusResponse, error) {
 	// Fetch and authorize the plan
 	plan, found := k.GetPlan(ctx, msg.ID)

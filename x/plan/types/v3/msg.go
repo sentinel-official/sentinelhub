@@ -17,17 +17,19 @@ var (
 	_ sdk.Msg = (*MsgCreatePlanRequest)(nil)
 	_ sdk.Msg = (*MsgLinkNodeRequest)(nil)
 	_ sdk.Msg = (*MsgUnlinkNodeRequest)(nil)
+	_ sdk.Msg = (*MsgUpdatePlanDetailsRequest)(nil)
 	_ sdk.Msg = (*MsgUpdatePlanStatusRequest)(nil)
 	_ sdk.Msg = (*MsgStartSessionRequest)(nil)
 )
 
 // NewMsgCreatePlanRequest creates a new MsgCreatePlanRequest instance.
-func NewMsgCreatePlanRequest(from base.ProvAddress, bytes sdkmath.Int, duration time.Duration, prices v1base.Prices) *MsgCreatePlanRequest {
+func NewMsgCreatePlanRequest(from base.ProvAddress, bytes sdkmath.Int, duration time.Duration, prices v1base.Prices, private bool) *MsgCreatePlanRequest {
 	return &MsgCreatePlanRequest{
 		From:     from.String(),
 		Bytes:    bytes,
 		Duration: duration,
 		Prices:   prices,
+		Private:  private,
 	}
 }
 
@@ -163,6 +165,42 @@ func (m *MsgUnlinkNodeRequest) ValidateBasic() error {
 
 // GetSigners returns the account addresses that must sign the message.
 func (m *MsgUnlinkNodeRequest) GetSigners() []sdk.AccAddress {
+	from, err := base.ProvAddressFromBech32(m.From)
+	if err != nil {
+		panic(err)
+	}
+
+	return []sdk.AccAddress{from.Bytes()}
+}
+
+// NewMsgUpdatePlanDetailsRequest creates a new MsgUpdatePlanDetailsRequest instance.
+func NewMsgUpdatePlanDetailsRequest(from base.ProvAddress, id uint64, private bool) *MsgUpdatePlanDetailsRequest {
+	return &MsgUpdatePlanDetailsRequest{
+		From:    from.String(),
+		ID:      id,
+		Private: private,
+	}
+}
+
+// ValidateBasic performs basic validation checks on the MsgUpdatePlanDetailsRequest.
+func (m *MsgUpdatePlanDetailsRequest) ValidateBasic() error {
+	if m.From == "" {
+		return types.NewErrorInvalidMessage("from cannot be empty")
+	}
+
+	if _, err := base.ProvAddressFromBech32(m.From); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid from: %w", err))
+	}
+
+	if m.ID == 0 {
+		return types.NewErrorInvalidMessage("id cannot be zero")
+	}
+
+	return nil
+}
+
+// GetSigners returns the account addresses that must sign the message.
+func (m *MsgUpdatePlanDetailsRequest) GetSigners() []sdk.AccAddress {
 	from, err := base.ProvAddressFromBech32(m.From)
 	if err != nil {
 		panic(err)

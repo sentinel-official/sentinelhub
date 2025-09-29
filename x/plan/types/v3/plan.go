@@ -13,11 +13,6 @@ func (m *Plan) GetPrices() v1base.Prices {
 	return m.Prices
 }
 
-// IsPrivate returns true if the plan has no prices and is therefore private.
-func (m *Plan) IsPrivate() bool {
-	return m.GetPrices().Len() == 0
-}
-
 // Price returns the price for the given denom, or false if not found.
 func (m *Plan) Price(denom string) (v1base.Price, bool) {
 	prices := m.GetPrices()

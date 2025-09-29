@@ -22,6 +22,7 @@ message MsgCreatePlanRequest {
     (gogoproto.stdduration) = true
   ];
   repeated sentinel.types.v1.Price prices = 4 [(gogoproto.nullable) = false];
+  bool private = 5;
 }
 
 message MsgLinkNodeRequest {
@@ -34,6 +35,12 @@ message MsgUnlinkNodeRequest {
   string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
+}
+
+message MsgUpdatePlanDetailsRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+  bool private = 3;
 }
 
 message MsgUpdatePlanStatusRequest {
@@ -58,6 +65,8 @@ message MsgLinkNodeResponse {}
 
 message MsgUnlinkNodeResponse {}
 
+message MsgUpdatePlanDetailsResponse {}
+
 message MsgUpdatePlanStatusResponse {}
 
 message MsgStartSessionResponse {
@@ -68,6 +77,7 @@ service MsgService {
   rpc MsgCreatePlan(MsgCreatePlanRequest) returns (MsgCreatePlanResponse);
   rpc MsgLinkNode(MsgLinkNodeRequest) returns (MsgLinkNodeResponse);
   rpc MsgUnlinkNode(MsgUnlinkNodeRequest) returns (MsgUnlinkNodeResponse);
+  rpc MsgUpdatePlanDetails(MsgUpdatePlanDetailsRequest) returns (MsgUpdatePlanDetailsResponse);
   rpc MsgUpdatePlanStatus(MsgUpdatePlanStatusRequest) returns (MsgUpdatePlanStatusResponse);
   rpc MsgStartSession(MsgStartSessionRequest) returns (MsgStartSessionResponse);
 }

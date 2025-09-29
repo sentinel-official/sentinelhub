@@ -80,7 +80,7 @@ func (m *MsgRegisterNodeRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from.Bytes()}
 }
 
-// NewMsgUpdateNodeDetailsRequest creates a MsgUpdateNodeDetailsRequest for updating a node’s prices or remote URL.
+// NewMsgUpdateNodeDetailsRequest creates a MsgUpdateNodeDetailsRequest for updating a node's prices or remote URL.
 func NewMsgUpdateNodeDetailsRequest(from base.NodeAddress, gigabytePrices, hourlyPrices v1base.Prices, remoteAddrs []string) *MsgUpdateNodeDetailsRequest {
 	return &MsgUpdateNodeDetailsRequest{
 		From:           from.String(),

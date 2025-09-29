@@ -19,7 +19,7 @@ import (
 func txCreatePlan() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-plan [bytes] [duration]",
-		Short: "Create a new subscription plan with bytes, duration and pricing details",
+		Short: "Create a new subscription plan with bytes, duration, pricing details, and privacy setting",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
@@ -42,11 +42,17 @@ func txCreatePlan() *cobra.Command {
 				return err
 			}
 
+			private, err := GetPrivate(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
 			msg := v3.NewMsgCreatePlanRequest(
 				ctx.FromAddress.Bytes(),
 				bytes,
 				duration,
 				prices,
+				private,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -57,6 +63,7 @@ func txCreatePlan() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().Bool(flagPrivate, false, "set whether the plan should be private or not")
 	cmd.Flags().String(flagPrices, "", "specify the list of prices (e.g., 1000token)")
 
 	return cmd
@@ -136,6 +143,46 @@ func txUnlinkNode() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func txUpdatePlanDetails() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-plan-details [id]",
+		Short: "Update the details of an existing subscription plan",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			id, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			private, err := GetPrivate(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			msg := v3.NewMsgUpdatePlanDetailsRequest(
+				ctx.FromAddress.Bytes(),
+				id,
+				private,
+			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(ctx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().Bool(flagPrivate, false, "set whether the plan should be private or not")
 
 	return cmd
 }

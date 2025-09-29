@@ -314,7 +314,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 	}
 
 	// Restrict private plans to the provider only
-	if plan.IsPrivate() && !accAddr.Equals(provAddr) {
+	if plan.Private && !accAddr.Equals(provAddr) {
 		return nil, types.NewErrorUnauthorized(msg.From)
 	}
 

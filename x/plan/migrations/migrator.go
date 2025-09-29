@@ -77,6 +77,7 @@ func (k *Migrator) migratePlans(ctx sdk.Context) {
 			Bytes:       base.Gigabyte.MulRaw(item.Gigabytes),
 			Duration:    item.Duration,
 			Prices:      prices,
+			Private:     false,
 			Status:      item.Status,
 			StatusAt:    item.StatusAt,
 		}

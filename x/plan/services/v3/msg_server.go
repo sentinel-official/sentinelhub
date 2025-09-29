@@ -39,6 +39,12 @@ func (m *msgServer) MsgUnlinkNode(c context.Context, req *v3.MsgUnlinkNodeReques
 	return m.HandleMsgUnlinkNode(ctx, req)
 }
 
+func (m *msgServer) MsgUpdatePlanDetails(c context.Context, req *v3.MsgUpdatePlanDetailsRequest) (*v3.MsgUpdatePlanDetailsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	return m.HandleMsgUpdatePlanDetails(ctx, req)
+}
+
 func (m *msgServer) MsgUpdatePlanStatus(c context.Context, req *v3.MsgUpdatePlanStatusRequest) (*v3.MsgUpdatePlanStatusResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 

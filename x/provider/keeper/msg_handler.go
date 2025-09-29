@@ -13,7 +13,7 @@ import (
 // HandleMsgRegisterProvider handles a request to register a new provider.
 // It validates the input, deducts the registration deposit, creates the provider, and emits a creation event.
 func (k *Keeper) HandleMsgRegisterProvider(ctx sdk.Context, msg *v3.MsgRegisterProviderRequest) (*v3.MsgRegisterProviderResponse, error) {
-	// Parse and validate the provider’s account address
+	// Parse and validate the provider's account address
 	accAddr, err := sdk.AccAddressFromBech32(msg.From)
 	if err != nil {
 		return nil, err
@@ -100,7 +100,7 @@ func (k *Keeper) HandleMsgUpdateProviderDetails(ctx sdk.Context, msg *v3.MsgUpda
 	return &v3.MsgUpdateProviderDetailsResponse{}, nil
 }
 
-// HandleMsgUpdateProviderStatus handles a request to change a provider’s status.
+// HandleMsgUpdateProviderStatus handles a request to change a provider's status.
 // It applies pre-hooks, cleans up old status indices, updates the record, and emits a status update event.
 func (k *Keeper) HandleMsgUpdateProviderStatus(ctx sdk.Context, msg *v3.MsgUpdateProviderStatusRequest) (*v3.MsgUpdateProviderStatusResponse, error) {
 	// Parse and validate provider address

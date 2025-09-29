@@ -23,8 +23,9 @@ message Plan {
     (gogoproto.stdduration) = true
   ];
   repeated sentinel.types.v1.Price prices = 5 [(gogoproto.nullable) = false];
-  sentinel.types.v1.Status status = 6;
-  google.protobuf.Timestamp status_at = 7 [
+  bool private = 6;
+  sentinel.types.v1.Status status = 7;
+  google.protobuf.Timestamp status_at = 8 [
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];

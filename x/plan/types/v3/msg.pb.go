@@ -39,6 +39,7 @@ type MsgCreatePlanRequest struct {
 	Bytes    cosmossdk_io_math.Int `protobuf:"bytes,2,opt,name=bytes,proto3,customtype=cosmossdk.io/math.Int" json:"bytes"`
 	Duration time.Duration         `protobuf:"bytes,3,opt,name=duration,proto3,stdduration" json:"duration"`
 	Prices   []v1.Price            `protobuf:"bytes,4,rep,name=prices,proto3" json:"prices"`
+	Private  bool                  `protobuf:"varint,5,opt,name=private,proto3" json:"private,omitempty"`
 }
 
 func (m *MsgCreatePlanRequest) Reset()         { *m = MsgCreatePlanRequest{} }
@@ -152,6 +153,45 @@ func (m *MsgUnlinkNodeRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUnlinkNodeRequest proto.InternalMessageInfo
 
+type MsgUpdatePlanDetailsRequest struct {
+	From    string `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
+	ID      uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	Private bool   `protobuf:"varint,3,opt,name=private,proto3" json:"private,omitempty"`
+}
+
+func (m *MsgUpdatePlanDetailsRequest) Reset()         { *m = MsgUpdatePlanDetailsRequest{} }
+func (m *MsgUpdatePlanDetailsRequest) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdatePlanDetailsRequest) ProtoMessage()    {}
+func (*MsgUpdatePlanDetailsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_787060a7dcf174fd, []int{3}
+}
+func (m *MsgUpdatePlanDetailsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdatePlanDetailsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdatePlanDetailsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdatePlanDetailsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdatePlanDetailsRequest.Merge(m, src)
+}
+func (m *MsgUpdatePlanDetailsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdatePlanDetailsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdatePlanDetailsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdatePlanDetailsRequest proto.InternalMessageInfo
+
 type MsgUpdatePlanStatusRequest struct {
 	From   string    `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
 	ID     uint64    `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
@@ -162,7 +202,7 @@ func (m *MsgUpdatePlanStatusRequest) Reset()         { *m = MsgUpdatePlanStatusR
 func (m *MsgUpdatePlanStatusRequest) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdatePlanStatusRequest) ProtoMessage()    {}
 func (*MsgUpdatePlanStatusRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_787060a7dcf174fd, []int{3}
+	return fileDescriptor_787060a7dcf174fd, []int{4}
 }
 func (m *MsgUpdatePlanStatusRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -203,7 +243,7 @@ func (m *MsgStartSessionRequest) Reset()         { *m = MsgStartSessionRequest{}
 func (m *MsgStartSessionRequest) String() string { return proto.CompactTextString(m) }
 func (*MsgStartSessionRequest) ProtoMessage()    {}
 func (*MsgStartSessionRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_787060a7dcf174fd, []int{4}
+	return fileDescriptor_787060a7dcf174fd, []int{5}
 }
 func (m *MsgStartSessionRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -240,7 +280,7 @@ func (m *MsgCreatePlanResponse) Reset()         { *m = MsgCreatePlanResponse{} }
 func (m *MsgCreatePlanResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgCreatePlanResponse) ProtoMessage()    {}
 func (*MsgCreatePlanResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_787060a7dcf174fd, []int{5}
+	return fileDescriptor_787060a7dcf174fd, []int{6}
 }
 func (m *MsgCreatePlanResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -276,7 +316,7 @@ func (m *MsgLinkNodeResponse) Reset()         { *m = MsgLinkNodeResponse{} }
 func (m *MsgLinkNodeResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgLinkNodeResponse) ProtoMessage()    {}
 func (*MsgLinkNodeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_787060a7dcf174fd, []int{6}
+	return fileDescriptor_787060a7dcf174fd, []int{7}
 }
 func (m *MsgLinkNodeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -312,7 +352,7 @@ func (m *MsgUnlinkNodeResponse) Reset()         { *m = MsgUnlinkNodeResponse{} }
 func (m *MsgUnlinkNodeResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUnlinkNodeResponse) ProtoMessage()    {}
 func (*MsgUnlinkNodeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_787060a7dcf174fd, []int{7}
+	return fileDescriptor_787060a7dcf174fd, []int{8}
 }
 func (m *MsgUnlinkNodeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -341,6 +381,42 @@ func (m *MsgUnlinkNodeResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUnlinkNodeResponse proto.InternalMessageInfo
 
+type MsgUpdatePlanDetailsResponse struct {
+}
+
+func (m *MsgUpdatePlanDetailsResponse) Reset()         { *m = MsgUpdatePlanDetailsResponse{} }
+func (m *MsgUpdatePlanDetailsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdatePlanDetailsResponse) ProtoMessage()    {}
+func (*MsgUpdatePlanDetailsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_787060a7dcf174fd, []int{9}
+}
+func (m *MsgUpdatePlanDetailsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdatePlanDetailsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdatePlanDetailsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdatePlanDetailsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdatePlanDetailsResponse.Merge(m, src)
+}
+func (m *MsgUpdatePlanDetailsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdatePlanDetailsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdatePlanDetailsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdatePlanDetailsResponse proto.InternalMessageInfo
+
 type MsgUpdatePlanStatusResponse struct {
 }
 
@@ -348,7 +424,7 @@ func (m *MsgUpdatePlanStatusResponse) Reset()         { *m = MsgUpdatePlanStatus
 func (m *MsgUpdatePlanStatusResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdatePlanStatusResponse) ProtoMessage()    {}
 func (*MsgUpdatePlanStatusResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_787060a7dcf174fd, []int{8}
+	return fileDescriptor_787060a7dcf174fd, []int{10}
 }
 func (m *MsgUpdatePlanStatusResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -385,7 +461,7 @@ func (m *MsgStartSessionResponse) Reset()         { *m = MsgStartSessionResponse
 func (m *MsgStartSessionResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgStartSessionResponse) ProtoMessage()    {}
 func (*MsgStartSessionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_787060a7dcf174fd, []int{9}
+	return fileDescriptor_787060a7dcf174fd, []int{11}
 }
 func (m *MsgStartSessionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -418,11 +494,13 @@ func init() {
 	proto.RegisterType((*MsgCreatePlanRequest)(nil), "sentinel.plan.v3.MsgCreatePlanRequest")
 	proto.RegisterType((*MsgLinkNodeRequest)(nil), "sentinel.plan.v3.MsgLinkNodeRequest")
 	proto.RegisterType((*MsgUnlinkNodeRequest)(nil), "sentinel.plan.v3.MsgUnlinkNodeRequest")
+	proto.RegisterType((*MsgUpdatePlanDetailsRequest)(nil), "sentinel.plan.v3.MsgUpdatePlanDetailsRequest")
 	proto.RegisterType((*MsgUpdatePlanStatusRequest)(nil), "sentinel.plan.v3.MsgUpdatePlanStatusRequest")
 	proto.RegisterType((*MsgStartSessionRequest)(nil), "sentinel.plan.v3.MsgStartSessionRequest")
 	proto.RegisterType((*MsgCreatePlanResponse)(nil), "sentinel.plan.v3.MsgCreatePlanResponse")
 	proto.RegisterType((*MsgLinkNodeResponse)(nil), "sentinel.plan.v3.MsgLinkNodeResponse")
 	proto.RegisterType((*MsgUnlinkNodeResponse)(nil), "sentinel.plan.v3.MsgUnlinkNodeResponse")
+	proto.RegisterType((*MsgUpdatePlanDetailsResponse)(nil), "sentinel.plan.v3.MsgUpdatePlanDetailsResponse")
 	proto.RegisterType((*MsgUpdatePlanStatusResponse)(nil), "sentinel.plan.v3.MsgUpdatePlanStatusResponse")
 	proto.RegisterType((*MsgStartSessionResponse)(nil), "sentinel.plan.v3.MsgStartSessionResponse")
 }
@@ -430,50 +508,54 @@ func init() {
 func init() { proto.RegisterFile("sentinel/plan/v3/msg.proto", fileDescriptor_787060a7dcf174fd) }
 
 var fileDescriptor_787060a7dcf174fd = []byte{
-	// 685 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x55, 0xcd, 0x6e, 0xd3, 0x40,
-	0x10, 0x8e, 0xd3, 0x34, 0x6a, 0x37, 0xfc, 0x69, 0x49, 0xdb, 0xd4, 0xa8, 0x4e, 0x89, 0x28, 0x04,
-	0x89, 0xee, 0x2a, 0x89, 0xc4, 0x09, 0x09, 0x11, 0x7a, 0xa9, 0x44, 0x51, 0xe5, 0x0a, 0x21, 0xf5,
-	0x40, 0x71, 0xec, 0x8d, 0xbb, 0xaa, 0xb3, 0x6b, 0xbc, 0x9b, 0x40, 0xc5, 0x0b, 0x70, 0xe4, 0xc8,
-	0x23, 0xf0, 0x28, 0x3d, 0xf6, 0x84, 0x2a, 0x0e, 0x05, 0xd2, 0x17, 0x41, 0x5e, 0x6f, 0x42, 0x1b,
-	0xbb, 0x3f, 0xaa, 0xc4, 0xcd, 0x9e, 0xf9, 0xe6, 0xe7, 0x9b, 0x6f, 0xc6, 0x06, 0xa6, 0x20, 0x4c,
-	0x52, 0x46, 0x02, 0x1c, 0x06, 0x0e, 0xc3, 0x83, 0x16, 0xee, 0x09, 0x1f, 0x85, 0x11, 0x97, 0x1c,
-	0xde, 0x19, 0xf9, 0x50, 0xec, 0x43, 0x83, 0x96, 0x59, 0xf6, 0xb9, 0xcf, 0x95, 0x13, 0xc7, 0x4f,
-	0x09, 0xce, 0xb4, 0x7c, 0xce, 0xfd, 0x80, 0x60, 0xf5, 0xd6, 0xe9, 0x77, 0xb1, 0xd7, 0x8f, 0x1c,
-	0x49, 0x39, 0xd3, 0xfe, 0xa5, 0x71, 0x0d, 0xb9, 0x1f, 0x12, 0x81, 0x07, 0x0d, 0x1c, 0x46, 0xd4,
-	0x25, 0xda, 0x5d, 0x4d, 0xbb, 0x23, 0xc2, 0xc8, 0x47, 0x27, 0x18, 0xe5, 0x4f, 0x03, 0x84, 0x74,
-	0x64, 0x5f, 0x24, 0xfe, 0xda, 0x91, 0x01, 0xca, 0x1b, 0xc2, 0x7f, 0x19, 0x11, 0x47, 0x92, 0xcd,
-	0xc0, 0x61, 0x36, 0xf9, 0xd0, 0x27, 0x42, 0x42, 0x08, 0x0a, 0xdd, 0x88, 0xf7, 0x2a, 0xc6, 0xb2,
-	0x51, 0x9f, 0xb5, 0xd5, 0x33, 0x6c, 0x81, 0xe9, 0xce, 0xbe, 0x24, 0xa2, 0x92, 0x8f, 0x8d, 0xed,
-	0xa5, 0x83, 0xe3, 0x6a, 0xee, 0xe7, 0x71, 0x75, 0xce, 0xe5, 0xa2, 0xc7, 0x85, 0xf0, 0xf6, 0x10,
-	0xe5, 0xb8, 0xe7, 0xc8, 0x5d, 0xb4, 0xce, 0xa4, 0x9d, 0x60, 0xe1, 0x73, 0x30, 0x33, 0xe2, 0x54,
-	0x99, 0x5a, 0x36, 0xea, 0xa5, 0xe6, 0x22, 0x4a, 0x48, 0xa3, 0x11, 0x69, 0xb4, 0xa6, 0x01, 0xed,
-	0x99, 0x38, 0xe5, 0xb7, 0x5f, 0x55, 0xc3, 0x1e, 0x07, 0xc1, 0xa7, 0xa0, 0xa8, 0x28, 0x8b, 0x4a,
-	0x61, 0x79, 0xaa, 0x5e, 0x6a, 0x56, 0xd0, 0x78, 0xb6, 0x8a, 0x13, 0x1a, 0x34, 0xd0, 0x66, 0x0c,
-	0x68, 0x17, 0xe2, 0x68, 0x5b, 0xa3, 0x6b, 0x2e, 0x80, 0x1b, 0xc2, 0x7f, 0x45, 0xd9, 0xde, 0x6b,
-	0xee, 0x91, 0x8b, 0x78, 0xcd, 0x83, 0x3c, 0xf5, 0x14, 0xa9, 0x42, 0xbb, 0x38, 0x3c, 0xae, 0xe6,
-	0xd7, 0xd7, 0xec, 0x3c, 0xf5, 0xe0, 0x7d, 0x70, 0x83, 0x71, 0x8f, 0xec, 0x38, 0x9e, 0x17, 0x11,
-	0x21, 0x54, 0xfb, 0xb3, 0x76, 0x29, 0xb6, 0xbd, 0x48, 0x4c, 0x35, 0xa2, 0xc6, 0xf7, 0x86, 0x05,
-	0xff, 0xb7, 0xcc, 0x67, 0x60, 0xc6, 0x65, 0x42, 0x4f, 0xab, 0xb4, 0xa5, 0x34, 0xbc, 0x4e, 0xb1,
-	0x06, 0x28, 0x26, 0x0b, 0xa0, 0xca, 0xdc, 0x6a, 0x2e, 0x66, 0x4c, 0x53, 0x67, 0xd7, 0xc0, 0xda,
-	0x0f, 0x03, 0xcc, 0x6f, 0x08, 0x7f, 0x4b, 0x3a, 0x91, 0xdc, 0x22, 0x42, 0x50, 0xce, 0xae, 0x53,
-	0xb9, 0x0c, 0xa6, 0x3d, 0xc2, 0x78, 0x4f, 0xf3, 0x4b, 0x5e, 0xe0, 0x5b, 0x50, 0xd6, 0x1b, 0xbb,
-	0xa3, 0x74, 0xdb, 0x09, 0x79, 0x40, 0xdd, 0xfd, 0x4a, 0x41, 0x75, 0xb7, 0x92, 0xd1, 0x9d, 0x9d,
-	0xc0, 0x95, 0xe4, 0x9b, 0x0a, 0x6c, 0xc3, 0x28, 0x65, 0x4b, 0x4d, 0x75, 0x3a, 0x3d, 0x55, 0x0c,
-	0xe6, 0x26, 0x76, 0x5f, 0x84, 0x9c, 0x09, 0xa2, 0x29, 0x18, 0x93, 0x14, 0x6a, 0x73, 0xe0, 0xee,
-	0x99, 0x95, 0x4a, 0xe0, 0xb5, 0x05, 0x95, 0xe7, 0xf4, 0x12, 0x68, 0xc7, 0x12, 0xb8, 0x97, 0x29,
-	0x9b, 0x76, 0x37, 0xc0, 0x42, 0x6a, 0xae, 0x17, 0x77, 0xd0, 0xfc, 0x52, 0x00, 0x20, 0x8e, 0x21,
-	0xd1, 0x80, 0xba, 0x04, 0xbe, 0x07, 0x37, 0xcf, 0x30, 0x80, 0x0f, 0xd1, 0xe4, 0x87, 0x07, 0x65,
-	0x9d, 0xb7, 0xf9, 0xe8, 0x52, 0x9c, 0x6e, 0x64, 0x1b, 0x94, 0x4e, 0x51, 0x86, 0x0f, 0x32, 0xe3,
-	0x26, 0x8e, 0xcc, 0x5c, 0xb9, 0x04, 0xa5, 0x73, 0x27, 0xdd, 0xff, 0x9b, 0xdb, 0x39, 0xdd, 0xa7,
-	0xae, 0xeb, 0x9c, 0xee, 0xd3, 0x02, 0xc0, 0x48, 0x09, 0x36, 0x29, 0x00, 0x7c, 0x92, 0x1d, 0x9f,
-	0x7d, 0x5e, 0xe6, 0xea, 0x15, 0xd1, 0xba, 0x66, 0x17, 0xdc, 0x9e, 0x50, 0x15, 0xd6, 0x33, 0x33,
-	0x64, 0x1c, 0x94, 0xf9, 0xf8, 0x0a, 0xc8, 0xa4, 0x4e, 0xfb, 0xdd, 0xc1, 0x1f, 0x2b, 0xf7, 0x7d,
-	0x68, 0xe5, 0x0e, 0x86, 0x96, 0x71, 0x38, 0xb4, 0x8c, 0xdf, 0x43, 0xcb, 0xf8, 0x7a, 0x62, 0xe5,
-	0x0e, 0x4f, 0xac, 0xdc, 0xd1, 0x89, 0x95, 0xdb, 0x7e, 0xe6, 0x53, 0xb9, 0xdb, 0xef, 0x20, 0x97,
-	0xf7, 0xf0, 0x28, 0xed, 0x2a, 0xef, 0x76, 0xa9, 0x4b, 0x9d, 0x60, 0x6c, 0xd9, 0xed, 0x77, 0xf0,
-	0xa0, 0xd1, 0xc4, 0x9f, 0x92, 0xdf, 0x98, 0xfe, 0x4f, 0xb4, 0x3a, 0x45, 0xf5, 0x79, 0x6e, 0xfd,
-	0x0d, 0x00, 0x00, 0xff, 0xff, 0x8c, 0xda, 0xe0, 0xff, 0xe7, 0x06, 0x00, 0x00,
+	// 746 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x55, 0xcb, 0x6e, 0xd3, 0x40,
+	0x14, 0x8d, 0xd3, 0x24, 0xb4, 0x13, 0x5e, 0x1a, 0xd2, 0xd6, 0x35, 0xd4, 0x09, 0x11, 0x85, 0x20,
+	0xd1, 0xb1, 0x92, 0x48, 0xac, 0x90, 0x10, 0xa1, 0x9b, 0x4a, 0x14, 0x55, 0xae, 0x10, 0x52, 0x17,
+	0x14, 0xc7, 0x9e, 0xb8, 0xa3, 0x3a, 0x1e, 0xe3, 0x99, 0x04, 0x2a, 0x7e, 0x82, 0x25, 0x9f, 0xc0,
+	0xa7, 0x74, 0xd9, 0x15, 0x42, 0x2c, 0x0a, 0xa4, 0x7f, 0xc0, 0x0f, 0x80, 0x3c, 0x9e, 0x84, 0xc6,
+	0x76, 0x1f, 0xaa, 0xc4, 0xce, 0xbe, 0xf7, 0xcc, 0x3d, 0xf7, 0xdc, 0xc7, 0x0c, 0xd0, 0x18, 0xf6,
+	0x39, 0xf1, 0xb1, 0x67, 0x04, 0x9e, 0xe5, 0x1b, 0xc3, 0xb6, 0xd1, 0x67, 0x2e, 0x0a, 0x42, 0xca,
+	0x29, 0xbc, 0x39, 0xf6, 0xa1, 0xc8, 0x87, 0x86, 0x6d, 0xad, 0xe2, 0x52, 0x97, 0x0a, 0xa7, 0x11,
+	0x7d, 0xc5, 0x38, 0x4d, 0x77, 0x29, 0x75, 0x3d, 0x6c, 0x88, 0xbf, 0xee, 0xa0, 0x67, 0x38, 0x83,
+	0xd0, 0xe2, 0x84, 0xfa, 0xd2, 0xbf, 0x3c, 0xe1, 0xe0, 0xfb, 0x01, 0x66, 0xc6, 0xb0, 0x69, 0x04,
+	0x21, 0xb1, 0xb1, 0x74, 0x57, 0xd3, 0xee, 0x10, 0xfb, 0xf8, 0xbd, 0xe5, 0x8d, 0xe3, 0xa7, 0x01,
+	0x8c, 0x5b, 0x7c, 0xc0, 0x62, 0x7f, 0xfd, 0xb7, 0x02, 0x2a, 0x1b, 0xcc, 0x7d, 0x1e, 0x62, 0x8b,
+	0xe3, 0x4d, 0xcf, 0xf2, 0x4d, 0xfc, 0x6e, 0x80, 0x19, 0x87, 0x10, 0x14, 0x7a, 0x21, 0xed, 0xab,
+	0x4a, 0x4d, 0x69, 0xcc, 0x99, 0xe2, 0x1b, 0xb6, 0x41, 0xb1, 0xbb, 0xcf, 0x31, 0x53, 0xf3, 0x91,
+	0xb1, 0xb3, 0x7c, 0x70, 0x54, 0xcd, 0x7d, 0x3f, 0xaa, 0xce, 0xdb, 0x94, 0xf5, 0x29, 0x63, 0xce,
+	0x1e, 0x22, 0xd4, 0xe8, 0x5b, 0x7c, 0x17, 0xad, 0xfb, 0xdc, 0x8c, 0xb1, 0xf0, 0x29, 0x98, 0x1d,
+	0x6b, 0x52, 0x67, 0x6a, 0x4a, 0xa3, 0xdc, 0x5a, 0x42, 0xb1, 0x68, 0x34, 0x16, 0x8d, 0xd6, 0x24,
+	0xa0, 0x33, 0x1b, 0x85, 0xfc, 0xfc, 0xa3, 0xaa, 0x98, 0x93, 0x43, 0xf0, 0x31, 0x28, 0x09, 0xc9,
+	0x4c, 0x2d, 0xd4, 0x66, 0x1a, 0xe5, 0x96, 0x8a, 0x26, 0xb5, 0x15, 0x9a, 0xd0, 0xb0, 0x89, 0x36,
+	0x23, 0x40, 0xa7, 0x10, 0x9d, 0x36, 0x25, 0x1a, 0xaa, 0xe0, 0x4a, 0x10, 0x92, 0xa1, 0xc5, 0xb1,
+	0x5a, 0xac, 0x29, 0x8d, 0x59, 0x73, 0xfc, 0x5b, 0xb7, 0x01, 0xdc, 0x60, 0xee, 0x0b, 0xe2, 0xef,
+	0xbd, 0xa4, 0x0e, 0x3e, 0x4b, 0xf1, 0x02, 0xc8, 0x13, 0x47, 0xc8, 0x2d, 0x74, 0x4a, 0xa3, 0xa3,
+	0x6a, 0x7e, 0x7d, 0xcd, 0xcc, 0x13, 0x07, 0xde, 0x05, 0x57, 0x7d, 0xea, 0xe0, 0x1d, 0xcb, 0x71,
+	0x42, 0xcc, 0x98, 0x10, 0x36, 0x67, 0x96, 0x23, 0xdb, 0xb3, 0xd8, 0x54, 0xc7, 0xa2, 0xb0, 0xaf,
+	0x7c, 0xef, 0xff, 0xd2, 0xd8, 0xe0, 0x76, 0x44, 0x13, 0x38, 0xb2, 0x7f, 0x6b, 0x98, 0x5b, 0xc4,
+	0x63, 0x97, 0x61, 0x3b, 0x51, 0xb0, 0x99, 0xe9, 0x82, 0x7d, 0x04, 0xda, 0x14, 0xc9, 0x96, 0x18,
+	0xa1, 0xcb, 0x70, 0x34, 0x41, 0x29, 0x9e, 0x3f, 0x41, 0x71, 0xbd, 0xb5, 0x94, 0xd1, 0x4c, 0x19,
+	0x5d, 0x02, 0xeb, 0x5f, 0x15, 0xb0, 0xb0, 0xc1, 0xdc, 0x2d, 0x6e, 0x85, 0x7c, 0x0b, 0x33, 0x46,
+	0xa8, 0x7f, 0x19, 0xe6, 0x0a, 0x28, 0x3a, 0xd8, 0xa7, 0x7d, 0x59, 0xc4, 0xf8, 0x07, 0xbe, 0x06,
+	0x15, 0xb9, 0x30, 0x3b, 0x62, 0x6c, 0x76, 0x02, 0xea, 0x11, 0x7b, 0x5f, 0x2d, 0x88, 0xec, 0x56,
+	0x32, 0xb2, 0x33, 0x63, 0xb8, 0x98, 0xb8, 0x4d, 0x01, 0x36, 0x61, 0x98, 0xb2, 0xa5, 0x5a, 0x57,
+	0x4c, 0xb7, 0xce, 0x00, 0xf3, 0x89, 0xd5, 0x63, 0x01, 0xf5, 0x19, 0x96, 0x12, 0x94, 0xa4, 0x84,
+	0xfa, 0x3c, 0xb8, 0x35, 0x35, 0xb7, 0x31, 0xbc, 0xbe, 0x28, 0xe2, 0x9c, 0x9c, 0x34, 0xe9, 0xd0,
+	0xc1, 0x9d, 0xec, 0xd9, 0x90, 0xfe, 0xe5, 0xc4, 0xec, 0x8c, 0xdb, 0x2a, 0xdd, 0x4d, 0xb0, 0x98,
+	0xaa, 0xfb, 0xd9, 0x19, 0xb6, 0xfe, 0x14, 0x00, 0x88, 0xce, 0xe0, 0x70, 0x48, 0x6c, 0x0c, 0xdf,
+	0x82, 0x6b, 0x53, 0x0a, 0xe1, 0x7d, 0x94, 0xbc, 0x17, 0x51, 0xd6, 0xed, 0xa3, 0x3d, 0x38, 0x17,
+	0x27, 0x13, 0xd9, 0x06, 0xe5, 0x13, 0x25, 0x81, 0xf7, 0x32, 0xcf, 0x25, 0x36, 0x5d, 0x5b, 0x39,
+	0x07, 0x25, 0x63, 0xc7, 0xd9, 0xff, 0xab, 0xeb, 0x29, 0xd9, 0xa7, 0x56, 0xfc, 0x94, 0xec, 0xd3,
+	0x0d, 0x82, 0x83, 0xf8, 0x8e, 0x48, 0x36, 0x08, 0xae, 0x66, 0x07, 0x38, 0x65, 0xc9, 0x35, 0x74,
+	0x51, 0xb8, 0xa4, 0x0d, 0xc5, 0x1c, 0x25, 0xfb, 0x0e, 0x1f, 0x9d, 0x13, 0x66, 0x6a, 0xeb, 0xb5,
+	0xd5, 0x0b, 0xa2, 0x25, 0x67, 0x0f, 0xdc, 0x48, 0x0c, 0x13, 0x6c, 0x64, 0x46, 0xc8, 0xd8, 0x73,
+	0xed, 0xe1, 0x05, 0x90, 0x31, 0x4f, 0xe7, 0xcd, 0xc1, 0x2f, 0x3d, 0xf7, 0x65, 0xa4, 0xe7, 0x0e,
+	0x46, 0xba, 0x72, 0x38, 0xd2, 0x95, 0x9f, 0x23, 0x5d, 0xf9, 0x74, 0xac, 0xe7, 0x0e, 0x8f, 0xf5,
+	0xdc, 0xb7, 0x63, 0x3d, 0xb7, 0xfd, 0xc4, 0x25, 0x7c, 0x77, 0xd0, 0x45, 0x36, 0xed, 0x1b, 0xe3,
+	0xb0, 0xab, 0xb4, 0xd7, 0x23, 0x36, 0xb1, 0xbc, 0x89, 0x65, 0x77, 0xd0, 0x35, 0x86, 0xcd, 0x96,
+	0xf1, 0x21, 0x7e, 0xdc, 0xe5, 0xeb, 0xd9, 0xee, 0x96, 0xc4, 0xa3, 0xd5, 0xfe, 0x1b, 0x00, 0x00,
+	0xff, 0xff, 0x65, 0xc8, 0x1a, 0x13, 0xfd, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -491,6 +573,7 @@ type MsgServiceClient interface {
 	MsgCreatePlan(ctx context.Context, in *MsgCreatePlanRequest, opts ...grpc.CallOption) (*MsgCreatePlanResponse, error)
 	MsgLinkNode(ctx context.Context, in *MsgLinkNodeRequest, opts ...grpc.CallOption) (*MsgLinkNodeResponse, error)
 	MsgUnlinkNode(ctx context.Context, in *MsgUnlinkNodeRequest, opts ...grpc.CallOption) (*MsgUnlinkNodeResponse, error)
+	MsgUpdatePlanDetails(ctx context.Context, in *MsgUpdatePlanDetailsRequest, opts ...grpc.CallOption) (*MsgUpdatePlanDetailsResponse, error)
 	MsgUpdatePlanStatus(ctx context.Context, in *MsgUpdatePlanStatusRequest, opts ...grpc.CallOption) (*MsgUpdatePlanStatusResponse, error)
 	MsgStartSession(ctx context.Context, in *MsgStartSessionRequest, opts ...grpc.CallOption) (*MsgStartSessionResponse, error)
 }
@@ -530,6 +613,15 @@ func (c *msgServiceClient) MsgUnlinkNode(ctx context.Context, in *MsgUnlinkNodeR
 	return out, nil
 }
 
+func (c *msgServiceClient) MsgUpdatePlanDetails(ctx context.Context, in *MsgUpdatePlanDetailsRequest, opts ...grpc.CallOption) (*MsgUpdatePlanDetailsResponse, error) {
+	out := new(MsgUpdatePlanDetailsResponse)
+	err := c.cc.Invoke(ctx, "/sentinel.plan.v3.MsgService/MsgUpdatePlanDetails", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgServiceClient) MsgUpdatePlanStatus(ctx context.Context, in *MsgUpdatePlanStatusRequest, opts ...grpc.CallOption) (*MsgUpdatePlanStatusResponse, error) {
 	out := new(MsgUpdatePlanStatusResponse)
 	err := c.cc.Invoke(ctx, "/sentinel.plan.v3.MsgService/MsgUpdatePlanStatus", in, out, opts...)
@@ -553,6 +645,7 @@ type MsgServiceServer interface {
 	MsgCreatePlan(context.Context, *MsgCreatePlanRequest) (*MsgCreatePlanResponse, error)
 	MsgLinkNode(context.Context, *MsgLinkNodeRequest) (*MsgLinkNodeResponse, error)
 	MsgUnlinkNode(context.Context, *MsgUnlinkNodeRequest) (*MsgUnlinkNodeResponse, error)
+	MsgUpdatePlanDetails(context.Context, *MsgUpdatePlanDetailsRequest) (*MsgUpdatePlanDetailsResponse, error)
 	MsgUpdatePlanStatus(context.Context, *MsgUpdatePlanStatusRequest) (*MsgUpdatePlanStatusResponse, error)
 	MsgStartSession(context.Context, *MsgStartSessionRequest) (*MsgStartSessionResponse, error)
 }
@@ -569,6 +662,9 @@ func (*UnimplementedMsgServiceServer) MsgLinkNode(ctx context.Context, req *MsgL
 }
 func (*UnimplementedMsgServiceServer) MsgUnlinkNode(ctx context.Context, req *MsgUnlinkNodeRequest) (*MsgUnlinkNodeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MsgUnlinkNode not implemented")
+}
+func (*UnimplementedMsgServiceServer) MsgUpdatePlanDetails(ctx context.Context, req *MsgUpdatePlanDetailsRequest) (*MsgUpdatePlanDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MsgUpdatePlanDetails not implemented")
 }
 func (*UnimplementedMsgServiceServer) MsgUpdatePlanStatus(ctx context.Context, req *MsgUpdatePlanStatusRequest) (*MsgUpdatePlanStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MsgUpdatePlanStatus not implemented")
@@ -635,6 +731,24 @@ func _MsgService_MsgUnlinkNode_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MsgService_MsgUpdatePlanDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdatePlanDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServiceServer).MsgUpdatePlanDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sentinel.plan.v3.MsgService/MsgUpdatePlanDetails",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServiceServer).MsgUpdatePlanDetails(ctx, req.(*MsgUpdatePlanDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _MsgService_MsgUpdatePlanStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdatePlanStatusRequest)
 	if err := dec(in); err != nil {
@@ -689,6 +803,10 @@ var _MsgService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _MsgService_MsgUnlinkNode_Handler,
 		},
 		{
+			MethodName: "MsgUpdatePlanDetails",
+			Handler:    _MsgService_MsgUpdatePlanDetails_Handler,
+		},
+		{
 			MethodName: "MsgUpdatePlanStatus",
 			Handler:    _MsgService_MsgUpdatePlanStatus_Handler,
 		},
@@ -721,6 +839,16 @@ func (m *MsgCreatePlanRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Private {
+		i--
+		if m.Private {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x28
+	}
 	if len(m.Prices) > 0 {
 		for iNdEx := len(m.Prices) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -831,6 +959,51 @@ func (m *MsgUnlinkNodeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintMsg(dAtA, i, uint64(len(m.NodeAddress)))
 		i--
 		dAtA[i] = 0x1a
+	}
+	if m.ID != 0 {
+		i = encodeVarintMsg(dAtA, i, uint64(m.ID))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.From) > 0 {
+		i -= len(m.From)
+		copy(dAtA[i:], m.From)
+		i = encodeVarintMsg(dAtA, i, uint64(len(m.From)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdatePlanDetailsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdatePlanDetailsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdatePlanDetailsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Private {
+		i--
+		if m.Private {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
 	}
 	if m.ID != 0 {
 		i = encodeVarintMsg(dAtA, i, uint64(m.ID))
@@ -1015,6 +1188,29 @@ func (m *MsgUnlinkNodeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgUpdatePlanDetailsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdatePlanDetailsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdatePlanDetailsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgUpdatePlanStatusResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1097,6 +1293,9 @@ func (m *MsgCreatePlanRequest) Size() (n int) {
 			n += 1 + l + sovMsg(uint64(l))
 		}
 	}
+	if m.Private {
+		n += 2
+	}
 	return n
 }
 
@@ -1136,6 +1335,25 @@ func (m *MsgUnlinkNodeRequest) Size() (n int) {
 	l = len(m.NodeAddress)
 	if l > 0 {
 		n += 1 + l + sovMsg(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdatePlanDetailsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.From)
+	if l > 0 {
+		n += 1 + l + sovMsg(uint64(l))
+	}
+	if m.ID != 0 {
+		n += 1 + sovMsg(uint64(m.ID))
+	}
+	if m.Private {
+		n += 2
 	}
 	return n
 }
@@ -1208,6 +1426,15 @@ func (m *MsgLinkNodeResponse) Size() (n int) {
 }
 
 func (m *MsgUnlinkNodeResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUpdatePlanDetailsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1405,6 +1632,26 @@ func (m *MsgCreatePlanRequest) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Private", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Private = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipMsg(dAtA[iNdEx:])
@@ -1671,6 +1918,127 @@ func (m *MsgUnlinkNodeRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.NodeAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMsg(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdatePlanDetailsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMsg
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdatePlanDetailsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdatePlanDetailsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMsg
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.From = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			m.ID = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ID |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Private", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMsg
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Private = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipMsg(dAtA[iNdEx:])
@@ -2142,6 +2510,56 @@ func (m *MsgUnlinkNodeResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgUnlinkNodeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMsg(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMsg
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdatePlanDetailsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMsg
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdatePlanDetailsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdatePlanDetailsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

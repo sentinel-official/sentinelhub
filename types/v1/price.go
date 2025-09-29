@@ -223,7 +223,7 @@ func (p Price) Sub(v Price) Price {
 
 // UpdateQuoteValue applies a pricing function to compute a new quote value from the base.
 func (p Price) UpdateQuoteValue(ctx sdk.Context, fn QuotePriceFunc) (Price, error) {
-	// If BaseValue is zero, return the original Price without modification
+	// If BaseValue is zero, return the original Price
 	if p.BaseValue.IsZero() {
 		return p, nil
 	}
@@ -235,6 +235,11 @@ func (p Price) UpdateQuoteValue(ctx sdk.Context, fn QuotePriceFunc) (Price, erro
 	newQuote, err := fn(ctx, basePrice)
 	if err != nil {
 		return Price{}, err
+	}
+
+	// If newQuote is zero, return the original Price
+	if newQuote.IsZero() {
+		return p, nil
 	}
 
 	// Return a new Price instance with the updated QuoteValue

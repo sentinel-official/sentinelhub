@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	"time"
 
 	sdkmath "cosmossdk.io/math"
 	abcitypes "github.com/cometbft/cometbft/abci/types"
@@ -19,7 +20,7 @@ import (
 
 // SendQueryPacket serializes query requests and sends them as an IBC packet to a destination chain.
 func (k *Keeper) SendQueryPacket(
-	ctx sdk.Context, channelCap *capabilitytypes.Capability, portID, channelID string, timeout uint64,
+	ctx sdk.Context, channelCap *capabilitytypes.Capability, portID, channelID string, timeoutTimestamp time.Time,
 	reqs ...abcitypes.RequestQuery,
 ) (uint64, error) {
 	// Serialize the Cosmos query requests into binary format.
@@ -36,7 +37,8 @@ func (k *Keeper) SendQueryPacket(
 
 	// Use the ICS-04 interface to send the packet over IBC.
 	return k.ics4.SendPacket(
-		ctx, channelCap, portID, channelID, ibcclienttypes.ZeroHeight(), timeout, packetData.GetBytes(),
+		ctx, channelCap, portID, channelID, ibcclienttypes.ZeroHeight(), uint64(timeoutTimestamp.UnixNano()),
+		packetData.GetBytes(),
 	)
 }
 
@@ -150,7 +152,7 @@ func (k *Keeper) handleProtoRevPoolQueryResponse(ctx sdk.Context, asset v1.Asset
 	// Retrieve necessary information for sending a follow-up query.
 	portID := k.GetPortID(ctx)
 	channelID := k.GetChannelID(ctx)
-	timeout := k.GetQueryTimeout(ctx)
+	timeoutTimestamp := k.GetTimeoutTimestamp(ctx)
 
 	// Get the channel capability to ensure we have the authority to send packets.
 	channelCap, found := k.capability.GetCapability(ctx, ibchost.ChannelCapabilityPath(portID, channelID))
@@ -171,7 +173,7 @@ func (k *Keeper) handleProtoRevPoolQueryResponse(ctx sdk.Context, asset v1.Asset
 	}
 
 	// Send the SpotPrice query packet over IBC.
-	sequence, err := k.SendQueryPacket(ctx, channelCap, portID, channelID, uint64(timeout), req)
+	sequence, err := k.SendQueryPacket(ctx, channelCap, portID, channelID, timeoutTimestamp, req)
 	if err != nil {
 		return err
 	}

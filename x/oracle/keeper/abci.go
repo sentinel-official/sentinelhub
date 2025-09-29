@@ -30,7 +30,7 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) {
 		return
 	}
 
-	timeout := k.GetQueryTimeout(ctx)
+	timeoutTimestamp := k.GetTimeoutTimestamp(ctx)
 
 	// Get the channel capability to ensure we have the authority to send packets.
 	channelCap, found := k.capability.GetCapability(ctx, ibchost.ChannelCapabilityPath(portID, channelID))
@@ -54,7 +54,7 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) {
 		}
 
 		// Send the GetProtoRevPool query packet over IBC.
-		sequence, err := k.SendQueryPacket(ctx, channelCap, portID, channelID, uint64(timeout), req)
+		sequence, err := k.SendQueryPacket(ctx, channelCap, portID, channelID, timeoutTimestamp, req)
 		if err != nil {
 			k.Logger(ctx).Error("Failed to send query packet", "asset", item.Denom, "msg", err)
 

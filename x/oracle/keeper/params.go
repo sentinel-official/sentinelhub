@@ -44,9 +44,9 @@ func (k *Keeper) GetTimeout(ctx sdk.Context) time.Duration {
 	return k.GetParams(ctx).Timeout
 }
 
-// GetQueryTimeout returns the current block time adjusted by the module's timeout parameter in Unix nanoseconds.
-func (k *Keeper) GetQueryTimeout(ctx sdk.Context) int64 {
+// GetTimeoutTimestamp returns the current block time adjusted by the module's timeout parameter.
+func (k *Keeper) GetTimeoutTimestamp(ctx sdk.Context) time.Time {
 	t := k.GetTimeout(ctx)
 
-	return ctx.BlockTime().Add(t).UnixNano()
+	return ctx.BlockTime().Add(t)
 }

@@ -7,6 +7,7 @@ import (
 	base "github.com/sentinel-official/sentinelhub/v12/types"
 	leasetypes "github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
 	nodetypes "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
+	providertypes "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
 	subscriptiontypes "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
 )
 
@@ -32,7 +33,7 @@ type NodeKeeper interface {
 }
 
 type ProviderKeeper interface {
-	HasProvider(ctx sdk.Context, addr base.ProvAddress) bool
+	GetProvider(ctx sdk.Context, addr base.ProvAddress) (providertypes.Provider, bool)
 }
 
 type SessionKeeper interface {

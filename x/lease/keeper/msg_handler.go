@@ -213,10 +213,21 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 		return nil, types.NewErrorInvalidHours(msg.Hours)
 	}
 
+	// Parse and validate the node address
+	nodeAddr, err := base.NodeAddressFromBech32(msg.NodeAddress)
+	if err != nil {
+		return nil, err
+	}
+
 	// Parse and validate the provider's Bech32 address
 	provAddr, err := base.ProvAddressFromBech32(msg.From)
 	if err != nil {
 		return nil, err
+	}
+
+	// Check if a lease already exists between this provider and node
+	if k.HasAnyLeaseForNodeByProvider(ctx, nodeAddr, provAddr) {
+		return nil, types.NewErrorDuplicateLease(nodeAddr, provAddr)
 	}
 
 	// Ensure provider exists and is currently active
@@ -227,12 +238,6 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 
 	if !provider.Status.Equal(v1base.StatusActive) {
 		return nil, types.NewErrorInvalidProviderStatus(provAddr, provider.Status)
-	}
-
-	// Parse and validate the node address
-	nodeAddr, err := base.NodeAddressFromBech32(msg.NodeAddress)
-	if err != nil {
-		return nil, err
 	}
 
 	// Confirm the node exists and is active
@@ -260,11 +265,6 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 	// Ensure the effective price is within client-provided bounds
 	if price.IsGT(msg.MaxPrice) {
 		return nil, types.NewErrorInvalidPrice(price)
-	}
-
-	// Check if a lease already exists between this provider and node
-	if k.HasAnyLeaseForNodeByProvider(ctx, nodeAddr, provAddr) {
-		return nil, types.NewErrorDuplicateLease(nodeAddr, provAddr)
 	}
 
 	// Generate a new lease ID and construct the lease object

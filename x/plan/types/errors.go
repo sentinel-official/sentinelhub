@@ -12,6 +12,7 @@ const (
 	ErrCodeDuplicateNodeForPlan
 	ErrCodeInvalidMessage
 	ErrCodeInvalidNodeStatus
+	ErrCodeInvalidProviderStatus
 	ErrCodeLeaseForNodeByProviderNotFound
 	ErrCodeLeaseNotFound
 	ErrCodeNodeForPlanNotFound
@@ -25,6 +26,7 @@ var (
 	ErrDuplicateNodeForPlan           = sdkerrors.Register(ModuleName, ErrCodeDuplicateNodeForPlan, "duplicate node for plan")
 	ErrInvalidMessage                 = sdkerrors.Register(ModuleName, ErrCodeInvalidMessage, "invalid message")
 	ErrInvalidNodeStatus              = sdkerrors.Register(ModuleName, ErrCodeInvalidNodeStatus, "invalid node status")
+	ErrInvalidProviderStatus          = sdkerrors.Register(ModuleName, ErrCodeInvalidProviderStatus, "invalid provider status")
 	ErrLeaseForNodeByProviderNotFound = sdkerrors.Register(ModuleName, ErrCodeLeaseForNodeByProviderNotFound, "lease for node by provider not found")
 	ErrLeaseNotFound                  = sdkerrors.Register(ModuleName, ErrCodeLeaseNotFound, "lease not found")
 	ErrNodeForPlanNotFound            = sdkerrors.Register(ModuleName, ErrCodeNodeForPlanNotFound, "node for plan not found")
@@ -47,6 +49,11 @@ func NewErrorInvalidMessage(desc interface{}) error {
 // NewErrorInvalidNodeStatus returns an error indicating that the provided status is invalid for the given node.
 func NewErrorInvalidNodeStatus(addr base.NodeAddress, status v1base.Status) error {
 	return sdkerrors.Wrapf(ErrInvalidNodeStatus, "invalid status %s for node %s", status, addr)
+}
+
+// NewErrorInvalidProviderStatus returns an error indicating that the provided status is invalid for the given provider.
+func NewErrorInvalidProviderStatus(addr base.ProvAddress, status v1base.Status) error {
+	return sdkerrors.Wrapf(ErrInvalidProviderStatus, "invalid status %s for provider %s", status, addr)
 }
 
 // NewErrorLeaseForNodeByProviderNotFound returns an error indicating that the specified lease does not exist.

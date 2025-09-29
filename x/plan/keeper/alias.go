@@ -6,6 +6,7 @@ import (
 	base "github.com/sentinel-official/sentinelhub/v12/types"
 	leasetypes "github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
 	nodetypes "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
+	providertypes "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
 )
 
 func (k *Keeper) GetLease(ctx sdk.Context, id uint64) (leasetypes.Lease, bool) {
@@ -36,8 +37,8 @@ func (k *Keeper) HasNodeForPlan(ctx sdk.Context, id uint64, addr base.NodeAddres
 	return k.node.HasNodeForPlan(ctx, id, addr)
 }
 
-func (k *Keeper) HasProvider(ctx sdk.Context, addr base.ProvAddress) bool {
-	return k.provider.HasProvider(ctx, addr)
+func (k *Keeper) GetProvider(ctx sdk.Context, addr base.ProvAddress) (providertypes.Provider, bool) {
+	return k.provider.GetProvider(ctx, addr)
 }
 
 func (k *Keeper) PlanUnlinkNodePreHook(ctx sdk.Context, id uint64, addr base.NodeAddress) error {

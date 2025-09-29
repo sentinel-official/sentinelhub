@@ -466,15 +466,6 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 		return nil, err
 	}
 
-	node, found := k.GetNode(ctx, nodeAddr)
-	if !found {
-		return nil, types.NewErrorNodeNotFound(nodeAddr)
-	}
-
-	if !node.Status.Equal(v1base.StatusActive) {
-		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
-	}
-
 	// Ensure the node is authorized to serve this plan
 	if !k.HasNodeForPlan(ctx, subscription.PlanID, nodeAddr) {
 		return nil, types.NewErrorNodeForPlanNotFound(subscription.PlanID, nodeAddr)

@@ -19,9 +19,14 @@ func (k *Keeper) HandleMsgCreatePlan(ctx sdk.Context, msg *v3.MsgCreatePlanReque
 		return nil, err
 	}
 
-	// Ensure provider exists in the state
-	if !k.HasProvider(ctx, provAddr) {
+	// Verify the provider exists and is in an active state
+	provider, found := k.GetProvider(ctx, provAddr)
+	if !found {
 		return nil, types.NewErrorProviderNotFound(provAddr)
+	}
+
+	if !provider.Status.Equal(v1base.StatusActive) {
+		return nil, types.NewErrorInvalidProviderStatus(provAddr, provider.Status)
 	}
 
 	// Construct the new plan with an incremented ID and inactive status
@@ -76,16 +81,6 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 		return nil, err
 	}
 
-	// Ensure the node exists and is active
-	node, found := k.GetNode(ctx, nodeAddr)
-	if !found {
-		return nil, types.NewErrorNodeNotFound(nodeAddr)
-	}
-
-	if !node.Status.Equal(v1base.StatusActive) {
-		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
-	}
-
 	// Prevent duplicate node linkage for the same plan
 	if k.HasNodeForPlan(ctx, plan.ID, nodeAddr) {
 		return nil, types.NewErrorDuplicateNodeForPlan(plan.ID, nodeAddr)
@@ -111,7 +106,7 @@ func (k *Keeper) HandleMsgLinkNode(ctx sdk.Context, msg *v3.MsgLinkNodeRequest) 
 		&v3.EventLinkNode{
 			PlanID:      plan.ID,
 			ProvAddress: plan.ProvAddress,
-			NodeAddress: node.Address,
+			NodeAddress: nodeAddr.String(),
 		},
 	)
 
@@ -180,6 +175,23 @@ func (k *Keeper) HandleMsgUpdatePlanStatus(ctx sdk.Context, msg *v3.MsgUpdatePla
 
 	if msg.From != plan.ProvAddress {
 		return nil, types.NewErrorUnauthorized(msg.From)
+	}
+
+	if msg.Status.Equal(v1base.StatusActive) {
+		provAddr, err := base.ProvAddressFromBech32(plan.ProvAddress)
+		if err != nil {
+			return nil, err
+		}
+
+		// Ensure provider exists and is currently active
+		provider, found := k.GetProvider(ctx, provAddr)
+		if !found {
+			return nil, types.NewErrorProviderNotFound(provAddr)
+		}
+
+		if !provider.Status.Equal(v1base.StatusActive) {
+			return nil, types.NewErrorInvalidProviderStatus(provAddr, provider.Status)
+		}
 	}
 
 	// Remove old status index if transitioning state

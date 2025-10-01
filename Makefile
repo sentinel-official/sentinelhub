@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 
-VERSION   := $(shell git describe --tags --always --dirty 2>/dev/null | sed 's/^v//')
-COMMIT    := $(shell git log -1 --format='%H' 2>/dev/null || echo "unknown")
+VERSION            := $(shell git describe --tags --always --dirty 2>/dev/null | sed 's/^v//')
+COMMIT             := $(shell git log -1 --format='%H' 2>/dev/null || echo "unknown")
 TENDERMINT_VERSION := $(shell go list -m github.com/cometbft/cometbft | sed 's/.* //')
 
 comma      := ,
@@ -25,65 +25,60 @@ LD_FLAGS   := $(ld_flags) -X github.com/cosmos/cosmos-sdk/version.BuildTags=$(BU
 
 build_flags = -ldflags="$(LD_FLAGS)" -mod=readonly -tags="$(BUILD_TAGS)" -trimpath
 
+GOBIN ?= $(shell go env GOBIN)
+ifeq ($(GOBIN),)
+    GOBIN := $(shell go env GOPATH)/bin
+endif
+
 IMAGE ?= sentinelhub:latest
 
 .PHONY: help
-help:
-	@echo "Available targets:"
-	@echo "  build           Build the binary (./bin/sentinelhub)"
-	@echo "  install         Install sentinelhub into \$$(GOBIN)"
-	@echo "  clean           Remove build artifacts"
-	@echo "  test            Run tests"
-	@echo "  test-coverage   Run tests with coverage and generate report"
-	@echo "  benchmark       Run benchmarks"
-	@echo "  go-lint         Run golangci-lint with auto-fix"
-	@echo "  proto-gen       Generate protobuf code"
-	@echo "  proto-lint      Lint protobuf definitions"
-	@echo "  build-image     Build Docker image"
-	@echo "  tools           Install development tools"
+help: ## Show available targets
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "%-20s %s\n", $$1, $$2}'
 
 .PHONY: build
-build:
+build: ## Build the binary (./bin/sentinelhub)
 	go build $(build_flags) -o ./bin/sentinelhub ./cmd/sentinelhub
 
 .PHONY: install
-install:
-	go build $(build_flags) -o $$(go env GOBIN)/sentinelhub ./cmd/sentinelhub
+install: ## Install the binary into $GOBIN
+	go build $(build_flags) -o "$(GOBIN)/sentinelhub" ./cmd/sentinelhub
 
 .PHONY: clean
-clean:
-	$(RM) -r ./bin ./vendor
+clean: ## Remove build artifacts
+	$(RM) -r ./bin ./vendor ./coverage.txt
 
 .PHONY: test
-test:
+test: ## Run tests
 	go test -cover -mod=readonly -v ./...
 
 .PHONY: test-coverage
-test-coverage:
-	go test -covermode=atomic -coverprofile=coverage.txt -mod=readonly -timeout 15m -v ./...
+test-coverage: ## Run tests with coverage and generate report
+	go test -covermode=atomic -coverprofile=coverage.txt -mod=readonly -timeout 5m -v ./...
 
 .PHONY: benchmark
-benchmark:
+benchmark: ## Run benchmarks
 	go test -bench -mod=readonly -v ./...
 
 .PHONY: go-lint
-go-lint:
+go-lint: ## Run golangci-lint with auto-fix
 	golangci-lint run --fix
 
 .PHONY: proto-gen
-proto-gen:
+proto-gen: ## Generate protobuf code
 	@scripts/proto-gen.sh
 
 .PHONY: proto-lint
-proto-lint:
+proto-lint: ## Lint protobuf definitions
 	@find proto -name *.proto -exec buf format -w {} \;
 
 .PHONY: build-image
-build-image:
+build-image: ## Build Docker image
 	docker build --compress --file Dockerfile --force-rm --tag $(IMAGE) .
 
 .PHONY: tools
-tools:
+tools: ## Install development tools
 	go install github.com/bufbuild/buf/cmd/buf@v1.57.0
 	go install github.com/cosmos/gogoproto/protoc-gen-gocosmos@v1.7.0
 	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.4.0

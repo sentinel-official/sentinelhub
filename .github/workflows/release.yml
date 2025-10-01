@@ -18,9 +18,9 @@ jobs:
       - name: Build and Tag Docker Image
         run: make build-image
 
-      - name: Extract Binary from Docker Image
+      - name: Extract Binary
         run: |
-          docker create --name artifacts sentinel-official/sentinelhub
+          docker create --name artifacts sentinelhub:latest
           docker cp artifacts:/usr/local/bin/sentinelhub ./sentinelhub
           docker rm artifacts
 

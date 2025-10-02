@@ -54,7 +54,7 @@ type App struct {
 func NewApp(
 	appOpts servertypes.AppOptions, bech32Prefix string, db tmdb.DB, encCfg EncodingConfig, homeDir string,
 	invCheckPeriod uint, loadLatest bool, logger tmlog.Logger, skipGenesisInvariants bool,
-	skipUpgradeHeights map[int64]bool, traceWriter io.Writer, version string, wasmOpts []wasmkeeper.Option,
+	traceWriter io.Writer, version string, skipUpgradeHeights map[int64]bool, wasmOpts []wasmkeeper.Option,
 	baseAppOpts ...func(*baseapp.BaseApp),
 ) *App {
 	baseApp := baseapp.NewBaseApp(appName, logger, db, encCfg.TxConfig.TxDecoder(), baseAppOpts...)

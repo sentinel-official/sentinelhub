@@ -4,6 +4,7 @@ go 1.23.0
 
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
+	github.com/cometbft/cometbft => github.com/sentinel-official/cometbft v0.37.16-0.20251002154824-98baf7005156
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.0
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 	pgregory.net/rapid => pgregory.net/rapid v0.5.5

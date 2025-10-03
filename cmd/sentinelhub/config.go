@@ -11,14 +11,13 @@ import (
 	"github.com/spf13/viper"
 )
 
-const flagOverwriteConfigWithDefaults = "overwrite-config-with-defaults"
+const flagSkipOverwriteConfig = "skip-overwrite-config"
 
 // applyRecommendedValues sets default values for specific configuration types.
 func applyRecommendedValues(cfg interface{}) {
 	switch c := cfg.(type) {
 	case *serverconfig.Config:
 		c.MinGasPrices = "0.1udvpn"
-		c.StateSync.SnapshotInterval = 1000
 	case *tmcfg.Config:
 		c.Consensus.TimeoutCommit = 3 * time.Second
 	}

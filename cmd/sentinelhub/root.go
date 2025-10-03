@@ -25,7 +25,7 @@ import (
 func moduleInitFlags(cmd *cobra.Command) {
 	crisis.AddModuleInitFlags(cmd)
 	wasm.AddModuleInitFlags(cmd)
-	cmd.Flags().Bool(flagOverwriteConfigWithDefaults, true, "If set to true, recommended default values will overwrite any existing settings in config.toml and app.toml.")
+	cmd.Flags().Bool(flagSkipOverwriteConfig, false, "Skip overwriting config with recommended values")
 }
 
 func queryCommand() *cobra.Command {
@@ -84,7 +84,7 @@ func NewRootCmd(homeDir string) *cobra.Command {
 		Short:        "Sentinel Hub application",
 		SilenceUsage: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) (err error) {
-			if viper.GetBool(flagOverwriteConfigWithDefaults) {
+			if !viper.GetBool(flagSkipOverwriteConfig) {
 				if err := overwriteTendermintConfig(); err != nil {
 					return err
 				}

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	sdkmath "cosmossdk.io/math"
@@ -125,8 +126,21 @@ func (k *Keeper) handleSpotPriceQueryResponse(ctx sdk.Context, asset v1.Asset, r
 		return err
 	}
 
+	// Split the spot price string into integer and decimal parts.
+	parts := strings.SplitN(res.GetSpotPrice(), ".", 2)
+
+	i, d := parts[0], ""
+	if len(parts) == 2 {
+		d = parts[1]
+	}
+
+	// Truncate the decimal part to 18 digits to maintain precision.
+	if len(d) > 18 {
+		d = d[:18]
+	}
+
 	// Convert the spot price to a decimal value.
-	spotPrice, err := sdkmath.LegacyNewDecFromStr(res.GetSpotPrice())
+	spotPrice, err := sdkmath.LegacyNewDecFromStr(i + "." + d)
 	if err != nil {
 		return err
 	}

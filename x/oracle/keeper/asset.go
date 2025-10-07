@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibchost "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 	protobuf "github.com/gogo/protobuf/types"
@@ -122,7 +124,9 @@ func (k *Keeper) GetAssetForPacket(ctx sdk.Context, portID, channelID string, se
 
 // GetQuotePrice retrieves a quote for a given DecCoin, applying asset pricing if available.
 // If the asset for the given denomination is not found, it returns an error.
-func (k *Keeper) GetQuotePrice(ctx sdk.Context, basePrice sdk.DecCoin) (sdk.Coin, error) {
+func (k *Keeper) GetQuotePrice(c context.Context, basePrice sdk.DecCoin) (sdk.Coin, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
 	// Retrieve the asset associated with the coin denomination.
 	asset, found := k.GetAsset(ctx, basePrice.Denom)
 	if !found {

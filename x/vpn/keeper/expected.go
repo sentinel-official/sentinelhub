@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
@@ -22,5 +24,5 @@ type DistributionKeeper interface {
 }
 
 type OracleKeeper interface {
-	GetQuotePrice(ctx sdk.Context, price sdk.DecCoin) (sdk.Coin, error)
+	GetQuotePrice(ctx context.Context, price sdk.DecCoin) (sdk.Coin, error)
 }

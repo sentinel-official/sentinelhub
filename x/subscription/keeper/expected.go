@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"context"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -35,7 +36,7 @@ type NodeKeeper interface {
 }
 
 type OracleKeeper interface {
-	GetQuotePrice(ctx sdk.Context, price sdk.DecCoin) (sdk.Coin, error)
+	GetQuotePrice(ctx context.Context, price sdk.DecCoin) (sdk.Coin, error)
 }
 
 type PlanKeeper interface {

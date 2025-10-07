@@ -132,7 +132,7 @@ func (k *Keeper) HandleMsgRenewLease(ctx sdk.Context, msg *v1.MsgRenewLeaseReque
 	}
 
 	// Convert price to current quote value; fail on error
-	price, err = price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
+	price, err = price.UpdateQuoteValue(sdk.WrapSDKContext(ctx), k.GetQuotePrice)
 	if err != nil {
 		return nil, err
 	}
@@ -257,7 +257,7 @@ func (k *Keeper) HandleMsgStartLease(ctx sdk.Context, msg *v1.MsgStartLeaseReque
 	}
 
 	// Adjust the price using a quote function; handle any error
-	price, err = price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
+	price, err = price.UpdateQuoteValue(sdk.WrapSDKContext(ctx), k.GetQuotePrice)
 	if err != nil {
 		return nil, err
 	}

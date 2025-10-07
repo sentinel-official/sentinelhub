@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"sort"
@@ -11,7 +12,7 @@ import (
 )
 
 // QuotePriceFunc defines a function signature for converting a base price to a quote price.
-type QuotePriceFunc func(ctx sdk.Context, basePrice sdk.DecCoin) (sdk.Coin, error)
+type QuotePriceFunc func(ctx context.Context, basePrice sdk.DecCoin) (sdk.Coin, error)
 
 // NewPriceFromString parses a string like "denom:base,quote" into a Price.
 func NewPriceFromString(s string) (Price, error) {
@@ -217,7 +218,7 @@ func (p Price) Sub(v Price) Price {
 }
 
 // UpdateQuoteValue applies a pricing function to compute a new quote value from the base.
-func (p Price) UpdateQuoteValue(ctx sdk.Context, fn QuotePriceFunc) (Price, error) {
+func (p Price) UpdateQuoteValue(ctx context.Context, fn QuotePriceFunc) (Price, error) {
 	// If BaseValue is zero, return the original Price
 	if p.BaseValue.IsZero() {
 		return p, nil

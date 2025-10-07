@@ -236,7 +236,7 @@ func (k *Keeper) HandleMsgStartSession(ctx sdk.Context, msg *v3.MsgStartSessionR
 	}
 
 	// Adjust price using current quote mechanism
-	price, err = price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
+	price, err = price.UpdateQuoteValue(sdk.WrapSDKContext(ctx), k.GetQuotePrice)
 	if err != nil {
 		return nil, err
 	}

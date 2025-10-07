@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/sentinelhub/v12/types"
@@ -44,7 +46,7 @@ func (k *Keeper) GetNode(ctx sdk.Context, addr base.NodeAddress) (nodetypes.Node
 	return k.node.GetNode(ctx, addr)
 }
 
-func (k *Keeper) QuotePriceFunc(ctx sdk.Context, price sdk.DecCoin) (sdk.Coin, error) {
+func (k *Keeper) GetQuotePrice(ctx context.Context, price sdk.DecCoin) (sdk.Coin, error) {
 	return k.oracle.GetQuotePrice(ctx, price)
 }
 

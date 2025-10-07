@@ -102,7 +102,7 @@ func (k *Keeper) HandleMsgRenewSubscription(ctx sdk.Context, msg *v3.MsgRenewSub
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	price, err := price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
+	price, err := price.UpdateQuoteValue(sdk.WrapSDKContext(ctx), k.GetQuotePrice)
 	if err != nil {
 		return nil, err
 	}
@@ -324,7 +324,7 @@ func (k *Keeper) HandleMsgStartSubscription(ctx sdk.Context, msg *v3.MsgStartSub
 		return nil, types.NewErrorPriceNotFound(msg.Denom)
 	}
 
-	price, err = price.UpdateQuoteValue(ctx, k.QuotePriceFunc)
+	price, err = price.UpdateQuoteValue(sdk.WrapSDKContext(ctx), k.GetQuotePrice)
 	if err != nil {
 		return nil, err
 	}

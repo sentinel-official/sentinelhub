@@ -46,8 +46,8 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) {
 		req := abcitypes.RequestQuery{
 			Data: k.cdc.MustMarshal(
 				&protorevtypes.QueryGetProtoRevPoolRequest{
-					BaseDenom:  item.BaseAssetDenom,
-					OtherDenom: item.QuoteAssetDenom,
+					BaseDenom:  item.ProtoRevPoolRequest.BaseDenom,
+					OtherDenom: item.ProtoRevPoolRequest.OtherDenom,
 				},
 			),
 			Path: "/osmosis.protorev.v1beta1.Query/GetProtoRevPool",

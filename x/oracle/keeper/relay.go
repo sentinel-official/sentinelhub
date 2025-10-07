@@ -146,8 +146,8 @@ func (k *Keeper) handleSpotPriceQueryResponse(ctx sdk.Context, asset v1.Asset, r
 	}
 
 	// Update the asset price using the spot price and its multiplier.
-	asset.Price = spotPrice.MulInt(asset.Multiplier()).TruncateInt()
 	asset.Height = resp.GetHeight()
+	asset.SpotPrice = spotPrice.MulInt(asset.Multiplier())
 
 	// Persist the updated asset information in the store.
 	k.SetAsset(ctx, asset)
@@ -179,8 +179,8 @@ func (k *Keeper) handleProtoRevPoolQueryResponse(ctx sdk.Context, asset v1.Asset
 		Data: k.cdc.MustMarshal(
 			&queryproto.SpotPriceRequest{
 				PoolId:          res.GetPoolId(),
-				BaseAssetDenom:  asset.BaseAssetDenom,
-				QuoteAssetDenom: asset.QuoteAssetDenom,
+				BaseAssetDenom:  asset.SpotPriceRequest.BaseAssetDenom,
+				QuoteAssetDenom: asset.SpotPriceRequest.QuoteAssetDenom,
 			},
 		),
 		Path: "/osmosis.poolmanager.v1beta1.Query/SpotPrice",

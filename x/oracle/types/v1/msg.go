@@ -5,6 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/poolmanager/client/queryproto"
+	protorev "github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/protorev/types"
 	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
 )
 
@@ -17,13 +19,16 @@ var (
 )
 
 // NewMsgCreateAssetRequest creates a new MsgCreateAssetRequest instance.
-func NewMsgCreateAssetRequest(from sdk.AccAddress, denom string, decimals int64, baseAssetDenom, quoteAssetDenom string) *MsgCreateAssetRequest {
+func NewMsgCreateAssetRequest(
+	from sdk.AccAddress, denom string, decimals int64, protoRevPoolRequest protorev.QueryGetProtoRevPoolRequest,
+	spotPriceRequest queryproto.SpotPriceRequest,
+) *MsgCreateAssetRequest {
 	return &MsgCreateAssetRequest{
-		From:            from.String(),
-		Denom:           denom,
-		Decimals:        decimals,
-		BaseAssetDenom:  baseAssetDenom,
-		QuoteAssetDenom: quoteAssetDenom,
+		From:                from.String(),
+		Denom:               denom,
+		Decimals:            decimals,
+		ProtoRevPoolRequest: protoRevPoolRequest,
+		SpotPriceRequest:    spotPriceRequest,
 	}
 }
 
@@ -49,12 +54,44 @@ func (m *MsgCreateAssetRequest) ValidateBasic() error {
 		return types.NewErrorInvalidMessage("decimals cannot be negative")
 	}
 
-	if m.BaseAssetDenom == "" {
+	if m.ProtoRevPoolRequest.BaseDenom == "" {
+		return types.NewErrorInvalidMessage("base_denom cannot be empty")
+	}
+
+	if err := sdk.ValidateDenom(m.ProtoRevPoolRequest.BaseDenom); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid base_denom: %w", err))
+	}
+
+	if m.ProtoRevPoolRequest.OtherDenom == "" {
+		return types.NewErrorInvalidMessage("other_denom cannot be empty")
+	}
+
+	if err := sdk.ValidateDenom(m.ProtoRevPoolRequest.OtherDenom); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid other_denom: %w", err))
+	}
+
+	if m.ProtoRevPoolRequest.BaseDenom == m.ProtoRevPoolRequest.OtherDenom {
+		return types.NewErrorInvalidMessage("base_denom and other_denom cannot be the same")
+	}
+
+	if m.SpotPriceRequest.BaseAssetDenom == "" {
 		return types.NewErrorInvalidMessage("base_asset_denom cannot be empty")
 	}
 
-	if m.QuoteAssetDenom == "" {
+	if err := sdk.ValidateDenom(m.SpotPriceRequest.BaseAssetDenom); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid base_asset_denom: %w", err))
+	}
+
+	if m.SpotPriceRequest.QuoteAssetDenom == "" {
 		return types.NewErrorInvalidMessage("quote_asset_denom cannot be empty")
+	}
+
+	if err := sdk.ValidateDenom(m.SpotPriceRequest.QuoteAssetDenom); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid quote_asset_denom: %w", err))
+	}
+
+	if m.SpotPriceRequest.BaseAssetDenom == m.SpotPriceRequest.QuoteAssetDenom {
+		return types.NewErrorInvalidMessage("base_asset_denom and quote_asset_denom cannot be the same")
 	}
 
 	return nil
@@ -110,13 +147,16 @@ func (m *MsgDeleteAssetRequest) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgUpdateAssetRequest creates a new MsgUpdateAssetRequest instance.
-func NewMsgUpdateAssetRequest(from sdk.AccAddress, denom string, decimals int64, baseAssetDenom, quoteAssetDenom string) *MsgUpdateAssetRequest {
+func NewMsgUpdateAssetRequest(
+	from sdk.AccAddress, denom string, decimals int64, protoRevPoolRequest protorev.QueryGetProtoRevPoolRequest,
+	spotPriceRequest queryproto.SpotPriceRequest,
+) *MsgUpdateAssetRequest {
 	return &MsgUpdateAssetRequest{
-		From:            from.String(),
-		Denom:           denom,
-		Decimals:        decimals,
-		BaseAssetDenom:  baseAssetDenom,
-		QuoteAssetDenom: quoteAssetDenom,
+		From:                from.String(),
+		Denom:               denom,
+		Decimals:            decimals,
+		ProtoRevPoolRequest: protoRevPoolRequest,
+		SpotPriceRequest:    spotPriceRequest,
 	}
 }
 
@@ -142,12 +182,44 @@ func (m *MsgUpdateAssetRequest) ValidateBasic() error {
 		return types.NewErrorInvalidMessage("decimals cannot be negative")
 	}
 
-	if m.BaseAssetDenom == "" {
+	if m.ProtoRevPoolRequest.BaseDenom == "" {
+		return types.NewErrorInvalidMessage("base_denom cannot be empty")
+	}
+
+	if err := sdk.ValidateDenom(m.ProtoRevPoolRequest.BaseDenom); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid base_denom: %w", err))
+	}
+
+	if m.ProtoRevPoolRequest.OtherDenom == "" {
+		return types.NewErrorInvalidMessage("other_denom cannot be empty")
+	}
+
+	if err := sdk.ValidateDenom(m.ProtoRevPoolRequest.OtherDenom); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid other_denom: %w", err))
+	}
+
+	if m.ProtoRevPoolRequest.BaseDenom == m.ProtoRevPoolRequest.OtherDenom {
+		return types.NewErrorInvalidMessage("base_denom and other_denom cannot be the same")
+	}
+
+	if m.SpotPriceRequest.BaseAssetDenom == "" {
 		return types.NewErrorInvalidMessage("base_asset_denom cannot be empty")
 	}
 
-	if m.QuoteAssetDenom == "" {
+	if err := sdk.ValidateDenom(m.SpotPriceRequest.BaseAssetDenom); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid base_asset_denom: %w", err))
+	}
+
+	if m.SpotPriceRequest.QuoteAssetDenom == "" {
 		return types.NewErrorInvalidMessage("quote_asset_denom cannot be empty")
+	}
+
+	if err := sdk.ValidateDenom(m.SpotPriceRequest.QuoteAssetDenom); err != nil {
+		return types.NewErrorInvalidMessage(fmt.Errorf("invalid quote_asset_denom: %w", err))
+	}
+
+	if m.SpotPriceRequest.BaseAssetDenom == m.SpotPriceRequest.QuoteAssetDenom {
+		return types.NewErrorInvalidMessage("base_asset_denom and quote_asset_denom cannot be the same")
 	}
 
 	return nil

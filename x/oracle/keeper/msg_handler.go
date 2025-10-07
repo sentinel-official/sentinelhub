@@ -23,12 +23,12 @@ func (k *Keeper) HandleMsgCreateAsset(ctx sdk.Context, msg *v1.MsgCreateAssetReq
 
 	// Initialize asset with provided metadata, zero price and zero height
 	asset := v1.Asset{
-		Denom:           msg.Denom,
-		Decimals:        msg.Decimals,
-		BaseAssetDenom:  msg.BaseAssetDenom,
-		QuoteAssetDenom: msg.QuoteAssetDenom,
-		Price:           sdkmath.ZeroInt(),
-		Height:          0,
+		Denom:               msg.Denom,
+		Decimals:            msg.Decimals,
+		ProtoRevPoolRequest: msg.ProtoRevPoolRequest,
+		SpotPriceRequest:    msg.SpotPriceRequest,
+		Height:              0,
+		SpotPrice:           sdkmath.LegacyZeroDec(),
 	}
 
 	k.SetAsset(ctx, asset)
@@ -38,8 +38,8 @@ func (k *Keeper) HandleMsgCreateAsset(ctx sdk.Context, msg *v1.MsgCreateAssetReq
 		&v1.EventCreate{
 			Denom:           asset.Denom,
 			Decimals:        asset.Decimals,
-			BaseAssetDenom:  asset.BaseAssetDenom,
-			QuoteAssetDenom: asset.QuoteAssetDenom,
+			BaseAssetDenom:  asset.SpotPriceRequest.BaseAssetDenom,
+			QuoteAssetDenom: asset.SpotPriceRequest.QuoteAssetDenom,
 		},
 	)
 
@@ -87,8 +87,8 @@ func (k *Keeper) HandleMsgUpdateAsset(ctx sdk.Context, msg *v1.MsgUpdateAssetReq
 
 	// Apply updated metadata to the asset
 	asset.Decimals = msg.Decimals
-	asset.BaseAssetDenom = msg.BaseAssetDenom
-	asset.QuoteAssetDenom = msg.QuoteAssetDenom
+	asset.ProtoRevPoolRequest = msg.ProtoRevPoolRequest
+	asset.SpotPriceRequest = msg.SpotPriceRequest
 
 	k.SetAsset(ctx, asset)
 
@@ -97,8 +97,8 @@ func (k *Keeper) HandleMsgUpdateAsset(ctx sdk.Context, msg *v1.MsgUpdateAssetReq
 		&v1.EventUpdateDetails{
 			Denom:           asset.Denom,
 			Decimals:        asset.Decimals,
-			BaseAssetDenom:  asset.BaseAssetDenom,
-			QuoteAssetDenom: asset.QuoteAssetDenom,
+			BaseAssetDenom:  asset.SpotPriceRequest.BaseAssetDenom,
+			QuoteAssetDenom: asset.SpotPriceRequest.QuoteAssetDenom,
 		},
 	)
 

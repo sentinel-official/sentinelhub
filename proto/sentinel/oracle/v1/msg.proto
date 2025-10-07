@@ -2,6 +2,8 @@ syntax = "proto3";
 package sentinel.oracle.v1;
 
 import "gogoproto/gogo.proto";
+import "osmosis/poolmanager/v1beta1/query.proto";
+import "osmosis/protorev/v1beta1/query.proto";
 import "sentinel/oracle/v1/params.proto";
 
 option go_package = "github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1";
@@ -12,8 +14,8 @@ message MsgCreateAssetRequest {
   string from = 1;
   string denom = 2;
   int64 decimals = 3;
-  string base_asset_denom = 4;
-  string quote_asset_denom = 5;
+  osmosis.protorev.v1beta1.QueryGetProtoRevPoolRequest proto_rev_pool_request = 4 [(gogoproto.nullable) = false];
+  osmosis.poolmanager.v1beta1.SpotPriceRequest spot_price_request = 5 [(gogoproto.nullable) = false];
 }
 
 message MsgDeleteAssetRequest {
@@ -25,8 +27,8 @@ message MsgUpdateAssetRequest {
   string from = 1;
   string denom = 2;
   int64 decimals = 3;
-  string base_asset_denom = 4;
-  string quote_asset_denom = 5;
+  osmosis.protorev.v1beta1.QueryGetProtoRevPoolRequest proto_rev_pool_request = 4 [(gogoproto.nullable) = false];
+  osmosis.poolmanager.v1beta1.SpotPriceRequest spot_price_request = 5 [(gogoproto.nullable) = false];
 }
 
 message MsgUpdateParamsRequest {

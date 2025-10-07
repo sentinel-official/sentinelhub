@@ -126,11 +126,11 @@ func (k *Keeper) GetQuotePrice(ctx sdk.Context, basePrice sdk.DecCoin) (sdk.Coin
 	// Retrieve the asset associated with the coin denomination.
 	asset, found := k.GetAsset(ctx, basePrice.Denom)
 	if !found {
-		return sdk.Coin{Amount: sdk.ZeroInt()}, types.NewErrorAssetNotFound(basePrice.Denom)
+		return sdk.Coin{}, types.NewErrorAssetNotFound(basePrice.Denom)
 	}
 
 	// Calculate the quote price by multiplying the base price with the asset's price.
-	amount := basePrice.Amount.MulInt(asset.Price).TruncateInt()
+	amount := basePrice.Amount.Mul(asset.SpotPrice).TruncateInt()
 
 	// Return the resulting coin with the same denomination as the base price.
 	return sdk.Coin{Denom: basePrice.Denom, Amount: amount}, nil

@@ -27,8 +27,8 @@ func (k *Keeper) HandleMsgCreateAsset(ctx sdk.Context, msg *v1.MsgCreateAssetReq
 		Decimals:            msg.Decimals,
 		ProtoRevPoolRequest: msg.ProtoRevPoolRequest,
 		SpotPriceRequest:    msg.SpotPriceRequest,
-		Height:              0,
 		SpotPrice:           sdkmath.LegacyZeroDec(),
+		SpotPriceHeight:     0,
 	}
 
 	k.SetAsset(ctx, asset)

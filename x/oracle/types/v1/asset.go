@@ -70,16 +70,16 @@ func (a *Asset) Validate() error {
 		return errors.New("base_asset_denom and quote_asset_denom cannot be the same")
 	}
 
-	if a.Height < 0 {
-		return errors.New("height cannot be negative")
-	}
-
 	if a.SpotPrice.IsNil() {
 		return errors.New("spot_price cannot be nil")
 	}
 
 	if a.SpotPrice.IsNegative() {
 		return errors.New("spot_price cannot be negative")
+	}
+
+	if a.SpotPriceHeight < 0 {
+		return errors.New("spot_price_height cannot be negative")
 	}
 
 	return nil

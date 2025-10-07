@@ -116,7 +116,7 @@ func (k *Keeper) OnAcknowledgementPacket(
 // handleSpotPriceQueryResponse handles the response for the SpotPrice query.
 func (k *Keeper) handleSpotPriceQueryResponse(ctx sdk.Context, asset v1.Asset, resp *abcitypes.ResponseQuery) error {
 	// Skip updates if the response height is older than the current asset height.
-	if resp.GetHeight() < asset.Height {
+	if resp.GetHeight() < asset.SpotPriceHeight {
 		return nil
 	}
 
@@ -146,8 +146,8 @@ func (k *Keeper) handleSpotPriceQueryResponse(ctx sdk.Context, asset v1.Asset, r
 	}
 
 	// Update the asset price using the spot price and its multiplier.
-	asset.Height = resp.GetHeight()
 	asset.SpotPrice = spotPrice.MulInt(asset.Multiplier())
+	asset.SpotPriceHeight = resp.GetHeight()
 
 	// Persist the updated asset information in the store.
 	k.SetAsset(ctx, asset)

@@ -11,8 +11,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// QuotePriceFunc defines a function signature for converting a base price to a quote price.
-type QuotePriceFunc func(ctx context.Context, basePrice sdk.DecCoin) (sdk.Coin, error)
+// GetQuotePriceFunc defines a function signature for converting a base price to a quote price.
+type GetQuotePriceFunc func(ctx context.Context, basePrice sdk.DecCoin) (sdk.Coin, error)
 
 // NewPriceFromString parses a string like "denom:base,quote" into a Price.
 func NewPriceFromString(s string) (Price, error) {
@@ -218,7 +218,7 @@ func (p Price) Sub(v Price) Price {
 }
 
 // UpdateQuoteValue applies a pricing function to compute a new quote value from the base.
-func (p Price) UpdateQuoteValue(ctx context.Context, fn QuotePriceFunc) (Price, error) {
+func (p Price) UpdateQuoteValue(ctx context.Context, fn GetQuotePriceFunc) (Price, error) {
 	// If BaseValue is zero, return the original Price
 	if p.BaseValue.IsZero() {
 		return p, nil
@@ -228,13 +228,13 @@ func (p Price) UpdateQuoteValue(ctx context.Context, fn QuotePriceFunc) (Price, 
 	basePrice := p.BasePrice()
 
 	// Compute the new quote value using the provided function
-	newQuote, err := fn(ctx, basePrice)
+	quotePrice, err := fn(ctx, basePrice)
 	if err != nil {
 		return Price{}, err
 	}
 
-	// If newQuote is zero, return the original Price
-	if newQuote.IsZero() {
+	// If quotePrice is zero, return the original Price
+	if quotePrice.IsZero() {
 		return p, nil
 	}
 
@@ -242,7 +242,7 @@ func (p Price) UpdateQuoteValue(ctx context.Context, fn QuotePriceFunc) (Price, 
 	return Price{
 		Denom:      p.Denom,
 		BaseValue:  p.BaseValue,
-		QuoteValue: newQuote.Amount,
+		QuoteValue: quotePrice.Amount,
 	}, nil
 }
 

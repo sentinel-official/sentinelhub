@@ -34,11 +34,16 @@ import (
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
 	ibctmmigrations "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint/migrations"
 
+	"github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/poolmanager/client/queryproto"
+	protorevtypes "github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/protorev/types"
+	oraclekeeper "github.com/sentinel-official/sentinelhub/v12/x/oracle/keeper"
 	oracletypes "github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
+	v1oracletypes "github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1"
 )
 
 const (
-	UpgradeName = "v12_0_0"
+	preUpgradeProtocolVersion = 11
+	UpgradeName               = "v12_0_0"
 )
 
 var (
@@ -57,6 +62,9 @@ func UpgradeHandler(
 	cdc codec.Codec, mm *sdkmodule.Manager, configurator sdkmodule.Configurator, keepers Keepers,
 ) upgradetypes.UpgradeHandler {
 	return func(ctx sdk.Context, _ upgradetypes.Plan, fromVM sdkmodule.VersionMap) (sdkmodule.VersionMap, error) {
+		versionSetter := keepers.UpgradeKeeper.GetVersionSetter()
+		versionSetter.SetProtocolVersion(preUpgradeProtocolVersion)
+
 		keyTables := map[string]paramstypes.KeyTable{
 			// Cosmos SDK subspaces
 			authtypes.ModuleName:         authtypes.ParamKeyTable(),
@@ -105,6 +113,13 @@ func UpgradeHandler(
 			return nil, err
 		}
 
+		mintParams := keepers.MintKeeper.GetParams(ctx)
+
+		mintParams.BlocksPerYear = (365.25 * 24 * 60 * 60) / 3
+		if err := keepers.MintKeeper.SetParams(ctx, mintParams); err != nil {
+			return nil, err
+		}
+
 		stakingParams := keepers.StakingKeeper.GetParams(ctx)
 
 		stakingParams.MinCommissionRate = sdkmath.LegacyNewDecWithPrec(5, 2)
@@ -144,6 +159,14 @@ func UpgradeHandler(
 		keepers.IBCKeeper.ClientKeeper.SetParams(ctx, ibcClientParams)
 
 		if err := migrateFoundationAccount(ctx, keepers.AccountKeeper, keepers.BankKeeper, keepers.StakingKeeper); err != nil {
+			return nil, err
+		}
+
+		if err := setDenomMetadata(ctx, keepers.BankKeeper); err != nil {
+			return nil, err
+		}
+
+		if err := setOracleAssets(ctx, keepers.OracleKeeper); err != nil {
 			return nil, err
 		}
 
@@ -308,7 +331,7 @@ func migrateFoundationAccount(
 	ak.SetAccount(ctx, vestingAccount)
 
 	// Transfer spendable coins to new address
-	toAddr, err := sdk.AccAddressFromBech32("")
+	toAddr, err := sdk.AccAddressFromBech32("") // TODO: set addr
 	if err != nil {
 		return err
 	}
@@ -319,6 +342,163 @@ func migrateFoundationAccount(
 	// Transfer spendable balance to new address
 	if err := bk.SendCoins(ctx, addr, toAddr, spendableCoins); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func setDenomMetadata(ctx sdk.Context, k bankkeeper.Keeper) error {
+	items := []banktypes.Metadata{
+		{
+			Description: "The native staking token of Sentinel Hub",
+			DenomUnits: []*banktypes.DenomUnit{
+				{Denom: "udvpn", Exponent: 0},
+				{Denom: "mdvpn", Exponent: 3},
+				{Denom: "dvpn", Exponent: 6},
+			},
+			Base:    "udvpn",
+			Display: "P2P",
+			Name:    "Sentinel",
+			Symbol:  "P2P",
+		},
+		{
+			DenomUnits: []*banktypes.DenomUnit{
+				{
+					Denom:    "ibc/A8C2D23A1E6F95DA4E48BA349667E322BD7A6C996D8A4AAE8BA72E190F3D1477",
+					Exponent: 0,
+					Aliases:  []string{"uatom"},
+				},
+			},
+			Base:    "ibc/A8C2D23A1E6F95DA4E48BA349667E322BD7A6C996D8A4AAE8BA72E190F3D1477",
+			Display: "ATOM",
+			Name:    "Cosmos",
+			Symbol:  "ATOM",
+		},
+		{
+			DenomUnits: []*banktypes.DenomUnit{
+				{
+					Denom:    "ibc/B1C0DDB14F25279A2026BC8794E12B259F8BDA546A3C5132CCAEE4431CE36783",
+					Exponent: 0,
+					Aliases:  []string{"udec"},
+				},
+			},
+			Base:    "ibc/B1C0DDB14F25279A2026BC8794E12B259F8BDA546A3C5132CCAEE4431CE36783",
+			Display: "DEC",
+			Name:    "Decentr",
+			Symbol:  "DEC",
+		},
+		{
+			DenomUnits: []*banktypes.DenomUnit{
+				{
+					Denom:    "ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518",
+					Exponent: 0,
+					Aliases:  []string{"uosmo"},
+				},
+			},
+			Base:    "ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518",
+			Display: "OSMO",
+			Name:    "Osmosis",
+			Symbol:  "OSMO",
+		},
+		{
+			DenomUnits: []*banktypes.DenomUnit{
+				{
+					Denom:    "ibc/31FEE1A2A9F9C01113F90BD0BBCCE8FD6BBB8585FAF109A2101827DD1D5B95B8",
+					Exponent: 0,
+					Aliases:  []string{"uscrt"},
+				},
+			},
+			Base:    "ibc/31FEE1A2A9F9C01113F90BD0BBCCE8FD6BBB8585FAF109A2101827DD1D5B95B8",
+			Display: "SCRT",
+			Name:    "Secret",
+			Symbol:  "SCRT",
+		},
+	}
+
+	for _, item := range items {
+		k.SetDenomMetaData(ctx, item)
+	}
+
+	return nil
+}
+
+func setOracleAssets(ctx sdk.Context, k oraclekeeper.Keeper) error {
+	// ATOM -> "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2"
+	// DEC  -> "ibc/9BCB27203424535B6230D594553F1659C77EC173E36D9CF4759E7186EE747E84"
+	// OSMO -> "uosmo"
+	// P2P  -> "ibc/9712DBB13B9631EDFA9BF61B55F1B2D290B2ADB67E3A4EB3A875F3B6081B3B84"
+	// SCRT -> "ibc/0954E1C28EB7AF5B72D24F3BC2B47BBB2FDF91BDDFD57B74B99E133AED40972A"
+	// USDC -> "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4"
+	items := []v1oracletypes.Asset{
+		{
+			Denom:    "udvpn",
+			Decimals: 6,
+			ProtoRevPoolRequest: protorevtypes.QueryGetProtoRevPoolRequest{
+				BaseDenom:  "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+				OtherDenom: "ibc/9712DBB13B9631EDFA9BF61B55F1B2D290B2ADB67E3A4EB3A875F3B6081B3B84",
+			},
+			SpotPriceRequest: queryproto.SpotPriceRequest{
+				BaseAssetDenom:  "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+				QuoteAssetDenom: "ibc/9712DBB13B9631EDFA9BF61B55F1B2D290B2ADB67E3A4EB3A875F3B6081B3B84",
+			},
+			SpotPrice: sdkmath.LegacyZeroDec(),
+		},
+		{
+			Denom:    "ibc/A8C2D23A1E6F95DA4E48BA349667E322BD7A6C996D8A4AAE8BA72E190F3D1477",
+			Decimals: 6,
+			ProtoRevPoolRequest: protorevtypes.QueryGetProtoRevPoolRequest{
+				BaseDenom:  "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+				OtherDenom: "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+			},
+			SpotPriceRequest: queryproto.SpotPriceRequest{
+				BaseAssetDenom:  "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+				QuoteAssetDenom: "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+			},
+			SpotPrice: sdkmath.LegacyZeroDec(),
+		},
+		{
+			Denom:    "ibc/B1C0DDB14F25279A2026BC8794E12B259F8BDA546A3C5132CCAEE4431CE36783",
+			Decimals: 6,
+			ProtoRevPoolRequest: protorevtypes.QueryGetProtoRevPoolRequest{
+				BaseDenom:  "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+				OtherDenom: "ibc/9BCB27203424535B6230D594553F1659C77EC173E36D9CF4759E7186EE747E84",
+			},
+			SpotPriceRequest: queryproto.SpotPriceRequest{
+				BaseAssetDenom:  "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+				QuoteAssetDenom: "ibc/9BCB27203424535B6230D594553F1659C77EC173E36D9CF4759E7186EE747E84",
+			},
+			SpotPrice: sdkmath.LegacyZeroDec(),
+		},
+		{
+			Denom:    "ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518",
+			Decimals: 6,
+			ProtoRevPoolRequest: protorevtypes.QueryGetProtoRevPoolRequest{
+				BaseDenom:  "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+				OtherDenom: "uosmo",
+			},
+			SpotPriceRequest: queryproto.SpotPriceRequest{
+				BaseAssetDenom:  "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+				QuoteAssetDenom: "uosmo",
+			},
+			SpotPrice: sdkmath.LegacyZeroDec(),
+		},
+		{
+			Denom:    "ibc/31FEE1A2A9F9C01113F90BD0BBCCE8FD6BBB8585FAF109A2101827DD1D5B95B8",
+			Decimals: 6,
+			ProtoRevPoolRequest: protorevtypes.QueryGetProtoRevPoolRequest{
+				BaseDenom:  "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+				OtherDenom: "ibc/0954E1C28EB7AF5B72D24F3BC2B47BBB2FDF91BDDFD57B74B99E133AED40972A",
+			},
+			SpotPriceRequest: queryproto.SpotPriceRequest{
+				BaseAssetDenom:  "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+				QuoteAssetDenom: "ibc/0954E1C28EB7AF5B72D24F3BC2B47BBB2FDF91BDDFD57B74B99E133AED40972A",
+			},
+			SpotPrice: sdkmath.LegacyZeroDec(),
+		},
+	}
+
+	for _, item := range items {
+		k.SetAsset(ctx, item)
 	}
 
 	return nil

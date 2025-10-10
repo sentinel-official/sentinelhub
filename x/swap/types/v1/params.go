@@ -73,6 +73,7 @@ func (m *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 				if value == "" {
 					return errors.New("value cannot be empty")
 				}
+
 				if err := sdk.ValidateDenom(value); err != nil {
 					return fmt.Errorf("invalid value %s: %w", value, err)
 				}
@@ -92,6 +93,7 @@ func (m *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 				if value == "" {
 					return errors.New("value cannot be empty")
 				}
+
 				if _, err := sdk.AccAddressFromBech32(value); err != nil {
 					return fmt.Errorf("invalid value %s: %w", value, err)
 				}

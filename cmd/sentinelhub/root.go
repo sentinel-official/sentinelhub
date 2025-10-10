@@ -88,6 +88,7 @@ func NewRootCmd(homeDir string) *cobra.Command {
 				if err := overwriteTendermintConfig(); err != nil {
 					return err
 				}
+
 				if err := overwriteAppConfig(); err != nil {
 					return err
 				}

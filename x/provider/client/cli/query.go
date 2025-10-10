@@ -71,7 +71,6 @@ func queryProviders() *cobra.Command {
 				cmd.Context(),
 				v2.NewQueryProvidersRequest(status, pagination),
 			)
-
 			if err != nil {
 				return err
 			}

@@ -58,8 +58,8 @@ func (k *Migrator) deleteKeys(ctx sdk.Context, keyPrefix []byte) (keys [][]byte)
 func (k *Migrator) setParams(ctx sdk.Context) {
 	params := v3.Params{
 		Deposit:           sdk.NewInt64Coin("udvpn", 0),
-		MinGigabytePrices: []v1.Price{}, // TODO: set min gigabyte prices
-		MinHourlyPrices:   []v1.Price{}, // TODO: set min hourly prices
+		MinGigabytePrices: []v1.Price{},
+		MinHourlyPrices:   []v1.Price{},
 		StatusTimeout:     1 * time.Hour,
 	}
 

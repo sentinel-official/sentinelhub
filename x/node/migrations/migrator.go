@@ -3,6 +3,7 @@ package migrations
 import (
 	"net"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -86,6 +87,10 @@ func (k *Migrator) migrateNodes(ctx sdk.Context) {
 		hourlyPrices, err := v1.NewPricesFromCoins(item.HourlyPrices...)
 		if err != nil {
 			panic(err)
+		}
+
+		if !strings.Contains(item.RemoteURL, "://") {
+			item.RemoteURL = "https://" + item.RemoteURL
 		}
 
 		remoteURL, err := url.ParseRequestURI(item.RemoteURL)

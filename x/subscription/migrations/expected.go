@@ -7,7 +7,9 @@ import (
 
 	"github.com/sentinel-official/sentinelhub/v12/types"
 	"github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
+	v3node "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
 	v3plan "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
+	v2provider "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
 	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2"
 	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
 )
@@ -16,8 +18,13 @@ type DepositKeeper interface {
 	SubtractDeposit(ctx sdk.Context, addr sdk.AccAddress, coins sdk.Coins) error
 }
 
+type NodeKeeper interface {
+	GetNode(ctx sdk.Context, addr types.NodeAddress) (v3node.Node, bool)
+}
+
 type LeaseKeeper interface {
 	GetLeaseCount(ctx sdk.Context) uint64
+	HasAnyLeaseForNodeByProvider(ctx sdk.Context, nodeAddr types.NodeAddress, provAddr types.ProvAddress) bool
 	SetLeaseCount(ctx sdk.Context, count uint64)
 	SetLease(ctx sdk.Context, lease v1.Lease)
 	SetLeaseForInactiveAt(ctx sdk.Context, time time.Time, id uint64)
@@ -32,6 +39,7 @@ type PlanKeeper interface {
 }
 
 type ProviderKeeper interface {
+	GetProvider(ctx sdk.Context, addr types.ProvAddress) (v2provider.Provider, bool)
 	HasProvider(ctx sdk.Context, addr types.ProvAddress) bool
 }
 

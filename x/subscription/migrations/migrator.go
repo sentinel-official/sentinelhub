@@ -20,19 +20,21 @@ type Migrator struct {
 	cdc          codec.BinaryCodec
 	deposit      DepositKeeper
 	lease        LeaseKeeper
+	node         NodeKeeper
 	plan         PlanKeeper
 	provider     ProviderKeeper
 	subscription SubscriptionKeeper
 }
 
 func NewMigrator(
-	cdc codec.BinaryCodec, deposit DepositKeeper, lease LeaseKeeper, plan PlanKeeper, provider ProviderKeeper,
-	subscription SubscriptionKeeper,
+	cdc codec.BinaryCodec, deposit DepositKeeper, lease LeaseKeeper, node NodeKeeper, plan PlanKeeper,
+	provider ProviderKeeper, subscription SubscriptionKeeper,
 ) Migrator {
 	return Migrator{
 		cdc:          cdc,
 		deposit:      deposit,
 		lease:        lease,
+		node:         node,
 		plan:         plan,
 		provider:     provider,
 		subscription: subscription,
@@ -104,8 +106,6 @@ func (k *Migrator) migrateSubscriptions(ctx sdk.Context) {
 	it := store.Iterator(nil, nil)
 	defer it.Close()
 
-	leaseCount := uint64(0)
-
 	for ; it.Valid(); it.Next() {
 		store.Delete(it.Key())
 
@@ -139,7 +139,9 @@ func (k *Migrator) migrateSubscriptions(ctx sdk.Context) {
 
 			if item.Hours != 0 {
 				payout := k.getPayout(ctx, item.ID)
-				if ok := k.provider.HasProvider(ctx, accAddr.Bytes()); !ok {
+				provAddr := types.ProvAddress(accAddr.Bytes())
+
+				if !k.provider.HasProvider(ctx, provAddr) {
 					refund := sdk.NewCoin(payout.Price.Denom, payout.Price.Amount.MulRaw(payout.Hours))
 
 					if !refund.IsZero() {
@@ -148,18 +150,49 @@ func (k *Migrator) migrateSubscriptions(ctx sdk.Context) {
 						}
 					}
 				} else {
-					if !item.Status.Equal(v1base.StatusActive) {
-						refund := sdk.NewCoin(payout.Price.Denom, payout.Price.Amount.MulRaw(payout.Hours))
+					nodeAddr, err := types.NodeAddressFromBech32(item.NodeAddress)
+					if err != nil {
+						panic(err)
+					}
 
-						if !refund.IsZero() {
-							if err := k.deposit.SubtractDeposit(ctx, accAddr, sdk.NewCoins(refund)); err != nil {
+					refund := false
+
+					if !item.Status.Equal(v1base.StatusActive) {
+						refund = true
+					}
+					if k.lease.HasAnyLeaseForNodeByProvider(ctx, nodeAddr, provAddr) {
+						refund = true
+					}
+
+					node, found := k.node.GetNode(ctx, nodeAddr)
+					if !found {
+						panic(fmt.Errorf("node %s does not exist", nodeAddr))
+					}
+					if !node.Status.Equal(v1base.StatusActive) {
+						refund = true
+					}
+
+					provider, found := k.provider.GetProvider(ctx, provAddr)
+					if !found {
+						panic(fmt.Errorf("provider %s does not exist", provAddr))
+					}
+					if !provider.Status.Equal(v1base.StatusActive) {
+						refund = true
+					}
+
+					if refund {
+						amount := sdk.NewCoin(payout.Price.Denom, payout.Price.Amount.MulRaw(payout.Hours))
+
+						if !amount.IsZero() {
+							if err := k.deposit.SubtractDeposit(ctx, accAddr, sdk.NewCoins(amount)); err != nil {
 								panic(err)
 							}
 						}
 					} else {
+						count := k.lease.GetLeaseCount(ctx)
 						lease := v1.Lease{
-							ID:                 item.ID,
-							ProvAddress:        types.ProvAddress(accAddr.Bytes()).String(),
+							ID:                 count + 1,
+							ProvAddress:        provAddr.String(),
 							NodeAddress:        item.NodeAddress,
 							Price:              v1base.NewPriceFromCoin(payout.Price),
 							Hours:              item.Hours - payout.Hours,
@@ -168,20 +201,7 @@ func (k *Migrator) migrateSubscriptions(ctx sdk.Context) {
 							StartAt:            item.StatusAt,
 						}
 
-						if item.ID > leaseCount {
-							leaseCount = item.ID
-						}
-
-						nodeAddr, err := types.NodeAddressFromBech32(lease.NodeAddress)
-						if err != nil {
-							panic(err)
-						}
-
-						provAddr, err := types.ProvAddressFromBech32(lease.ProvAddress)
-						if err != nil {
-							panic(err)
-						}
-
+						k.lease.SetLeaseCount(ctx, count+1)
 						k.lease.SetLease(ctx, lease)
 						k.lease.SetLeaseForNodeByProvider(ctx, nodeAddr, provAddr, lease.ID)
 						k.lease.SetLeaseForProvider(ctx, provAddr, lease.ID)
@@ -236,6 +256,4 @@ func (k *Migrator) migrateSubscriptions(ctx sdk.Context) {
 			}
 		}
 	}
-
-	k.lease.SetLeaseCount(ctx, leaseCount)
 }

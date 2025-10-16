@@ -26,13 +26,15 @@ type Migrator struct {
 
 func NewMigrator(cdc codec.BinaryCodec, k keeper.Keeper) Migrator {
 	return Migrator{
-		deposit:      deposit.NewMigrator(cdc, &k.Deposit),
-		lease:        lease.NewMigrator(cdc, &k.Lease),
-		provider:     provider.NewMigrator(cdc, &k.Provider),
-		node:         node.NewMigrator(cdc, &k.Node),
-		plan:         plan.NewMigrator(cdc, &k.Node, &k.Plan),
-		subscription: subscription.NewMigrator(cdc, &k.Deposit, &k.Lease, &k.Plan, &k.Provider, &k.Subscription),
-		session:      session.NewMigrator(cdc, &k.Session),
+		deposit:  deposit.NewMigrator(cdc, &k.Deposit),
+		lease:    lease.NewMigrator(cdc, &k.Lease),
+		provider: provider.NewMigrator(cdc, &k.Provider),
+		node:     node.NewMigrator(cdc, &k.Node),
+		plan:     plan.NewMigrator(cdc, &k.Node, &k.Plan),
+		subscription: subscription.NewMigrator(
+			cdc, &k.Deposit, &k.Lease, &k.Node, &k.Plan, &k.Provider, &k.Subscription,
+		),
+		session: session.NewMigrator(cdc, &k.Session),
 	}
 }
 

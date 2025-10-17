@@ -220,7 +220,7 @@ func (a *App) SetUpgradeStoreLoader() {
 func (a *App) SetUpgradeHandler(configurator sdkmodule.Configurator) {
 	a.UpgradeKeeper.SetUpgradeHandler(
 		UpgradeName,
-		UpgradeHandler(a.Codec, a.mm, configurator, a.Keepers),
+		UpgradeHandler(a.Codec, a.mm, configurator, a.Keepers, a.KV(upgradetypes.StoreKey)),
 	)
 }
 

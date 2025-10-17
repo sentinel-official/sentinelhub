@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/binary"
 	"fmt"
 	"math"
 	"time"
@@ -60,8 +61,13 @@ var (
 
 func UpgradeHandler(
 	cdc codec.Codec, mm *sdkmodule.Manager, configurator sdkmodule.Configurator, keepers Keepers,
+	upgradeKVStoreKey *storetypes.KVStoreKey,
 ) upgradetypes.UpgradeHandler {
 	return func(ctx sdk.Context, _ upgradetypes.Plan, fromVM sdkmodule.VersionMap) (sdkmodule.VersionMap, error) {
+		upgradeStore := ctx.KVStore(upgradeKVStoreKey)
+		versionBytes := binary.BigEndian.AppendUint64([]byte{}, preUpgradeProtocolVersion)
+		upgradeStore.Set([]byte{upgradetypes.ProtocolVersionByte}, versionBytes)
+
 		versionSetter := keepers.UpgradeKeeper.GetVersionSetter()
 		versionSetter.SetProtocolVersion(preUpgradeProtocolVersion)
 
@@ -331,7 +337,7 @@ func migrateFoundationAccount(
 	ak.SetAccount(ctx, vestingAccount)
 
 	// Transfer spendable coins to new address
-	toAddr, err := sdk.AccAddressFromBech32("") // TODO: set addr
+	toAddr, err := sdk.AccAddressFromBech32("sent1rk7a363h86da9eka5rx2pas4q7evnpk5h076lu")
 	if err != nil {
 		return err
 	}
@@ -357,7 +363,7 @@ func setDenomMetadata(ctx sdk.Context, k bankkeeper.Keeper) error {
 				{Denom: "dvpn", Exponent: 6},
 			},
 			Base:    "udvpn",
-			Display: "P2P",
+			Display: "udvpn",
 			Name:    "Sentinel",
 			Symbol:  "P2P",
 		},
@@ -370,7 +376,7 @@ func setDenomMetadata(ctx sdk.Context, k bankkeeper.Keeper) error {
 				},
 			},
 			Base:    "ibc/A8C2D23A1E6F95DA4E48BA349667E322BD7A6C996D8A4AAE8BA72E190F3D1477",
-			Display: "ATOM",
+			Display: "ibc/A8C2D23A1E6F95DA4E48BA349667E322BD7A6C996D8A4AAE8BA72E190F3D1477",
 			Name:    "Cosmos",
 			Symbol:  "ATOM",
 		},
@@ -383,7 +389,7 @@ func setDenomMetadata(ctx sdk.Context, k bankkeeper.Keeper) error {
 				},
 			},
 			Base:    "ibc/B1C0DDB14F25279A2026BC8794E12B259F8BDA546A3C5132CCAEE4431CE36783",
-			Display: "DEC",
+			Display: "ibc/B1C0DDB14F25279A2026BC8794E12B259F8BDA546A3C5132CCAEE4431CE36783",
 			Name:    "Decentr",
 			Symbol:  "DEC",
 		},
@@ -396,7 +402,7 @@ func setDenomMetadata(ctx sdk.Context, k bankkeeper.Keeper) error {
 				},
 			},
 			Base:    "ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518",
-			Display: "OSMO",
+			Display: "ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518",
 			Name:    "Osmosis",
 			Symbol:  "OSMO",
 		},
@@ -409,7 +415,7 @@ func setDenomMetadata(ctx sdk.Context, k bankkeeper.Keeper) error {
 				},
 			},
 			Base:    "ibc/31FEE1A2A9F9C01113F90BD0BBCCE8FD6BBB8585FAF109A2101827DD1D5B95B8",
-			Display: "SCRT",
+			Display: "ibc/31FEE1A2A9F9C01113F90BD0BBCCE8FD6BBB8585FAF109A2101827DD1D5B95B8",
 			Name:    "Secret",
 			Symbol:  "SCRT",
 		},

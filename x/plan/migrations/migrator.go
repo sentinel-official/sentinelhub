@@ -1,6 +1,7 @@
 package migrations
 
 import (
+	"encoding/binary"
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -9,22 +10,25 @@ import (
 
 	base "github.com/sentinel-official/sentinelhub/v12/types"
 	"github.com/sentinel-official/sentinelhub/v12/types/v1"
-	"github.com/sentinel-official/sentinelhub/v12/x/node/types"
+	nodetypes "github.com/sentinel-official/sentinelhub/v12/x/node/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/plan/types"
 	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v2"
 	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
 )
 
 type Migrator struct {
-	cdc  codec.BinaryCodec
-	node NodeKeeper
-	plan PlanKeeper
+	cdc   codec.BinaryCodec
+	lease LeaseKeeper
+	node  NodeKeeper
+	plan  PlanKeeper
 }
 
-func NewMigrator(cdc codec.BinaryCodec, node NodeKeeper, plan PlanKeeper) Migrator {
+func NewMigrator(cdc codec.BinaryCodec, lease LeaseKeeper, node NodeKeeper, plan PlanKeeper) Migrator {
 	return Migrator{
-		cdc:  cdc,
-		node: node,
-		plan: plan,
+		cdc:   cdc,
+		lease: lease,
+		node:  node,
+		plan:  plan,
 	}
 }
 
@@ -87,7 +91,7 @@ func (k *Migrator) migratePlans(ctx sdk.Context) {
 }
 
 func (k *Migrator) setPlanForNodeByProviderKeys(ctx sdk.Context) {
-	store := prefix.NewStore(k.node.Store(ctx), types.NodeForPlanKeyPrefix)
+	store := prefix.NewStore(k.node.Store(ctx), nodetypes.NodeForPlanKeyPrefix)
 
 	it := store.Iterator(nil, nil)
 	defer it.Close()
@@ -120,4 +124,27 @@ func (k *Migrator) setPlanForProviderKeys(ctx sdk.Context, keys ...[]byte) {
 
 		k.plan.SetPlanForProvider(ctx, addr, id)
 	}
+}
+
+func (k *Migrator) PostMigrate(ctx sdk.Context) error {
+	store := prefix.NewStore(k.plan.Store(ctx), types.PlanForNodeKeyPrefix)
+
+	it := store.Iterator(nil, nil)
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		key := it.Key()
+		nodeAddrLen := int(key[0])
+		nodeAddr := base.NodeAddress(key[1 : 1+nodeAddrLen])
+		provAddrLen := int(key[1+nodeAddrLen])
+		provAddr := base.ProvAddress(key[1+nodeAddrLen+1 : 1+nodeAddrLen+1+provAddrLen])
+		id := binary.BigEndian.Uint64(key[1+nodeAddrLen+1+provAddrLen:])
+
+		if !k.lease.HasAnyLeaseForNodeByProvider(ctx, nodeAddr, provAddr) {
+			k.node.DeleteNodeForPlan(ctx, id, nodeAddr)
+			k.plan.DeletePlanForNodeByProvider(ctx, nodeAddr, provAddr, id)
+		}
+	}
+
+	return nil
 }

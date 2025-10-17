@@ -30,7 +30,7 @@ func NewMigrator(cdc codec.BinaryCodec, k keeper.Keeper) Migrator {
 		lease:    lease.NewMigrator(cdc, &k.Lease),
 		provider: provider.NewMigrator(cdc, &k.Provider),
 		node:     node.NewMigrator(cdc, &k.Node),
-		plan:     plan.NewMigrator(cdc, &k.Node, &k.Plan),
+		plan:     plan.NewMigrator(cdc, &k.Lease, &k.Node, &k.Plan),
 		subscription: subscription.NewMigrator(
 			cdc, &k.Deposit, &k.Lease, &k.Node, &k.Plan, &k.Provider, &k.Subscription,
 		),
@@ -64,6 +64,10 @@ func (k *Migrator) Migrate(ctx sdk.Context) error {
 	}
 
 	if err := k.subscription.Migrate(ctx); err != nil {
+		return err
+	}
+
+	if err := k.plan.PostMigrate(ctx); err != nil {
 		return err
 	}
 

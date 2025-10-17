@@ -7,11 +7,17 @@ import (
 	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
 )
 
+type LeaseKeeper interface {
+	HasAnyLeaseForNodeByProvider(ctx sdk.Context, nodeAddr types.NodeAddress, provAddr types.ProvAddress) bool
+}
+
 type NodeKeeper interface {
+	DeleteNodeForPlan(ctx sdk.Context, id uint64, addr types.NodeAddress)
 	Store(ctx sdk.Context) sdk.KVStore
 }
 
 type PlanKeeper interface {
+	DeletePlanForNodeByProvider(ctx sdk.Context, nodeAddr types.NodeAddress, provAddr types.ProvAddress, id uint64)
 	GetPlan(ctx sdk.Context, id uint64) (v3.Plan, bool)
 	SetPlan(ctx sdk.Context, plan v3.Plan)
 	SetPlanForNodeByProvider(ctx sdk.Context, nodeAddr types.NodeAddress, provAddr types.ProvAddress, id uint64)

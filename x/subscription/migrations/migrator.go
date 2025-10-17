@@ -160,6 +160,7 @@ func (k *Migrator) migrateSubscriptions(ctx sdk.Context) {
 					if !item.Status.Equal(v1base.StatusActive) {
 						refund = true
 					}
+
 					if k.lease.HasAnyLeaseForNodeByProvider(ctx, nodeAddr, provAddr) {
 						refund = true
 					}
@@ -168,6 +169,7 @@ func (k *Migrator) migrateSubscriptions(ctx sdk.Context) {
 					if !found {
 						panic(fmt.Errorf("node %s does not exist", nodeAddr))
 					}
+
 					if !node.Status.Equal(v1base.StatusActive) {
 						refund = true
 					}
@@ -176,6 +178,7 @@ func (k *Migrator) migrateSubscriptions(ctx sdk.Context) {
 					if !found {
 						panic(fmt.Errorf("provider %s does not exist", provAddr))
 					}
+
 					if !provider.Status.Equal(v1base.StatusActive) {
 						refund = true
 					}
@@ -253,6 +256,17 @@ func (k *Migrator) migrateSubscriptions(ctx sdk.Context) {
 				k.subscription.SetSubscriptionForPlan(ctx, subscription.PlanID, subscription.ID)
 				k.subscription.SetSubscriptionForInactiveAt(ctx, subscription.InactiveAt, subscription.ID)
 				k.subscription.SetSubscriptionForRenewalAt(ctx, subscription.RenewalAt(), subscription.ID)
+
+				k.subscription.IterateAllocationsForSubscription(ctx, item.ID, func(_ int, item v2.Allocation) bool {
+					accAddr, err := sdk.AccAddressFromBech32(item.Address)
+					if err != nil {
+						panic(err)
+					}
+
+					k.subscription.SetSubscriptionForAccount(ctx, accAddr, subscription.ID)
+
+					return false
+				})
 			}
 		}
 	}

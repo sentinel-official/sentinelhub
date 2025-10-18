@@ -1,0 +1,27 @@
+syntax = "proto3";
+package sentinel.node.v3;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "sentinel/types/v1/price.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Node {
+  string address = 1;
+  repeated sentinel.types.v1.Price gigabyte_prices = 2 [(gogoproto.nullable) = false];
+  repeated sentinel.types.v1.Price hourly_prices = 3 [(gogoproto.nullable) = false];
+  repeated string remote_addrs = 4;
+  google.protobuf.Timestamp inactive_at = 5 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  sentinel.types.v1.Status status = 6;
+  google.protobuf.Timestamp status_at = 7 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+}

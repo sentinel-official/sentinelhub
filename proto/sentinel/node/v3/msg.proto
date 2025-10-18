@@ -1,0 +1,63 @@
+syntax = "proto3";
+package sentinel.node.v3;
+
+import "gogoproto/gogo.proto";
+import "sentinel/node/v3/params.proto";
+import "sentinel/types/v1/price.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message MsgRegisterNodeRequest {
+  string from = 1;
+  repeated sentinel.types.v1.Price gigabyte_prices = 2 [(gogoproto.nullable) = false];
+  repeated sentinel.types.v1.Price hourly_prices = 3 [(gogoproto.nullable) = false];
+  repeated string remote_addrs = 4;
+}
+
+message MsgUpdateNodeDetailsRequest {
+  string from = 1;
+  repeated sentinel.types.v1.Price gigabyte_prices = 2 [(gogoproto.nullable) = false];
+  repeated sentinel.types.v1.Price hourly_prices = 3 [(gogoproto.nullable) = false];
+  repeated string remote_addrs = 4;
+}
+
+message MsgUpdateNodeStatusRequest {
+  string from = 1;
+  sentinel.types.v1.Status status = 2;
+}
+
+message MsgStartSessionRequest {
+  string from = 1;
+  string node_address = 2;
+  int64 gigabytes = 3;
+  int64 hours = 4;
+  sentinel.types.v1.Price max_price = 5 [(gogoproto.nullable) = false];
+}
+
+message MsgUpdateParamsRequest {
+  string from = 1;
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgRegisterNodeResponse {}
+
+message MsgUpdateNodeDetailsResponse {}
+
+message MsgUpdateNodeStatusResponse {}
+
+message MsgStartSessionResponse {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+}
+
+message MsgUpdateParamsResponse {}
+
+service MsgService {
+  rpc MsgRegisterNode(MsgRegisterNodeRequest) returns (MsgRegisterNodeResponse);
+  rpc MsgUpdateNodeDetails(MsgUpdateNodeDetailsRequest) returns (MsgUpdateNodeDetailsResponse);
+  rpc MsgUpdateNodeStatus(MsgUpdateNodeStatusRequest) returns (MsgUpdateNodeStatusResponse);
+  rpc MsgStartSession(MsgStartSessionRequest) returns (MsgStartSessionResponse);
+  rpc MsgUpdateParams(MsgUpdateParamsRequest) returns (MsgUpdateParamsResponse);
+}

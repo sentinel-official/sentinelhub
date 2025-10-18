@@ -1,25 +1,41 @@
-// DO NOT COVER
-
 package types
 
 import (
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "cosmossdk.io/errors"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
+const (
+	_ = 100 + iota
+	ErrCodeDepositNotFound
+	ErrCodeInsufficientDeposit
+	ErrCodeInsufficientFunds
+	ErrCodeInvalidMessage
 )
 
 var (
-	ErrorDepositNotFound     = errors.Register(ModuleName, 201, "deposit not found")
-	ErrorInsufficientDeposit = errors.Register(ModuleName, 202, "insufficient deposit")
-	ErrorInsufficientFunds   = errors.Register(ModuleName, 203, "insufficient funds")
+	ErrDepositNotFound     = sdkerrors.Register(ModuleName, ErrCodeDepositNotFound, "deposit not found")
+	ErrInsufficientDeposit = sdkerrors.Register(ModuleName, ErrCodeInsufficientDeposit, "insufficient deposit")
+	ErrInsufficientFunds   = sdkerrors.Register(ModuleName, ErrCodeInsufficientFunds, "insufficient funds")
+	ErrInvalidMessage      = sdkerrors.Register(ModuleName, ErrCodeInvalidMessage, "invalid message")
 )
 
-func NewErrorDepositNotFound(addr interface{}) error {
-	return errors.Wrapf(ErrorDepositNotFound, "deposit for address %s does not exist", addr)
+// NewErrorDepositNotFound wraps ErrDepositNotFound with the provided address context for a missing deposit.
+func NewErrorDepositNotFound(addr sdk.AccAddress) error {
+	return sdkerrors.Wrapf(ErrDepositNotFound, "deposit for address %s does not exist", addr)
 }
 
-func NewErrorInsufficientDeposit(addr interface{}) error {
-	return errors.Wrapf(ErrorInsufficientDeposit, "insufficient deposit for address %s", addr)
+// NewErrorInsufficientDeposit wraps ErrInsufficientDeposit with the provided address context for a deposit issue.
+func NewErrorInsufficientDeposit(addr sdk.AccAddress) error {
+	return sdkerrors.Wrapf(ErrInsufficientDeposit, "insufficient deposit for address %s", addr)
 }
 
-func NewErrorInsufficientFunds(addr interface{}) error {
-	return errors.Wrapf(ErrorInsufficientFunds, "insufficient funds for address %s", addr)
+// NewErrorInsufficientFunds wraps ErrInsufficientFunds with the provided address context for a funds issue.
+func NewErrorInsufficientFunds(addr sdk.AccAddress) error {
+	return sdkerrors.Wrapf(ErrInsufficientFunds, "insufficient funds for address %s", addr)
+}
+
+// NewErrorInvalidMessage returns an error indicating that the provided message is invalid.
+func NewErrorInvalidMessage(desc interface{}) error {
+	return sdkerrors.Wrapf(ErrInvalidMessage, "%v", desc)
 }

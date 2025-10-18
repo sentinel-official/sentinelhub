@@ -1,16 +1,41 @@
-FROM golang:1.20-alpine3.18 as build
+# Build stage
+FROM golang:1.25-alpine3.22 AS build
 
-COPY . /root/
+# Set working directory
+WORKDIR /root
 
-RUN apk add build-base ca-certificates git linux-headers wget && \
-    cd /root/ && \
+# Install build dependencies
+RUN apk add --no-cache \
+    build-base \
+    ca-certificates \
+    git \
+    linux-headers \
+    wget
+
+# Cache Go modules
+COPY go.mod go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
+
+# Copy source code
+COPY . .
+
+# Download and install CosmWasm static library
+RUN unset GOTOOLCHAIN && \
     ARCH=$(uname -m) && \
     WASM_VERSION=$(go list -m all | grep github.com/CosmWasm/wasmvm | awk '{print $NF}') && \
-    wget -q -O /usr/local/lib/libwasmvm_muslc.a https://github.com/CosmWasm/wasmvm/releases/download/${WASM_VERSION}/libwasmvm_muslc.${ARCH}.a && \
-    STATIC=true make --jobs=$(nproc) build
+    wget -q -O /usr/local/lib/libwasmvm_muslc.a \
+        https://github.com/CosmWasm/wasmvm/releases/download/${WASM_VERSION}/libwasmvm_muslc.${ARCH}.a
 
-FROM alpine:3.18
+# Build sentinelhub
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    STATIC=true make --jobs="$(nproc)" build
 
-COPY --from=build /root/build/sentinelhub /usr/local/bin/sentinelhub
+# Runtime stage
+FROM alpine:3.22
+
+# Copy the built binaries from build stage
+COPY --from=build /root/bin/sentinelhub /usr/local/bin/sentinelhub
 
 ENTRYPOINT ["sentinelhub"]

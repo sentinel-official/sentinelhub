@@ -1,24 +1,24 @@
-// DO NOT COVER
-
 package cli
 
 import (
 	"encoding/hex"
 	"strconv"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
-	"github.com/sentinel-official/hub/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/swap/types/v1"
 )
 
 func txSwap() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "swap [txHash] [receiver] [amount]",
-		Short: "Swap from SENT to DVPN",
+		Use:   "swap [tx-hash] [receiver-addr] [amount]",
+		Short: "Swap coins from SENT to DVPN",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
@@ -41,11 +41,11 @@ func txSwap() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgSwapRequest(
-				ctx.FromAddress,
+			msg := v1.NewMsgSwapRequest(
+				ctx.FromAddress.Bytes(),
 				types.BytesToHash(txHash),
 				receiver,
-				sdk.NewInt(amount),
+				sdkmath.NewInt(amount),
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

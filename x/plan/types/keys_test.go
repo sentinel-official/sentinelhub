@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/address"
+	sdkaddress "github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/stretchr/testify/require"
 )
 
@@ -37,7 +37,7 @@ func TestPlanForProviderKey(t *testing.T) {
 		if i < 256 {
 			require.Equal(
 				t,
-				append(append(PlanForProviderKeyPrefix, address.MustLengthPrefix(addr)...), sdk.Uint64ToBigEndian(1000)...),
+				append(append(PlanForProviderKeyPrefix, sdkaddress.MustLengthPrefix(addr)...), sdk.Uint64ToBigEndian(1000)...),
 				PlanForProviderKey(addr, 1000),
 			)
 

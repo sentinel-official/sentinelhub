@@ -5,16 +5,18 @@ import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/sentinel-official/hub/x/subscription/types";
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message Payout {
-  uint64 id                         = 1 [ (gogoproto.customname) = "ID" ];
-  string address                    = 2;
-  string node_address               = 3;
-  int64 hours                       = 4;
-  cosmos.base.v1beta1.Coin price    = 5 [ (gogoproto.nullable) = false ];
-  google.protobuf.Timestamp next_at = 6
-      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string address = 2;
+  string node_address = 3;
+  int64 hours = 4;
+  cosmos.base.v1beta1.Coin price = 5 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp next_at = 6 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }

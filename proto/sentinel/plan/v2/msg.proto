@@ -1,80 +1,66 @@
 syntax = "proto3";
 package sentinel.plan.v2;
 
-option go_package = "github.com/sentinel-official/hub/x/plan/types";
-
 import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
 import "sentinel/types/v1/status.proto";
 
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v2";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
-// MsgCreateRequest defines the SDK message for creating a subscription plan
 message MsgCreateRequest {
-  string from                       = 1;
-  google.protobuf.Duration duration = 2
-      [ (gogoproto.stdduration) = true, (gogoproto.nullable) = false ];
-  int64 gigabytes                          = 3;
+  string from = 1;
+  google.protobuf.Duration duration = 2 [
+    (gogoproto.stdduration) = true,
+    (gogoproto.nullable) = false
+  ];
+  int64 gigabytes = 3;
   repeated cosmos.base.v1beta1.Coin prices = 4 [
-    (gogoproto.nullable)     = false,
+    (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }
 
-// MsgUpdateStatusRequest defines the SDK message for modifying the status of a
-// subscription plan
+message MsgLinkNodeRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+  string node_address = 3;
+}
+
+message MsgUnlinkNodeRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+  string node_address = 3;
+}
+
 message MsgUpdateStatusRequest {
-  string from                     = 1;
-  uint64 id                       = 2 [ (gogoproto.customname) = "ID" ];
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
   sentinel.types.v1.Status status = 3;
 }
 
-// MsgLinkNodeRequest defines the SDK message for adding a node to a
-// subscription plan
-message MsgLinkNodeRequest {
-  string from         = 1;
-  uint64 id           = 2 [ (gogoproto.customname) = "ID" ];
-  string node_address = 3;
-}
-
-// MsgUnlinkNodeRequest defines the SDK message for removing a node from a
-// subscription plan
-message MsgUnlinkNodeRequest {
-  string from         = 1;
-  uint64 id           = 2 [ (gogoproto.customname) = "ID" ];
-  string node_address = 3;
-}
-
-// MsgSubscribeRequest defines the SDK message for subscribing to a subscription
-// plan
 message MsgSubscribeRequest {
-  string from  = 1;
-  uint64 id    = 2 [ (gogoproto.customname) = "ID" ];
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
   string denom = 3;
 }
 
-// MsgCreateResponse defines the response of message MsgCreateRequest
 message MsgCreateResponse {}
 
-// MsgUpdateStatusResponse defines the response of message
-// MsgUpdateStatusRequest
-message MsgUpdateStatusResponse {}
-
-// MsgLinkNodeResponse defines the response of message MsgLinkNodeRequest
 message MsgLinkNodeResponse {}
 
-// MsgUnlinkNodeResponse defines the response of message MsgUnlinkNodeRequest
 message MsgUnlinkNodeResponse {}
 
-// MsgSubscribeResponse defines the response of message MsgSubscribeRequest
+message MsgUpdateStatusResponse {}
+
 message MsgSubscribeResponse {}
 
 service MsgService {
   rpc MsgCreate(MsgCreateRequest) returns (MsgCreateResponse);
-  rpc MsgUpdateStatus(MsgUpdateStatusRequest) returns (MsgUpdateStatusResponse);
   rpc MsgLinkNode(MsgLinkNodeRequest) returns (MsgLinkNodeResponse);
   rpc MsgUnlinkNode(MsgUnlinkNodeRequest) returns (MsgUnlinkNodeResponse);
+  rpc MsgUpdateStatus(MsgUpdateStatusRequest) returns (MsgUpdateStatusResponse);
   rpc MsgSubscribe(MsgSubscribeRequest) returns (MsgSubscribeResponse);
 }

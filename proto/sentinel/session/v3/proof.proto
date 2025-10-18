@@ -1,0 +1,25 @@
+syntax = "proto3";
+package sentinel.session.v3;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Proof {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string download_bytes = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string upload_bytes = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Duration duration = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true
+  ];
+}

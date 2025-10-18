@@ -3,26 +3,31 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/x/provider/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v3"
 )
 
-func (k *Keeper) Deposit(ctx sdk.Context) (v sdk.Coin) {
-	k.params.Get(ctx, types.KeyDeposit, &v)
-	return
+// SetParams stores the parameters for the module in the KVStore.
+func (k *Keeper) SetParams(ctx sdk.Context, params v3.Params) {
+	store := k.Store(ctx)
+	key := types.ParamsKey
+	value := k.cdc.MustMarshal(&params)
+
+	store.Set(key, value)
 }
 
-func (k *Keeper) StakingShare(ctx sdk.Context) (v sdk.Dec) {
-	k.params.Get(ctx, types.KeyStakingShare, &v)
-	return
+// GetParams retrieves the parameters from the module's KVStore.
+func (k *Keeper) GetParams(ctx sdk.Context) (v v3.Params) {
+	store := k.Store(ctx)
+	key := types.ParamsKey
+	value := store.Get(key)
+
+	k.cdc.MustUnmarshal(value, &v)
+
+	return v
 }
 
-func (k *Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	k.params.SetParamSet(ctx, &params)
-}
-
-func (k *Keeper) GetParams(ctx sdk.Context) types.Params {
-	return types.NewParams(
-		k.Deposit(ctx),
-		k.StakingShare(ctx),
-	)
+// Deposit returns the deposit parameter from the module's parameters.
+func (k *Keeper) Deposit(ctx sdk.Context) sdk.Coin {
+	return k.GetParams(ctx).Deposit
 }

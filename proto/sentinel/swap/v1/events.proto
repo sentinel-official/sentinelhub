@@ -3,11 +3,11 @@ package sentinel.swap.v1;
 
 import "gogoproto/gogo.proto";
 
-option go_package            = "github.com/sentinel-official/hub/x/swap/types";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/swap/types/v1";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message EventSwap {
-  bytes tx_hash   = 1 [ (gogoproto.moretags) = "yaml:\"tx_hash\"" ];
-  string receiver = 2 [ (gogoproto.moretags) = "yaml:\"receiver\"" ];
+  bytes tx_hash = 1 [(gogoproto.moretags) = "yaml:\"tx_hash\""];
+  string receiver = 2 [(gogoproto.moretags) = "yaml:\"receiver\""];
 }

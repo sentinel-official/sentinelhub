@@ -4,7 +4,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdkstd "github.com/cosmos/cosmos-sdk/std"
+	standard "github.com/cosmos/cosmos-sdk/std"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 )
 
@@ -33,8 +33,8 @@ func NewEncodingConfig() EncodingConfig {
 
 func DefaultEncodingConfig() EncodingConfig {
 	v := NewEncodingConfig()
-	sdkstd.RegisterLegacyAminoCodec(v.Amino)
-	sdkstd.RegisterInterfaces(v.InterfaceRegistry)
+	standard.RegisterLegacyAminoCodec(v.Amino)
+	standard.RegisterInterfaces(v.InterfaceRegistry)
 	ModuleBasics.RegisterLegacyAminoCodec(v.Amino)
 	ModuleBasics.RegisterInterfaces(v.InterfaceRegistry)
 

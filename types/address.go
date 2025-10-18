@@ -3,11 +3,12 @@ package types
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/bech32"
+	sdkbech32 "github.com/cosmos/cosmos-sdk/types/bech32"
 	"gopkg.in/yaml.v3"
 )
 
@@ -95,7 +96,7 @@ func (p ProvAddress) String() string {
 		return ""
 	}
 
-	str, err := bech32.ConvertAndEncode(GetConfig().GetBech32ProviderAddrPrefix(), p.Bytes())
+	str, err := sdkbech32.ConvertAndEncode(GetConfig().GetBech32ProviderAddrPrefix(), p.Bytes())
 	if err != nil {
 		panic(err)
 	}
@@ -108,9 +109,9 @@ func (p ProvAddress) Format(f fmt.State, c rune) {
 	case 's':
 		_, _ = f.Write([]byte(p.String()))
 	case 'p':
-		_, _ = f.Write([]byte(fmt.Sprintf("%p", p)))
+		_, _ = fmt.Fprintf(f, "%p", p)
 	default:
-		_, _ = f.Write([]byte(fmt.Sprintf("%X", p.Bytes())))
+		_, _ = fmt.Fprintf(f, "%X", p.Bytes())
 	}
 }
 
@@ -128,6 +129,7 @@ func (p ProvAddress) MarshalYAML() (interface{}, error) {
 
 func (p *ProvAddress) Unmarshal(data []byte) error {
 	*p = data
+
 	return nil
 }
 
@@ -143,6 +145,7 @@ func (p *ProvAddress) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	*p = addr
+
 	return nil
 }
 
@@ -158,19 +161,21 @@ func (p *ProvAddress) UnmarshalYAML(data []byte) (err error) {
 	}
 
 	*p = addr
+
 	return nil
 }
 
 func ProvAddressFromBech32(str string) (ProvAddress, error) {
 	str = strings.TrimSpace(str)
 	if len(str) == 0 {
-		return ProvAddress{}, fmt.Errorf("empty address string is not allowed")
+		return ProvAddress{}, errors.New("empty address string is not allowed")
 	}
 
 	buf, err := sdk.GetFromBech32(str, GetConfig().GetBech32ProviderAddrPrefix())
 	if err != nil {
 		return nil, err
 	}
+
 	if err = sdk.VerifyAddressFormat(buf); err != nil {
 		return nil, err
 	}
@@ -201,7 +206,7 @@ func (n NodeAddress) String() string {
 		return ""
 	}
 
-	str, err := bech32.ConvertAndEncode(GetConfig().GetBech32NodeAddrPrefix(), n.Bytes())
+	str, err := sdkbech32.ConvertAndEncode(GetConfig().GetBech32NodeAddrPrefix(), n.Bytes())
 	if err != nil {
 		panic(err)
 	}
@@ -214,9 +219,9 @@ func (n NodeAddress) Format(f fmt.State, c rune) {
 	case 's':
 		_, _ = f.Write([]byte(n.String()))
 	case 'p':
-		_, _ = f.Write([]byte(fmt.Sprintf("%p", n)))
+		_, _ = fmt.Fprintf(f, "%p", n)
 	default:
-		_, _ = f.Write([]byte(fmt.Sprintf("%X", n.Bytes())))
+		_, _ = fmt.Fprintf(f, "%X", n.Bytes())
 	}
 }
 
@@ -234,6 +239,7 @@ func (n NodeAddress) MarshalYAML() (interface{}, error) {
 
 func (n *NodeAddress) Unmarshal(data []byte) error {
 	*n = data
+
 	return nil
 }
 
@@ -249,6 +255,7 @@ func (n *NodeAddress) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	*n = addr
+
 	return nil
 }
 
@@ -264,19 +271,21 @@ func (n *NodeAddress) UnmarshalYAML(data []byte) (err error) {
 	}
 
 	*n = addr
+
 	return nil
 }
 
 func NodeAddressFromBech32(str string) (NodeAddress, error) {
 	str = strings.TrimSpace(str)
 	if len(str) == 0 {
-		return NodeAddress{}, fmt.Errorf("empty address string is not allowed")
+		return NodeAddress{}, errors.New("empty address string is not allowed")
 	}
 
 	buf, err := sdk.GetFromBech32(str, GetConfig().GetBech32NodeAddrPrefix())
 	if err != nil {
 		return nil, err
 	}
+
 	if err = sdk.VerifyAddressFormat(buf); err != nil {
 		return nil, err
 	}

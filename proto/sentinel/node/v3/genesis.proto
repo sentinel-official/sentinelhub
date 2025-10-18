@@ -1,0 +1,15 @@
+syntax = "proto3";
+package sentinel.node.v3;
+
+import "gogoproto/gogo.proto";
+import "sentinel/node/v3/node.proto";
+import "sentinel/node/v3/params.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message GenesisState {
+  repeated sentinel.node.v3.Node nodes = 1 [(gogoproto.nullable) = false];
+  Params params = 3 [(gogoproto.nullable) = false];
+}

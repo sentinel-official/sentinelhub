@@ -1,0 +1,17 @@
+syntax = "proto3";
+package sentinel.lease.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Params {
+  int64 max_hours = 1;
+  int64 min_hours = 2;
+  string staking_share = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}

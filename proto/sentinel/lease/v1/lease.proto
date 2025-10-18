@@ -1,0 +1,25 @@
+syntax = "proto3";
+package sentinel.lease.v1;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "sentinel/types/v1/price.proto";
+import "sentinel/types/v1/renewal.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Lease {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string prov_address = 2;
+  string node_address = 3;
+  sentinel.types.v1.Price price = 4 [(gogoproto.nullable) = false];
+  int64 hours = 5;
+  int64 max_hours = 6;
+  sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 7;
+  google.protobuf.Timestamp start_at = 8 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+}

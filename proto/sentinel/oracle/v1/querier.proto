@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package sentinel.oracle.v1;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "sentinel/oracle/v1/asset.proto";
+import "sentinel/oracle/v1/params.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message QueryAssetsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAssetRequest {
+  string denom = 1;
+}
+
+message QueryParamsRequest {}
+
+message QueryAssetsResponse {
+  repeated sentinel.oracle.v1.Asset assets = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryAssetResponse {
+  sentinel.oracle.v1.Asset asset = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryParamsResponse {
+  sentinel.oracle.v1.Params params = 1 [(gogoproto.nullable) = false];
+}
+
+service QueryService {
+  rpc QueryAssets(QueryAssetsRequest) returns (QueryAssetsResponse) {
+    option (google.api.http).get = "/sentinel/oracle/v1/assets";
+  }
+
+  rpc QueryAsset(QueryAssetRequest) returns (QueryAssetResponse) {
+    option (google.api.http).get = "/sentinel/oracle/v1/assets/{denom}";
+  }
+
+  rpc QueryParams(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sentinel/oracle/v1/params";
+  }
+}

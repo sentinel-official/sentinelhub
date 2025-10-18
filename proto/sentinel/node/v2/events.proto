@@ -4,31 +4,31 @@ package sentinel.node.v2;
 import "gogoproto/gogo.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package            = "github.com/sentinel-official/hub/x/node/types";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/node/types/v2";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
+message EventCreateSubscription {
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
+  string node_address = 2 [(gogoproto.moretags) = "yaml:\"node_address\""];
+  uint64 id = 3 [
+    (gogoproto.customname) = "ID",
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
+}
+
 message EventRegister {
-  string address = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
 }
 
 message EventUpdateDetails {
-  string address         = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  string gigabyte_prices = 2
-      [ (gogoproto.moretags) = "yaml:\"gigabyte_prices\"" ];
-  string hourly_prices = 3 [ (gogoproto.moretags) = "yaml:\"hourly_prices\"" ];
-  string remote_url    = 4 [ (gogoproto.customname) = "RemoteURL" ];
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
+  string gigabyte_prices = 2 [(gogoproto.moretags) = "yaml:\"gigabyte_prices\""];
+  string hourly_prices = 3 [(gogoproto.moretags) = "yaml:\"hourly_prices\""];
+  string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
 }
 
 message EventUpdateStatus {
-  sentinel.types.v1.Status status = 1
-      [ (gogoproto.moretags) = "yaml:\"status\"" ];
-  string address = 2 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-}
-
-message EventCreateSubscription {
-  string address      = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  string node_address = 2 [ (gogoproto.moretags) = "yaml:\"node_address\"" ];
-  uint64 id           = 3
-      [ (gogoproto.customname) = "ID", (gogoproto.moretags) = "yaml:\"id\"" ];
+  sentinel.types.v1.Status status = 1 [(gogoproto.moretags) = "yaml:\"status\""];
+  string address = 2 [(gogoproto.moretags) = "yaml:\"address\""];
 }

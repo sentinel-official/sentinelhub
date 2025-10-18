@@ -1,0 +1,60 @@
+syntax = "proto3";
+package sentinel.plan.v1;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message MsgAddRequest {
+  string from = 1;
+  repeated cosmos.base.v1beta1.Coin price = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  google.protobuf.Duration validity = 3 [
+    (gogoproto.stdduration) = true,
+    (gogoproto.nullable) = false
+  ];
+  string bytes = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgAddNodeRequest {
+  string from = 1;
+  uint64 id = 2;
+  string address = 3;
+}
+
+message MsgRemoveNodeRequest {
+  string from = 1;
+  uint64 id = 2;
+  string address = 3;
+}
+
+message MsgSetStatusRequest {
+  string from = 1;
+  uint64 id = 2;
+  sentinel.types.v1.Status status = 3;
+}
+
+message MsgAddResponse {}
+
+message MsgAddNodeResponse {}
+
+message MsgRemoveNodeResponse {}
+
+message MsgSetStatusResponse {}
+
+service MsgService {
+  rpc MsgAdd(MsgAddRequest) returns (MsgAddResponse);
+  rpc MsgAddNode(MsgAddNodeRequest) returns (MsgAddNodeResponse);
+  rpc MsgRemoveNode(MsgRemoveNodeRequest) returns (MsgRemoveNodeResponse);
+  rpc MsgSetStatus(MsgSetStatusRequest) returns (MsgSetStatusResponse);
+}

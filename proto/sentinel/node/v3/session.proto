@@ -1,0 +1,15 @@
+syntax = "proto3";
+package sentinel.node.v3;
+
+import "gogoproto/gogo.proto";
+import "sentinel/session/v3/session.proto";
+import "sentinel/types/v1/price.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Session {
+  sentinel.session.v3.BaseSession base_session = 1 [(gogoproto.embed) = true];
+  sentinel.types.v1.Price price = 2 [(gogoproto.nullable) = false];
+}

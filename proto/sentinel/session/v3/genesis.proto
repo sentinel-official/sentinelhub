@@ -1,0 +1,15 @@
+syntax = "proto3";
+package sentinel.session.v3;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "sentinel/session/v3/params.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message GenesisState {
+  repeated google.protobuf.Any sessions = 1 [(gogoproto.nullable) = false];
+  Params params = 2 [(gogoproto.nullable) = false];
+}

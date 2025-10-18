@@ -1,28 +1,30 @@
 package keeper
 
 import (
+	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/sentinel-official/hub/x/swap/expected"
-	"github.com/sentinel-official/hub/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/swap/types/v1"
 )
 
 type Keeper struct {
-	cdc     codec.BinaryCodec
-	key     sdk.StoreKey
-	params  paramstypes.Subspace
-	account expected.AccountKeeper
-	bank    expected.BankKeeper
+	cdc    codec.BinaryCodec
+	key    storetypes.StoreKey
+	params paramstypes.Subspace
+
+	account AccountKeeper
+	bank    BankKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey, params paramstypes.Subspace, account expected.AccountKeeper, bank expected.BankKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, params paramstypes.Subspace, account AccountKeeper, bank BankKeeper) Keeper {
 	return Keeper{
 		cdc:     cdc,
 		key:     key,
-		params:  params.WithKeyTable(types.ParamsKeyTable()),
+		params:  params.WithKeyTable(v1.ParamsKeyTable()),
 		account: account,
 		bank:    bank,
 	}

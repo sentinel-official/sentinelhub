@@ -1,0 +1,18 @@
+syntax = "proto3";
+package sentinel.oracle.v1;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Params {
+  int64 block_interval = 1;
+  string channel_id = 2 [(gogoproto.customname) = "ChannelID"];
+  google.protobuf.Duration timeout = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true
+  ];
+}

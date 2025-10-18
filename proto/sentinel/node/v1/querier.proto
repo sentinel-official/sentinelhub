@@ -1,0 +1,63 @@
+syntax = "proto3";
+package sentinel.node.v1;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "sentinel/node/v1/node.proto";
+import "sentinel/node/v1/params.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/node/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message QueryNodesRequest {
+  sentinel.types.v1.Status status = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryNodesForProviderRequest {
+  string address = 1;
+  sentinel.types.v1.Status status = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+message QueryNodeRequest {
+  string address = 1;
+}
+
+message QueryParamsRequest {}
+
+message QueryNodesResponse {
+  repeated Node nodes = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryNodesForProviderResponse {
+  repeated Node nodes = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryNodeResponse {
+  Node node = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+service QueryService {
+  rpc QueryNodes(QueryNodesRequest) returns (QueryNodesResponse) {
+    option (google.api.http).get = "/sentinel/node/v1/nodes";
+  }
+  rpc QueryNodesForProvider(QueryNodesForProviderRequest) returns (QueryNodesForProviderResponse) {
+    option (google.api.http).get = "/sentinel/node/v1/providers/{address}/nodes";
+  }
+  rpc QueryNode(QueryNodeRequest) returns (QueryNodeResponse) {
+    option (google.api.http).get = "/sentinel/node/v1/nodes/{address}";
+  }
+  rpc QueryParams(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sentinel/node/v1/params";
+  }
+}

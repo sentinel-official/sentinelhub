@@ -1,21 +1,19 @@
-// DO NOT COVER
-
 package types
 
 import (
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "cosmossdk.io/errors"
 )
 
 var (
-	ErrorInvalidField    = errors.Register(ModuleName, 101, "invalid field")
-	ErrorInvalidFrom     = errors.Register(ModuleName, 102, "invalid from")
-	ErrorInvalidReceiver = errors.Register(ModuleName, 103, "invalid receiver")
-	ErrorInvalidTxHash   = errors.Register(ModuleName, 104, "invalid tx_hash")
-	ErrorInvalidAmount   = errors.Register(ModuleName, 105, "invalid amount")
+	ErrorInvalidField    = sdkerrors.Register(ModuleName, 101, "invalid field")
+	ErrorInvalidFrom     = sdkerrors.Register(ModuleName, 102, "invalid from")
+	ErrorInvalidReceiver = sdkerrors.Register(ModuleName, 103, "invalid receiver")
+	ErrorInvalidTxHash   = sdkerrors.Register(ModuleName, 104, "invalid tx_hash")
+	ErrorInvalidAmount   = sdkerrors.Register(ModuleName, 105, "invalid amount")
 )
 
 var (
-	ErrorSwapIsDisabled = errors.Register(ModuleName, 201, "swap is disabled")
-	ErrorUnauthorized   = errors.Register(ModuleName, 202, "unauthorized")
-	ErrorDuplicateSwap  = errors.Register(ModuleName, 203, "duplicate swap")
+	ErrorSwapIsDisabled = sdkerrors.Register(ModuleName, 201, "swap is disabled")
+	ErrorUnauthorized   = sdkerrors.Register(ModuleName, 202, "unauthorized")
+	ErrorDuplicateSwap  = sdkerrors.Register(ModuleName, 203, "duplicate swap")
 )

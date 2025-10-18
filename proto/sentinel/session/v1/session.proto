@@ -7,19 +7,23 @@ import "google/protobuf/timestamp.proto";
 import "sentinel/types/v1/bandwidth.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/hub/x/session/legacy/v1/types";
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v1";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message Session {
-  uint64 id                         = 1;
-  uint64 subscription               = 2;
-  string node                       = 3;
-  string address                    = 4;
-  google.protobuf.Duration duration = 5
-      [ (gogoproto.stdduration) = true, (gogoproto.nullable) = false ];
-  sentinel.types.v1.Bandwidth bandwidth = 6 [ (gogoproto.nullable) = false ];
-  sentinel.types.v1.Status status       = 7;
-  google.protobuf.Timestamp status_at   = 8
-      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+  uint64 id = 1;
+  uint64 subscription = 2;
+  string node = 3;
+  string address = 4;
+  google.protobuf.Duration duration = 5 [
+    (gogoproto.stdduration) = true,
+    (gogoproto.nullable) = false
+  ];
+  sentinel.types.v1.Bandwidth bandwidth = 6 [(gogoproto.nullable) = false];
+  sentinel.types.v1.Status status = 7;
+  google.protobuf.Timestamp status_at = 8 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }

@@ -1,0 +1,32 @@
+syntax = "proto3";
+package sentinel.plan.v1;
+
+import "gogoproto/gogo.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message EventAdd {
+  uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
+  string provider = 2 [(gogoproto.moretags) = "yaml:\"provider\""];
+}
+
+message EventAddNode {
+  uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
+  string node = 2 [(gogoproto.moretags) = "yaml:\"node\""];
+  string provider = 3 [(gogoproto.moretags) = "yaml:\"provider\""];
+}
+
+message EventRemoveNode {
+  uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
+  string node = 2 [(gogoproto.moretags) = "yaml:\"node\""];
+  string provider = 3 [(gogoproto.moretags) = "yaml:\"provider\""];
+}
+
+message EventSetStatus {
+  uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
+  string provider = 2 [(gogoproto.moretags) = "yaml:\"provider\""];
+  sentinel.types.v1.Status status = 3 [(gogoproto.moretags) = "yaml:\"status\""];
+}

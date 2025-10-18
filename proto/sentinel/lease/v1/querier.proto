@@ -1,0 +1,73 @@
+syntax = "proto3";
+package sentinel.lease.v1;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "sentinel/lease/v1/lease.proto";
+import "sentinel/lease/v1/params.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message QueryLeasesRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryLeasesForNodeRequest {
+  string address = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryLeasesForProviderRequest {
+  string address = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryLeaseRequest {
+  uint64 id = 1;
+}
+
+message QueryParamsRequest {}
+
+message QueryLeasesResponse {
+  repeated Lease leases = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryLeasesForNodeResponse {
+  repeated Lease leases = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryLeasesForProviderResponse {
+  repeated Lease leases = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryLeaseResponse {
+  Lease lease = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+service QueryService {
+  rpc QueryLeases(QueryLeasesRequest) returns (QueryLeasesResponse) {
+    option (google.api.http).get = "/sentinel/lease/v1/leases";
+  }
+  rpc QueryLeasesForNode(QueryLeasesForNodeRequest) returns (QueryLeasesForNodeResponse) {
+    option (google.api.http).get = "/sentinel/lease/v1/nodes/{address}/leases";
+  }
+  rpc QueryLeasesForProvider(QueryLeasesForProviderRequest) returns (QueryLeasesForProviderResponse) {
+    option (google.api.http).get = "/sentinel/lease/v1/providers/{address}/leases";
+  }
+  rpc QueryLease(QueryLeaseRequest) returns (QueryLeaseResponse) {
+    option (google.api.http).get = "/sentinel/lease/v1/leases/{id}";
+  }
+  rpc QueryParams(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sentinel/lease/v1/params";
+  }
+}

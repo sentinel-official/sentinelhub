@@ -1,94 +1,102 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	abcitypes "github.com/tendermint/tendermint/abci/types"
+	"fmt"
 
-	hubtypes "github.com/sentinel-official/hub/types"
-	"github.com/sentinel-official/hub/x/session/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
 )
 
-// EndBlock is a function that gets called at the end of every block.
-// It processes the inactive sessions and updates their status accordingly.
-// The function returns a slice of ValidatorUpdate, but in this case, it always returns nil.
-func (k *Keeper) EndBlock(ctx sdk.Context) []abcitypes.ValidatorUpdate {
-	// Get the status change delay from the Store.
-	statusChangeDelay := k.StatusChangeDelay(ctx)
-
-	// Iterate over all sessions that have become inactive at the current block time.
-	k.IterateSessionsForInactiveAt(ctx, ctx.BlockTime(), func(_ int, item types.Session) bool {
-		k.Logger(ctx).Info("Found an inactive session", "id", item.ID, "status", item.Status)
-
-		// Delete the session from the InactiveAt index before updating the InactiveAt value.
-		k.DeleteSessionForInactiveAt(ctx, item.InactiveAt, item.ID)
-
-		// If the session's status is active, set it to inactive-pending and schedule
-		// its next status update based on the status change delay.
-		if item.Status.Equal(hubtypes.StatusActive) {
-			item.InactiveAt = ctx.BlockTime().Add(statusChangeDelay)
-			item.Status = hubtypes.StatusInactivePending
-			item.StatusAt = ctx.BlockTime()
-
-			// Save the updated session to the store.
-			k.SetSession(ctx, item)
-			k.SetSessionForInactiveAt(ctx, item.InactiveAt, item.ID)
-
-			// Emit an event to notify that the session status has been updated.
-			ctx.EventManager().EmitTypedEvent(
-				&types.EventUpdateStatus{
-					Status:         hubtypes.StatusInactivePending,
-					Address:        item.Address,
-					NodeAddress:    item.NodeAddress,
-					ID:             item.ID,
-					PlanID:         0,
-					SubscriptionID: item.SubscriptionID,
-				},
-			)
-
-			// Continue the iteration to handle the next session.
+// handleInactivePendingSessions processes pending sessions that have become inactive at the current block time.
+func (k *Keeper) handleInactivePendingSessions(ctx sdk.Context) {
+	// Iterate through sessions that have become inactive at the current block time
+	k.IterateSessionsForInactiveAt(ctx, ctx.BlockTime(), func(_ int, item v3.Session) bool {
+		// Skip the session if its status is not active
+		if !item.GetStatus().Equal(v1base.StatusActive) {
 			return false
 		}
 
-		// If the session's status is not active, we need to end the session and perform necessary cleanup.
+		k.Logger(ctx).Info("Handling inactive pending session", "id", item.GetID())
 
-		// Get the account address and node address associated with the session.
-		var (
-			accAddr  = item.GetAddress()
-			nodeAddr = item.GetNodeAddress()
-		)
+		// Create a message to cancel the inactive pending session
+		msg := &v3.MsgCancelSessionRequest{
+			From: item.GetAccAddress(),
+			ID:   item.GetID(),
+		}
 
-		// Call the SessionInactiveHook method of the subscription handler to notify the subscription
-		// module that the session has ended. The method handles the necessary logic for payments
-		// or other actions related to the session's termination.
-		if err := k.subscription.SessionInactiveHook(ctx, item.ID, accAddr, nodeAddr, item.Bandwidth.Sum()); err != nil {
-			// If an error occurs during the hook execution, panic to halt the chain.
-			// This is done to prevent any inconsistencies or unexpected behavior.
+		// Get the appropriate handler for processing the cancel session message
+		handler := k.router.Handler(msg)
+		if handler == nil {
+			panic(fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg)))
+		}
+
+		// Execute the handler to process the session cancel request
+		resp, err := handler(ctx, msg)
+		if err != nil {
 			panic(err)
 		}
 
-		// Perform cleanup by deleting the session and its references from the store.
-		k.DeleteSession(ctx, item.ID)
-		k.DeleteSessionForAccount(ctx, accAddr, item.ID)
-		k.DeleteSessionForNode(ctx, nodeAddr, item.ID)
-		k.DeleteSessionForSubscription(ctx, item.SubscriptionID, item.ID)
-		k.DeleteSessionForAllocation(ctx, item.SubscriptionID, accAddr, item.ID)
+		// Emit any events generated during the cancel process
+		ctx.EventManager().EmitEvents(resp.GetEvents())
 
-		// Emit an event to notify that the session has been terminated.
+		return false
+	})
+}
+
+// handleInactiveSessions processes sessions that are in the inactive pending state.
+func (k *Keeper) handleInactiveSessions(ctx sdk.Context) {
+	// Iterate through sessions that are inactive pending at the current block time
+	k.IterateSessionsForInactiveAt(ctx, ctx.BlockTime(), func(_ int, item v3.Session) bool {
+		// Skip the session if its status is not inactive pending
+		if !item.GetStatus().Equal(v1base.StatusInactivePending) {
+			return false
+		}
+
+		k.Logger(ctx).Info("Handling inactive session", "id", item.GetID())
+
+		// Perform pre-hook processing for sessions that are transitioning to inactive
+		if err := k.SessionInactivePreHook(ctx, item.GetID()); err != nil {
+			panic(err)
+		}
+
+		// Convert account address and node address from Bech32 format.
+		accAddr, err := sdk.AccAddressFromBech32(item.GetAccAddress())
+		if err != nil {
+			panic(err)
+		}
+
+		nodeAddr, err := base.NodeAddressFromBech32(item.GetNodeAddress())
+		if err != nil {
+			panic(err)
+		}
+
+		// Delete the session from the inactive queue and associated records.
+		k.DeleteSession(ctx, item.GetID())
+		k.DeleteSessionForAccount(ctx, accAddr, item.GetID())
+		k.DeleteSessionForNode(ctx, nodeAddr, item.GetID())
+		k.DeleteSessionForInactiveAt(ctx, item.GetInactiveAt(), item.GetID())
+
+		// Emit an event indicating the update of the session status to inactive
 		ctx.EventManager().EmitTypedEvent(
-			&types.EventUpdateStatus{
-				Status:         hubtypes.StatusInactive,
-				Address:        item.Address,
-				NodeAddress:    item.NodeAddress,
-				ID:             item.ID,
-				PlanID:         0,
-				SubscriptionID: item.SubscriptionID,
+			&v3.EventEnd{
+				SessionID:   item.GetID(),
+				AccAddress:  item.GetAccAddress(),
+				NodeAddress: item.GetNodeAddress(),
 			},
 		)
 
-		// Continue the iteration to handle the next session.
 		return false
 	})
+}
 
-	// The function always returns nil for ValidatorUpdate slice.
-	return nil
+// BeginBlock is called at the beginning of each block to handle session-related operations.
+func (k *Keeper) BeginBlock(ctx sdk.Context) {
+	// Handle inactive pending sessions at the beginning of each block
+	k.handleInactivePendingSessions(ctx)
+
+	// Handle sessions that have become inactive at the beginning of each block
+	k.handleInactiveSessions(ctx)
 }

@@ -1,32 +1,92 @@
-// DO NOT COVER
-
 package types
 
 import (
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "cosmossdk.io/errors"
+
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+)
+
+const (
+	_ = 100 + iota
+	ErrCodeDuplicateNodeForPlan
+	ErrCodeInvalidMessage
+	ErrCodeInvalidNodeStatus
+	ErrCodeInvalidProviderStatus
+	ErrCodeLeaseForNodeByProviderNotFound
+	ErrCodeLeaseNotFound
+	ErrCodeNodeForPlanNotFound
+	ErrCodeNodeNotFound
+	ErrCodePlanNotFound
+	ErrCodeProviderNotFound
+	ErrCodeUnauthorized
 )
 
 var (
-	ErrorInvalidMessage = errors.Register(ModuleName, 101, "invalid message")
-
-	ErrorNodeNotFound     = errors.Register(ModuleName, 201, "node not found")
-	ErrorPlanNotFound     = errors.Register(ModuleName, 202, "plan not found")
-	ErrorProviderNotFound = errors.Register(ModuleName, 203, "provider not found")
-	ErrorUnauthorized     = errors.Register(ModuleName, 204, "unauthorised")
+	ErrDuplicateNodeForPlan           = sdkerrors.Register(ModuleName, ErrCodeDuplicateNodeForPlan, "duplicate node for plan")
+	ErrInvalidMessage                 = sdkerrors.Register(ModuleName, ErrCodeInvalidMessage, "invalid message")
+	ErrInvalidNodeStatus              = sdkerrors.Register(ModuleName, ErrCodeInvalidNodeStatus, "invalid node status")
+	ErrInvalidProviderStatus          = sdkerrors.Register(ModuleName, ErrCodeInvalidProviderStatus, "invalid provider status")
+	ErrLeaseForNodeByProviderNotFound = sdkerrors.Register(ModuleName, ErrCodeLeaseForNodeByProviderNotFound, "lease for node by provider not found")
+	ErrLeaseNotFound                  = sdkerrors.Register(ModuleName, ErrCodeLeaseNotFound, "lease not found")
+	ErrNodeForPlanNotFound            = sdkerrors.Register(ModuleName, ErrCodeNodeForPlanNotFound, "node for plan not found")
+	ErrNodeNotFound                   = sdkerrors.Register(ModuleName, ErrCodeNodeNotFound, "node not found")
+	ErrPlanNotFound                   = sdkerrors.Register(ModuleName, ErrCodePlanNotFound, "plan not found")
+	ErrProviderNotFound               = sdkerrors.Register(ModuleName, ErrCodeProviderNotFound, "provider not found")
+	ErrUnauthorized                   = sdkerrors.Register(ModuleName, ErrCodeUnauthorized, "unauthorized")
 )
 
-func NewErrorNodeNotFound(addr interface{}) error {
-	return errors.Wrapf(ErrorNodeNotFound, "node %s does not exist", addr)
+// NewErrorDuplicateNodeForPlan returns an error indicating that a node already exists for the specified plan.
+func NewErrorDuplicateNodeForPlan(id uint64, addr base.NodeAddress) error {
+	return sdkerrors.Wrapf(ErrDuplicateNodeForPlan, "node %s for plan %d already exists", addr, id)
 }
 
+// NewErrorInvalidMessage returns an error indicating that the provided message is invalid.
+func NewErrorInvalidMessage(desc interface{}) error {
+	return sdkerrors.Wrapf(ErrInvalidMessage, "%v", desc)
+}
+
+// NewErrorInvalidNodeStatus returns an error indicating that the provided status is invalid for the given node.
+func NewErrorInvalidNodeStatus(addr base.NodeAddress, status v1base.Status) error {
+	return sdkerrors.Wrapf(ErrInvalidNodeStatus, "invalid status %s for node %s", status, addr)
+}
+
+// NewErrorInvalidProviderStatus returns an error indicating that the provided status is invalid for the given provider.
+func NewErrorInvalidProviderStatus(addr base.ProvAddress, status v1base.Status) error {
+	return sdkerrors.Wrapf(ErrInvalidProviderStatus, "invalid status %s for provider %s", status, addr)
+}
+
+// NewErrorLeaseForNodeByProviderNotFound returns an error indicating that the specified lease does not exist.
+func NewErrorLeaseForNodeByProviderNotFound(nodeAddr base.NodeAddress, provAddr base.ProvAddress) error {
+	return sdkerrors.Wrapf(ErrLeaseForNodeByProviderNotFound, "lease for node %s by provider %s does not exist", nodeAddr, provAddr)
+}
+
+// NewErrorLeaseNotFound returns an error indicating that the specified lease does not exist.
+func NewErrorLeaseNotFound(id uint64) error {
+	return sdkerrors.Wrapf(ErrLeaseNotFound, "lease %d does not exist", id)
+}
+
+// NewErrorNodeForPlanNotFound returns an error indicating that the specified node does not exist for the plan.
+func NewErrorNodeForPlanNotFound(id uint64, addr base.NodeAddress) error {
+	return sdkerrors.Wrapf(ErrNodeForPlanNotFound, "node %s for plan %d does not exist", addr, id)
+}
+
+// NewErrorNodeNotFound returns an error indicating that the specified node does not exist.
+func NewErrorNodeNotFound(addr base.NodeAddress) error {
+	return sdkerrors.Wrapf(ErrNodeNotFound, "node %s does not exist", addr)
+}
+
+// NewErrorPlanNotFound returns an error indicating that the specified plan does not exist.
 func NewErrorPlanNotFound(id uint64) error {
-	return errors.Wrapf(ErrorPlanNotFound, "plan %d does not exist", id)
+	return sdkerrors.Wrapf(ErrPlanNotFound, "plan %d does not exist", id)
 }
 
-func NewErrorProviderNotFound(addr interface{}) error {
-	return errors.Wrapf(ErrorProviderNotFound, "provider %s does not exist", addr)
+// NewErrorProviderNotFound returns an error indicating that the specified provider does not exist.
+func NewErrorProviderNotFound(addr base.ProvAddress) error {
+	return sdkerrors.Wrapf(ErrProviderNotFound, "provider %s does not exist", addr)
 }
 
-func NewErrorUnauthorized(addr interface{}) error {
-	return errors.Wrapf(ErrorUnauthorized, "address %s is not authorized", addr)
+// NewErrorUnauthorized returns an error indicating that the specified address is not authorized.
+func NewErrorUnauthorized(addr string) error {
+	return sdkerrors.Wrapf(ErrUnauthorized, "address %s is not authorized", addr)
 }

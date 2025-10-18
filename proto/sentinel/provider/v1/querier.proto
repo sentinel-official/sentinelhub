@@ -1,0 +1,47 @@
+syntax = "proto3";
+package sentinel.provider.v1;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "sentinel/provider/v1/params.proto";
+import "sentinel/provider/v1/provider.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message QueryProvidersRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryProviderRequest {
+  string address = 1;
+}
+
+message QueryParamsRequest {}
+
+message QueryProvidersResponse {
+  repeated Provider providers = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryProviderResponse {
+  Provider provider = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+service QueryService {
+  rpc QueryProviders(QueryProvidersRequest) returns (QueryProvidersResponse) {
+    option (google.api.http).get = "/sentinel/provider/v1/providers";
+  }
+  rpc QueryProvider(QueryProviderRequest) returns (QueryProviderResponse) {
+    option (google.api.http).get = "/sentinel/provider/v1/providers/{address}";
+  }
+  rpc QueryParams(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sentinel/provider/v1/params";
+  }
+}

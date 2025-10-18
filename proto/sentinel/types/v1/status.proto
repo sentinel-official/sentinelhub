@@ -1,19 +1,16 @@
 syntax = "proto3";
 package sentinel.types.v1;
 
-option go_package = "github.com/sentinel-official/hub/types";
-
 import "gogoproto/gogo.proto";
 
-option (gogoproto.goproto_getters_all)       = false;
-option (gogoproto.goproto_enum_prefix_all)   = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/types/v1";
+option (gogoproto.goproto_enum_prefix_all) = false;
 option (gogoproto.goproto_enum_stringer_all) = false;
+option (gogoproto.goproto_getters_all) = false;
 
 enum Status {
-  STATUS_UNSPECIFIED = 0
-      [ (gogoproto.enumvalue_customname) = "StatusUnspecified" ];
-  STATUS_ACTIVE = 1 [ (gogoproto.enumvalue_customname) = "StatusActive" ];
-  STATUS_INACTIVE_PENDING = 2
-      [ (gogoproto.enumvalue_customname) = "StatusInactivePending" ];
-  STATUS_INACTIVE = 3 [ (gogoproto.enumvalue_customname) = "StatusInactive" ];
+  STATUS_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "StatusUnspecified"];
+  STATUS_ACTIVE = 1 [(gogoproto.enumvalue_customname) = "StatusActive"];
+  STATUS_INACTIVE_PENDING = 2 [(gogoproto.enumvalue_customname) = "StatusInactivePending"];
+  STATUS_INACTIVE = 3 [(gogoproto.enumvalue_customname) = "StatusInactive"];
 }

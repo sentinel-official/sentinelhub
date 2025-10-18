@@ -1,0 +1,30 @@
+syntax = "proto3";
+package sentinel.session.v3;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message EventEnd {
+  uint64 session_id = 1 [(gogoproto.customname) = "SessionID"];
+  string acc_address = 2;
+  string node_address = 3;
+}
+
+message EventUpdateDetails {
+  uint64 session_id = 1 [(gogoproto.customname) = "SessionID"];
+  string acc_address = 2;
+  string node_address = 3;
+  string download_bytes = 4;
+  string upload_bytes = 5;
+  string duration = 6;
+}
+
+message EventUpdateStatus {
+  uint64 session_id = 1 [(gogoproto.customname) = "SessionID"];
+  string acc_address = 2;
+  string node_address = 3;
+  string status = 4;
+}

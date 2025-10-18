@@ -1,0 +1,83 @@
+syntax = "proto3";
+package sentinel.subscription.v3;
+
+import "gogoproto/gogo.proto";
+import "sentinel/subscription/v3/params.proto";
+import "sentinel/types/v1/renewal.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message MsgCancelSubscriptionRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+}
+
+message MsgRenewSubscriptionRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+  string denom = 3;
+}
+
+message MsgShareSubscriptionRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+  string acc_address = 3;
+  string bytes = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgStartSubscriptionRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+  string denom = 3;
+  sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 4;
+}
+
+message MsgUpdateSubscriptionRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+  sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 3;
+}
+
+message MsgStartSessionRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+  string node_address = 3;
+}
+
+message MsgUpdateParamsRequest {
+  string from = 1;
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgCancelSubscriptionResponse {}
+
+message MsgRenewSubscriptionResponse {}
+
+message MsgShareSubscriptionResponse {}
+
+message MsgStartSubscriptionResponse {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+}
+
+message MsgUpdateSubscriptionResponse {}
+
+message MsgStartSessionResponse {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+}
+
+message MsgUpdateParamsResponse {}
+
+service MsgService {
+  rpc MsgCancelSubscription(MsgCancelSubscriptionRequest) returns (MsgCancelSubscriptionResponse);
+  rpc MsgRenewSubscription(MsgRenewSubscriptionRequest) returns (MsgRenewSubscriptionResponse);
+  rpc MsgShareSubscription(MsgShareSubscriptionRequest) returns (MsgShareSubscriptionResponse);
+  rpc MsgStartSubscription(MsgStartSubscriptionRequest) returns (MsgStartSubscriptionResponse);
+  rpc MsgUpdateSubscription(MsgUpdateSubscriptionRequest) returns (MsgUpdateSubscriptionResponse);
+  rpc MsgStartSession(MsgStartSessionRequest) returns (MsgStartSessionResponse);
+  rpc MsgUpdateParams(MsgUpdateParamsRequest) returns (MsgUpdateParamsResponse);
+}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"os"
 	"path"
@@ -8,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	servercmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
-	hubtypes "github.com/sentinel-official/hub/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
 )
 
 func HomeDir() (string, error) {
@@ -18,11 +19,12 @@ func HomeDir() (string, error) {
 	}
 
 	dir = path.Join(dir, ".sentinelhub")
+
 	return dir, nil
 }
 
 func main() {
-	cfg := hubtypes.GetConfig()
+	cfg := base.GetConfig()
 	cfg.Seal()
 
 	homeDir, err := HomeDir()
@@ -31,9 +33,10 @@ func main() {
 	}
 
 	cmd := NewRootCmd(homeDir)
-	if err = servercmd.Execute(cmd, homeDir); err != nil {
-		switch e := err.(type) {
-		case server.ErrorCode:
+	if err = servercmd.Execute(cmd, "SENTINELHUB", homeDir); err != nil {
+		var e server.ErrorCode
+		switch {
+		case errors.As(err, &e):
 			os.Exit(e.Code)
 		default:
 			os.Exit(1)

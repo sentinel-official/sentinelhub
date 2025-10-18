@@ -1,0 +1,62 @@
+syntax = "proto3";
+package sentinel.session.v1;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "sentinel/session/v1/params.proto";
+import "sentinel/session/v1/session.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message QuerySessionsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QuerySessionsForAddressRequest {
+  string address = 1;
+  sentinel.types.v1.Status status = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+message QuerySessionRequest {
+  uint64 id = 1;
+}
+
+message QueryParamsRequest {}
+
+message QuerySessionsResponse {
+  repeated Session sessions = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySessionsForAddressResponse {
+  repeated Session sessions = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySessionResponse {
+  Session session = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+service QueryService {
+  rpc QuerySessions(QuerySessionsRequest) returns (QuerySessionsResponse) {
+    option (google.api.http).get = "/sentinel/session/v1/sessions";
+  }
+  rpc QuerySessionsForAddress(QuerySessionsForAddressRequest) returns (QuerySessionsForAddressResponse) {
+    option (google.api.http).get = "/sentinel/session/v1/accounts/{address}/sessions";
+  }
+  rpc QuerySession(QuerySessionRequest) returns (QuerySessionResponse) {
+    option (google.api.http).get = "/sentinel/session/v1/sessions/{id}";
+  }
+  rpc QueryParams(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sentinel/session/v1/params";
+  }
+}

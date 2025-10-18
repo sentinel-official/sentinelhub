@@ -1,24 +1,22 @@
-// DO NOT COVER
-
 package cli
 
 import (
 	"strconv"
 	"time"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	hubtypes "github.com/sentinel-official/hub/types"
-	"github.com/sentinel-official/hub/x/session/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
 )
 
-func txStart() *cobra.Command {
+func txCancelSession() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "start [node-addr]",
-		Short: "Start a session",
+		Use:   "cancel-session [id]",
+		Short: "Cancel an active session",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
@@ -26,20 +24,14 @@ func txStart() *cobra.Command {
 				return err
 			}
 
-			id, err := cmd.Flags().GetUint64(flagSubscriptionID)
+			id, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
 
-			addr, err := hubtypes.NodeAddressFromBech32(args[0])
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgStartRequest(
-				ctx.FromAddress,
+			msg := v3.NewMsgCancelSessionRequest(
+				ctx.FromAddress.Bytes(),
 				id,
-				addr,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -50,15 +42,14 @@ func txStart() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().Uint64(flagSubscriptionID, 0, "")
 
 	return cmd
 }
 
-func txUpdateDetails() *cobra.Command {
+func txUpdateSession() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update [session-id] [upload] [download] [duration]",
-		Short: "Update the session details",
+		Use:   "update-session [id] [download-bytes] [upload-bytes] [duration]",
+		Short: "Update the details of an existing session",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
@@ -71,12 +62,12 @@ func txUpdateDetails() *cobra.Command {
 				return err
 			}
 
-			upload, err := strconv.ParseInt(args[1], 10, 64)
+			downloadBytes, err := strconv.ParseInt(args[1], 10, 64)
 			if err != nil {
 				return err
 			}
 
-			download, err := strconv.ParseInt(args[2], 10, 64)
+			uploadBytes, err := strconv.ParseInt(args[2], 10, 64)
 			if err != nil {
 				return err
 			}
@@ -91,13 +82,12 @@ func txUpdateDetails() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgUpdateDetailsRequest(
+			msg := v3.NewMsgUpdateSessionRequest(
 				ctx.FromAddress.Bytes(),
-				types.Proof{
-					ID:        id,
-					Duration:  duration,
-					Bandwidth: hubtypes.NewBandwidthFromInt64(upload, download),
-				},
+				id,
+				sdkmath.NewInt(downloadBytes),
+				sdkmath.NewInt(uploadBytes),
+				duration,
 				signature,
 			)
 			if err = msg.ValidateBasic(); err != nil {
@@ -109,47 +99,7 @@ func txUpdateDetails() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(flagSignature, "", "client signature of the bandwidth info")
-
-	return cmd
-}
-
-func txEnd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "end [session-id]",
-		Short: "End a session",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			id, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return err
-			}
-
-			rating, err := cmd.Flags().GetUint64(flagRating)
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgEndRequest(
-				ctx.FromAddress,
-				id,
-				rating,
-			)
-			if err = msg.ValidateBasic(); err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(ctx, cmd.Flags(), msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().Uint64(flagRating, 0, "rate the session quality [0, 10]")
+	cmd.Flags().String(flagSignature, "", "Provide the Base64-encoded client signature to authorize")
 
 	return cmd
 }

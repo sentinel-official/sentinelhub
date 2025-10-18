@@ -1,22 +1,20 @@
-// DO NOT COVER
-
 package cli
 
 import (
-	"context"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/sentinel-official/hub/x/plan/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
 )
 
 func queryPlan() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "plan [id]",
-		Short: "Query a plan",
+		Short: "Query a plan by ID",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientQueryContext(cmd)
@@ -29,15 +27,11 @@ func queryPlan() *cobra.Command {
 				return err
 			}
 
-			var (
-				qc = types.NewQueryServiceClient(ctx)
-			)
+			qc := v3.NewQueryServiceClient(ctx)
 
 			res, err := qc.QueryPlan(
-				context.Background(),
-				types.NewQueryPlanRequest(
-					id,
-				),
+				cmd.Context(),
+				v3.NewQueryPlanRequest(id),
 			)
 			if err != nil {
 				return err
@@ -55,19 +49,19 @@ func queryPlan() *cobra.Command {
 func queryPlans() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "plans",
-		Short: "Query plans",
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
+		Short: "Query all plans with optional filters and pagination",
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			provAddr, err := GetProvider(cmd.Flags())
+			provAddr, err := base.ProvAddrFromFlags(cmd.Flags())
 			if err != nil {
 				return err
 			}
 
-			status, err := GetStatus(cmd.Flags())
+			status, err := base.StatusFromFlags(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -77,18 +71,12 @@ func queryPlans() *cobra.Command {
 				return err
 			}
 
-			var (
-				qc = types.NewQueryServiceClient(ctx)
-			)
+			qc := v3.NewQueryServiceClient(ctx)
 
 			if provAddr != nil {
 				res, err := qc.QueryPlansForProvider(
-					context.Background(),
-					types.NewQueryPlansForProviderRequest(
-						provAddr,
-						status,
-						pagination,
-					),
+					cmd.Context(),
+					v3.NewQueryPlansForProviderRequest(provAddr, status, pagination),
 				)
 				if err != nil {
 					return err
@@ -98,11 +86,8 @@ func queryPlans() *cobra.Command {
 			}
 
 			res, err := qc.QueryPlans(
-				context.Background(),
-				types.NewQueryPlansRequest(
-					status,
-					pagination,
-				),
+				cmd.Context(),
+				v3.NewQueryPlansRequest(status, pagination),
 			)
 			if err != nil {
 				return err
@@ -114,8 +99,8 @@ func queryPlans() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "plans")
-	cmd.Flags().String(flagProvider, "", "filter the plans by provider address")
-	cmd.Flags().String(flagStatus, "", "filter the plans by status (active|inactive)")
+	cmd.Flags().String(base.FlagStatus, "", "filter the plans by status (active|inactive)")
+	cmd.Flags().String(base.FlagProvAddr, "", "filter the plans by provider address")
 
 	return cmd
 }

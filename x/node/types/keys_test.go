@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/address"
+	sdkaddress "github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/stretchr/testify/require"
 
-	hubtypes "github.com/sentinel-official/hub/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
 )
 
 func TestActiveNodeKey(t *testing.T) {
@@ -23,7 +23,7 @@ func TestActiveNodeKey(t *testing.T) {
 		if i < 256 {
 			require.Equal(
 				t,
-				append(ActiveNodeKeyPrefix, address.MustLengthPrefix(addr)...),
+				append(ActiveNodeKeyPrefix, sdkaddress.MustLengthPrefix(addr)...),
 				ActiveNodeKey(addr),
 			)
 
@@ -46,10 +46,10 @@ func TestAddressFromNodeForInactiveAtKey(t *testing.T) {
 		addr = make([]byte, i)
 		_, _ = rand.Read(addr)
 
-		key = NodeForInactiveAtKey(hubtypes.TestTimeNow, addr)
+		key = NodeForInactiveAtKey(base.TestTimeNow, addr)
 		require.Equal(
 			t,
-			hubtypes.NodeAddress(addr),
+			base.NodeAddress(addr),
 			AddressFromNodeForInactiveAtKey(key),
 		)
 	}
@@ -68,7 +68,7 @@ func TestAddressFromNodeForPlanKey(t *testing.T) {
 		key = NodeForPlanKey(uint64(i), addr)
 		require.Equal(
 			t,
-			hubtypes.NodeAddress(addr),
+			base.NodeAddress(addr),
 			AddressFromNodeForPlanKey(key),
 		)
 	}
@@ -86,7 +86,7 @@ func TestInactiveNodeKey(t *testing.T) {
 		if i < 256 {
 			require.Equal(
 				t,
-				append(InactiveNodeKeyPrefix, address.MustLengthPrefix(addr)...),
+				append(InactiveNodeKeyPrefix, sdkaddress.MustLengthPrefix(addr)...),
 				InactiveNodeKey(addr),
 			)
 
@@ -111,15 +111,15 @@ func TestNodeForInactiveAtKey(t *testing.T) {
 		if i < 256 {
 			require.Equal(
 				t,
-				append(append(NodeForInactiveAtKeyPrefix, sdk.FormatTimeBytes(hubtypes.TestTimeNow)...), address.MustLengthPrefix(addr)...),
-				NodeForInactiveAtKey(hubtypes.TestTimeNow, addr),
+				append(append(NodeForInactiveAtKeyPrefix, sdk.FormatTimeBytes(base.TestTimeNow)...), sdkaddress.MustLengthPrefix(addr)...),
+				NodeForInactiveAtKey(base.TestTimeNow, addr),
 			)
 
 			continue
 		}
 
 		require.Panics(t, func() {
-			NodeForInactiveAtKey(hubtypes.TestTimeNow, addr)
+			NodeForInactiveAtKey(base.TestTimeNow, addr)
 		})
 	}
 }
@@ -138,7 +138,7 @@ func TestNodeForPlanKey(t *testing.T) {
 		if i < 256 {
 			require.Equal(
 				t,
-				append(append(NodeForPlanKeyPrefix, sdk.Uint64ToBigEndian(id)...), address.MustLengthPrefix(addr)...),
+				append(append(NodeForPlanKeyPrefix, sdk.Uint64ToBigEndian(id)...), sdkaddress.MustLengthPrefix(addr)...),
 				NodeForPlanKey(id, addr),
 			)
 

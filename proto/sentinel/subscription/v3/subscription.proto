@@ -1,0 +1,33 @@
+syntax = "proto3";
+package sentinel.subscription.v3;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "sentinel/types/v1/price.proto";
+import "sentinel/types/v1/renewal.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Subscription {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string acc_address = 2;
+  uint64 plan_id = 3 [(gogoproto.customname) = "PlanID"];
+  sentinel.types.v1.Price price = 4 [(gogoproto.nullable) = false];
+  sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 5;
+  sentinel.types.v1.Status status = 6;
+  google.protobuf.Timestamp inactive_at = 7 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Timestamp start_at = 8 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Timestamp status_at = 9 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+}

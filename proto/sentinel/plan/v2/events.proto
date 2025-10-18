@@ -4,46 +4,54 @@ package sentinel.plan.v2;
 import "gogoproto/gogo.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package            = "github.com/sentinel-official/hub/x/plan/types";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v2";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message EventCreate {
-  string address = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  uint64 id      = 2
-      [ (gogoproto.customname) = "ID", (gogoproto.moretags) = "yaml:\"id\"" ];
-}
-
-message EventUpdateStatus {
-  sentinel.types.v1.Status status = 1
-      [ (gogoproto.moretags) = "yaml:\"status\"" ];
-  string address = 2 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  uint64 id      = 3
-      [ (gogoproto.customname) = "ID", (gogoproto.moretags) = "yaml:\"id\"" ];
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
+  uint64 id = 2 [
+    (gogoproto.customname) = "ID",
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
 }
 
 message EventLinkNode {
-  string address      = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  string node_address = 2 [ (gogoproto.moretags) = "yaml:\"node_address\"" ];
-  uint64 id           = 3
-      [ (gogoproto.customname) = "ID", (gogoproto.moretags) = "yaml:\"id\"" ];
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
+  string node_address = 2 [(gogoproto.moretags) = "yaml:\"node_address\""];
+  uint64 id = 3 [
+    (gogoproto.customname) = "ID",
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
 }
 
 message EventUnlinkNode {
-  string address      = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  string node_address = 2 [ (gogoproto.moretags) = "yaml:\"node_address\"" ];
-  uint64 id           = 3
-      [ (gogoproto.customname) = "ID", (gogoproto.moretags) = "yaml:\"id\"" ];
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
+  string node_address = 2 [(gogoproto.moretags) = "yaml:\"node_address\""];
+  uint64 id = 3 [
+    (gogoproto.customname) = "ID",
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
+}
+
+message EventUpdateStatus {
+  sentinel.types.v1.Status status = 1 [(gogoproto.moretags) = "yaml:\"status\""];
+  string address = 2 [(gogoproto.moretags) = "yaml:\"address\""];
+  uint64 id = 3 [
+    (gogoproto.customname) = "ID",
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
 }
 
 message EventCreateSubscription {
-  string address          = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  string provider_address = 2
-      [ (gogoproto.moretags) = "yaml:\"provider_address\"" ];
-  uint64 id = 3
-      [ (gogoproto.customname) = "ID", (gogoproto.moretags) = "yaml:\"id\"" ];
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
+  string provider_address = 2 [(gogoproto.moretags) = "yaml:\"provider_address\""];
+  uint64 id = 3 [
+    (gogoproto.customname) = "ID",
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
   uint64 plan_id = 4 [
     (gogoproto.customname) = "PlanID",
-    (gogoproto.moretags)   = "yaml:\"plan_id\""
+    (gogoproto.moretags) = "yaml:\"plan_id\""
   ];
 }

@@ -1,0 +1,39 @@
+syntax = "proto3";
+package sentinel.session.v1;
+
+import "gogoproto/gogo.proto";
+import "sentinel/session/v1/proof.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message MsgEndRequest {
+  string from = 1;
+  uint64 id = 2;
+  uint64 rating = 3;
+}
+
+message MsgStartRequest {
+  string from = 1;
+  uint64 id = 2;
+  string node = 3;
+}
+
+message MsgUpdateRequest {
+  string from = 1;
+  Proof proof = 2 [(gogoproto.nullable) = false];
+  bytes signature = 3;
+}
+
+message MsgEndResponse {}
+
+message MsgStartResponse {}
+
+message MsgUpdateResponse {}
+
+service MsgService {
+  rpc MsgStart(MsgStartRequest) returns (MsgStartResponse);
+  rpc MsgUpdate(MsgUpdateRequest) returns (MsgUpdateResponse);
+  rpc MsgEnd(MsgEndRequest) returns (MsgEndResponse);
+}

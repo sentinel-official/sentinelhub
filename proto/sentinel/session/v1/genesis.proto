@@ -1,0 +1,18 @@
+syntax = "proto3";
+package sentinel.session.v1;
+
+import "gogoproto/gogo.proto";
+import "sentinel/session/v1/params.proto";
+import "sentinel/session/v1/session.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message GenesisState {
+  repeated Session sessions = 1 [
+    (gogoproto.jsontag) = "_,omitempty",
+    (gogoproto.nullable) = false
+  ];
+  Params params = 2 [(gogoproto.nullable) = false];
+}

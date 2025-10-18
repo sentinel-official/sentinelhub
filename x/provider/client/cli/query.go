@@ -1,22 +1,19 @@
-// DO NOT COVER
-
 package cli
 
 import (
-	"context"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	hubtypes "github.com/sentinel-official/hub/types"
-	"github.com/sentinel-official/hub/x/provider/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v3"
 )
 
 func queryProvider() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "provider [provider-addr]",
-		Short: "Query a provider",
+		Use:   "provider [prov-addr]",
+		Short: "Query a provider by address",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientQueryContext(cmd)
@@ -24,20 +21,16 @@ func queryProvider() *cobra.Command {
 				return err
 			}
 
-			addr, err := hubtypes.ProvAddressFromBech32(args[0])
+			addr, err := base.ProvAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
 
-			var (
-				qc = types.NewQueryServiceClient(ctx)
-			)
+			qc := v2.NewQueryServiceClient(ctx)
 
 			res, err := qc.QueryProvider(
-				context.Background(),
-				types.NewQueryProviderRequest(
-					addr,
-				),
+				cmd.Context(),
+				v2.NewQueryProviderRequest(addr),
 			)
 			if err != nil {
 				return err
@@ -55,14 +48,14 @@ func queryProvider() *cobra.Command {
 func queryProviders() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "providers",
-		Short: "Query providers",
+		Short: "Query all providers with optional filters and pagination",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			status, err := hubtypes.StatusFromFlags(cmd.Flags())
+			status, err := base.StatusFromFlags(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -72,18 +65,12 @@ func queryProviders() *cobra.Command {
 				return err
 			}
 
-			var (
-				qc = types.NewQueryServiceClient(ctx)
-			)
+			qc := v2.NewQueryServiceClient(ctx)
 
 			res, err := qc.QueryProviders(
-				context.Background(),
-				types.NewQueryProvidersRequest(
-					status,
-					pagination,
-				),
+				cmd.Context(),
+				v2.NewQueryProvidersRequest(status, pagination),
 			)
-
 			if err != nil {
 				return err
 			}
@@ -94,7 +81,7 @@ func queryProviders() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "providers")
-	cmd.Flags().String(hubtypes.FlagStatus, "", "filter the providers by status (active|inactive)")
+	cmd.Flags().String(base.FlagStatus, "", "filter the providers by status (active|inactive)")
 
 	return cmd
 }
@@ -102,20 +89,18 @@ func queryProviders() *cobra.Command {
 func queryParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "provider-params",
-		Short: "Query provider module parameters",
+		Short: "Query the provider module parameters",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			var (
-				qc = types.NewQueryServiceClient(ctx)
-			)
+			qc := v3.NewQueryServiceClient(ctx)
 
 			res, err := qc.QueryParams(
-				context.Background(),
-				types.NewQueryParamsRequest(),
+				cmd.Context(),
+				v3.NewQueryParamsRequest(),
 			)
 			if err != nil {
 				return err

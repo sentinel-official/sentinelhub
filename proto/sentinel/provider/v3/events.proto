@@ -1,0 +1,29 @@
+syntax = "proto3";
+package sentinel.provider.v3;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message EventCreate {
+  string prov_address = 1;
+  string name = 2;
+  string identity = 3;
+  string website = 4;
+  string description = 5;
+}
+
+message EventUpdateDetails {
+  string prov_address = 1;
+  string name = 2;
+  string identity = 3;
+  string website = 4;
+  string description = 5;
+}
+
+message EventUpdateStatus {
+  string prov_address = 1;
+  string status = 2;
+}

@@ -3,10 +3,11 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/swap/types/v1"
 )
 
-func (k *Keeper) SetSwap(ctx sdk.Context, swap types.Swap) {
+func (k *Keeper) SetSwap(ctx sdk.Context, swap v1.Swap) {
 	key := types.SwapKey(swap.GetTxHash())
 	value := k.cdc.MustMarshal(&swap)
 
@@ -14,16 +15,18 @@ func (k *Keeper) SetSwap(ctx sdk.Context, swap types.Swap) {
 	store.Set(key, value)
 }
 
-func (k *Keeper) GetSwap(ctx sdk.Context, txHash types.EthereumHash) (swap types.Swap, found bool) {
+func (k *Keeper) GetSwap(ctx sdk.Context, txHash types.EthereumHash) (swap v1.Swap, found bool) {
 	store := k.Store(ctx)
 
 	key := types.SwapKey(txHash)
+
 	value := store.Get(key)
 	if value == nil {
 		return swap, false
 	}
 
 	k.cdc.MustUnmarshal(value, &swap)
+
 	return swap, true
 }
 
@@ -31,20 +34,21 @@ func (k *Keeper) HasSwap(ctx sdk.Context, txHash types.EthereumHash) bool {
 	key := types.SwapKey(txHash)
 
 	store := k.Store(ctx)
+
 	return store.Has(key)
 }
 
-func (k *Keeper) GetSwaps(ctx sdk.Context) (items types.Swaps) {
+func (k *Keeper) GetSwaps(ctx sdk.Context) (items v1.Swaps) {
 	var (
-		store = k.Store(ctx)
-		iter  = sdk.KVStorePrefixIterator(store, types.SwapKeyPrefix)
+		store    = k.Store(ctx)
+		iterator = sdk.KVStorePrefixIterator(store, types.SwapKeyPrefix)
 	)
 
-	defer iter.Close()
+	defer iterator.Close()
 
-	for ; iter.Valid(); iter.Next() {
-		var item types.Swap
-		k.cdc.MustUnmarshal(iter.Value(), &item)
+	for ; iterator.Valid(); iterator.Next() {
+		var item v1.Swap
+		k.cdc.MustUnmarshal(iterator.Value(), &item)
 		items = append(items, item)
 	}
 

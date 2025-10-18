@@ -1,20 +1,19 @@
 syntax = "proto3";
 package sentinel.types.v1;
 
-option go_package = "github.com/sentinel-official/hub/types";
-
 import "gogoproto/gogo.proto";
 
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/types/v1";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message Bandwidth {
   string upload = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable)   = false
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
   ];
   string download = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable)   = false
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
   ];
 }

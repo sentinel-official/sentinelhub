@@ -1,0 +1,32 @@
+syntax = "proto3";
+package sentinel.plan.v3;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "sentinel/types/v1/price.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Plan {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string prov_address = 2;
+  string bytes = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Duration duration = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true
+  ];
+  repeated sentinel.types.v1.Price prices = 5 [(gogoproto.nullable) = false];
+  bool private = 6;
+  sentinel.types.v1.Status status = 7;
+  google.protobuf.Timestamp status_at = 8 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+}

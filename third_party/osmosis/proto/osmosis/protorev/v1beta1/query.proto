@@ -1,0 +1,15 @@
+syntax = "proto3";
+package osmosis.protorev.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/protorev/types";
+
+message QueryGetProtoRevPoolRequest {
+  string base_denom = 1 [(gogoproto.moretags) = "yaml:\"base_denom\""];
+  string other_denom = 2 [(gogoproto.moretags) = "yaml:\"other_denom\""];
+}
+
+message QueryGetProtoRevPoolResponse {
+  uint64 pool_id = 1 [(gogoproto.moretags) = "yaml:\"pool_id\""];
+}

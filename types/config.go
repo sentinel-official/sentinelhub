@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	*sdk.Config
+
 	prefixes map[string]string
 	sealed   bool
 	mtx      sync.Mutex
@@ -56,12 +57,14 @@ func (c *Config) Seal() {
 
 func (c *Config) SetBech32PrefixForProvider(addr, pub string) {
 	c.assert()
+
 	config.prefixes["provider_addr"] = addr
 	config.prefixes["provider_pub"] = pub
 }
 
 func (c *Config) SetBech32PrefixForNode(addr, pub string) {
 	c.assert()
+
 	config.prefixes["node_addr"] = addr
 	config.prefixes["node_pub"] = pub
 }

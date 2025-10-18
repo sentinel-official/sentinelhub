@@ -1,0 +1,100 @@
+syntax = "proto3";
+package sentinel.session.v3;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/any.proto";
+import "sentinel/session/v3/params.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message QuerySessionsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QuerySessionsForAccountRequest {
+  string address = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QuerySessionsForAllocationRequest {
+  uint64 id = 1;
+  string address = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+message QuerySessionsForNodeRequest {
+  string address = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QuerySessionsForSubscriptionRequest {
+  uint64 id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QuerySessionRequest {
+  uint64 id = 1;
+}
+
+message QueryParamsRequest {}
+
+message QuerySessionsResponse {
+  repeated google.protobuf.Any sessions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySessionsForAccountResponse {
+  repeated google.protobuf.Any sessions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySessionsForAllocationResponse {
+  repeated google.protobuf.Any sessions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySessionsForNodeResponse {
+  repeated google.protobuf.Any sessions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySessionsForSubscriptionResponse {
+  repeated google.protobuf.Any sessions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySessionResponse {
+  google.protobuf.Any session = 1;
+}
+
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+service QueryService {
+  rpc QuerySessions(QuerySessionsRequest) returns (QuerySessionsResponse) {
+    option (google.api.http).get = "/sentinel/session/v3/sessions";
+  }
+  rpc QuerySessionsForAccount(QuerySessionsForAccountRequest) returns (QuerySessionsForAccountResponse) {
+    option (google.api.http).get = "/sentinel/session/v3/accounts/{address}/sessions";
+  }
+  rpc QuerySessionsForNode(QuerySessionsForNodeRequest) returns (QuerySessionsForNodeResponse) {
+    option (google.api.http).get = "/sentinel/session/v3/nodes/{address}/sessions";
+  }
+  rpc QuerySessionsForSubscription(QuerySessionsForSubscriptionRequest) returns (QuerySessionsForSubscriptionResponse) {
+    option (google.api.http).get = "/sentinel/session/v3/subscriptions/{id}/sessions";
+  }
+  rpc QuerySessionsForAllocation(QuerySessionsForAllocationRequest) returns (QuerySessionsForAllocationResponse) {
+    option (google.api.http).get = "/sentinel/session/v3/subscriptions/{id}/allocations/{address}/sessions";
+  }
+  rpc QuerySession(QuerySessionRequest) returns (QuerySessionResponse) {
+    option (google.api.http).get = "/sentinel/session/v3/sessions/{id}";
+  }
+  rpc QueryParams(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sentinel/session/v3/params";
+  }
+}

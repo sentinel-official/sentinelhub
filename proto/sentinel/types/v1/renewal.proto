@@ -1,0 +1,21 @@
+syntax = "proto3";
+package sentinel.types.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/types/v1";
+option (gogoproto.goproto_enum_prefix_all) = false;
+option (gogoproto.goproto_enum_stringer_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+// Enum for renewal price policies
+enum RenewalPricePolicy {
+  RENEWAL_PRICE_POLICY_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "RenewalPricePolicyUnspecified"]; // Default value, do not renew
+  RENEWAL_PRICE_POLICY_IF_LESSER = 1 [(gogoproto.enumvalue_customname) = "RenewalPricePolicyIfLesser"]; // Renew if the current price is lesser than the previous price
+  RENEWAL_PRICE_POLICY_IF_LESSER_OR_EQUAL = 2 [(gogoproto.enumvalue_customname) = "RenewalPricePolicyIfLesserOrEqual"]; // Renew if the current price is lesser than or equal to the previous price
+  RENEWAL_PRICE_POLICY_IF_EQUAL = 3 [(gogoproto.enumvalue_customname) = "RenewalPricePolicyIfEqual"]; // Renew if the current price is equal to the previous price
+  RENEWAL_PRICE_POLICY_IF_NOT_EQUAL = 4 [(gogoproto.enumvalue_customname) = "RenewalPricePolicyIfNotEqual"]; // Renew if the current price is not equal to the previous price
+  RENEWAL_PRICE_POLICY_IF_GREATER = 5 [(gogoproto.enumvalue_customname) = "RenewalPricePolicyIfGreater"]; // Renew if the current price is greater than the previous price
+  RENEWAL_PRICE_POLICY_IF_GREATER_OR_EQUAL = 6 [(gogoproto.enumvalue_customname) = "RenewalPricePolicyIfGreaterOrEqual"]; // Renew if the current price is greater than or equal to the previous price
+  RENEWAL_PRICE_POLICY_ALWAYS = 7 [(gogoproto.enumvalue_customname) = "RenewalPricePolicyAlways"]; // Always renew
+}

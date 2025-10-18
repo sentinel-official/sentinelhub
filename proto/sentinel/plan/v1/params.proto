@@ -1,0 +1,4 @@
+syntax = "proto3";
+package sentinel.plan.v1;
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v1";

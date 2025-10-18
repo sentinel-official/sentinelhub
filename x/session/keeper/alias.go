@@ -1,18 +1,11 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	hubtypes "github.com/sentinel-official/hub/types"
-	nodetypes "github.com/sentinel-official/hub/x/node/types"
-	plantypes "github.com/sentinel-official/hub/x/plan/types"
-	subscriptiontypes "github.com/sentinel-official/hub/x/subscription/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
 )
-
-func (k *Keeper) GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI {
-	return k.account.GetAccount(ctx, addr)
-}
 
 func (k *Keeper) SendCoinFromDepositToAccount(ctx sdk.Context, from, to sdk.AccAddress, coin sdk.Coin) error {
 	if coin.IsZero() {
@@ -30,30 +23,34 @@ func (k *Keeper) SendCoinFromDepositToModule(ctx sdk.Context, from sdk.AccAddres
 	return k.deposit.SendCoinsFromDepositToModule(ctx, from, to, sdk.NewCoins(coin))
 }
 
-func (k *Keeper) HasNodeForPlan(ctx sdk.Context, id uint64, addr hubtypes.NodeAddress) bool {
-	return k.node.HasNodeForPlan(ctx, id, addr)
+func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
+	if err := k.node.SessionInactivePreHook(ctx, id); err != nil {
+		return err
+	}
+
+	if err := k.subscription.SessionInactivePreHook(ctx, id); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (k *Keeper) GetNode(ctx sdk.Context, addr hubtypes.NodeAddress) (nodetypes.Node, bool) {
-	return k.node.GetNode(ctx, addr)
+func (k *Keeper) SessionUpdatePreHook(ctx sdk.Context, id uint64, currBytes sdkmath.Int) error {
+	if err := k.subscription.SessionUpdatePreHook(ctx, id, currBytes); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (k *Keeper) GetPlan(ctx sdk.Context, id uint64) (plantypes.Plan, bool) {
-	return k.plan.GetPlan(ctx, id)
-}
+func (k *Keeper) UpdateMaxValues(ctx sdk.Context, session v3.Session) error {
+	if err := k.node.UpdateSessionMaxValues(ctx, session); err != nil {
+		return err
+	}
 
-func (k *Keeper) GetAllocation(ctx sdk.Context, id uint64, addr sdk.AccAddress) (subscriptiontypes.Allocation, bool) {
-	return k.subscription.GetAllocation(ctx, id, addr)
-}
+	if err := k.subscription.UpdateSessionMaxValues(ctx, session); err != nil {
+		return err
+	}
 
-func (k *Keeper) SetAllocation(ctx sdk.Context, alloc subscriptiontypes.Allocation) {
-	k.subscription.SetAllocation(ctx, alloc)
-}
-
-func (k *Keeper) GetLatestPayoutForAccountByNode(ctx sdk.Context, accAddr sdk.AccAddress, nodeAddr hubtypes.NodeAddress) (subscriptiontypes.Payout, bool) {
-	return k.subscription.GetLatestPayoutForAccountByNode(ctx, accAddr, nodeAddr)
-}
-
-func (k *Keeper) GetSubscription(ctx sdk.Context, id uint64) (subscriptiontypes.Subscription, bool) {
-	return k.subscription.GetSubscription(ctx, id)
+	return nil
 }

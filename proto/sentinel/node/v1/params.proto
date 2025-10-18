@@ -1,0 +1,30 @@
+syntax = "proto3";
+package sentinel.node.v1;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/node/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Params {
+  cosmos.base.v1beta1.Coin deposit = 1 [(gogoproto.nullable) = false];
+  google.protobuf.Duration inactive_duration = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true
+  ];
+  repeated cosmos.base.v1beta1.Coin max_price = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin min_price = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  string staking_share = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}

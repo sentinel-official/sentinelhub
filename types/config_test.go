@@ -14,6 +14,7 @@ func TestConfig_GetBech32NodeAddrPrefix(t *testing.T) {
 		sealed   bool
 		mtx      sync.Mutex
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -62,6 +63,7 @@ func TestConfig_GetBech32NodePubPrefix(t *testing.T) {
 		sealed   bool
 		mtx      sync.Mutex
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -110,6 +112,7 @@ func TestConfig_GetBech32ProviderAddrPrefix(t *testing.T) {
 		sealed   bool
 		mtx      sync.Mutex
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -158,6 +161,7 @@ func TestConfig_GetBech32ProviderPubPrefix(t *testing.T) {
 		sealed   bool
 		mtx      sync.Mutex
 	}
+
 	tests := []struct {
 		name   string
 		fields fields

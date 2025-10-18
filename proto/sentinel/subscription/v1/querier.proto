@@ -1,0 +1,88 @@
+syntax = "proto3";
+package sentinel.subscription.v1;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "sentinel/subscription/v1/params.proto";
+import "sentinel/subscription/v1/quota.proto";
+import "sentinel/subscription/v1/subscription.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message QueryQuotasRequest {
+  uint64 id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryQuotaRequest {
+  uint64 id = 1;
+  string address = 2;
+}
+
+message QuerySubscriptionsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QuerySubscriptionsForAddressRequest {
+  string address = 1;
+  sentinel.types.v1.Status status = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+message QuerySubscriptionRequest {
+  uint64 id = 1;
+}
+
+message QueryParamsRequest {}
+
+message QueryQuotasResponse {
+  repeated Quota quotas = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryQuotaResponse {
+  Quota quota = 1 [(gogoproto.nullable) = false];
+}
+
+message QuerySubscriptionsResponse {
+  repeated Subscription subscriptions = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySubscriptionsForAddressResponse {
+  repeated Subscription subscriptions = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySubscriptionResponse {
+  Subscription subscription = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+service QueryService {
+  rpc QueryQuotas(QueryQuotasRequest) returns (QueryQuotasResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v1/subscriptions/{id}/quotas";
+  }
+  rpc QueryQuota(QueryQuotaRequest) returns (QueryQuotaResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v1/accounts/{address}/subscriptions/{id}/quotas";
+  }
+  rpc QuerySubscriptions(QuerySubscriptionsRequest) returns (QuerySubscriptionsResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v1/subscriptions";
+  }
+  rpc QuerySubscriptionsForAddress(QuerySubscriptionsForAddressRequest) returns (QuerySubscriptionsForAddressResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v1/accounts/{address}/subscriptions";
+  }
+  rpc QuerySubscription(QuerySubscriptionRequest) returns (QuerySubscriptionResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v1/subscriptions/{id}";
+  }
+  rpc QueryParams(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v1/params";
+  }
+}

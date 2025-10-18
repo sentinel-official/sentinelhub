@@ -7,23 +7,27 @@ import "google/protobuf/timestamp.proto";
 import "sentinel/types/v1/bandwidth.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/hub/x/session/types";
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v2";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message Session {
-  uint64 id              = 1 [ (gogoproto.customname) = "ID" ];
-  uint64 subscription_id = 2 [ (gogoproto.customname) = "SubscriptionID" ];
-  string node_address    = 3;
-  string address         = 4;
-
-  sentinel.types.v1.Bandwidth bandwidth = 5 [ (gogoproto.nullable) = false ];
-  google.protobuf.Duration duration     = 6
-      [ (gogoproto.stdduration) = true, (gogoproto.nullable) = false ];
-  google.protobuf.Timestamp inactive_at = 7
-      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
-
-  sentinel.types.v1.Status status     = 8;
-  google.protobuf.Timestamp status_at = 9
-      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 subscription_id = 2 [(gogoproto.customname) = "SubscriptionID"];
+  string node_address = 3;
+  string address = 4;
+  sentinel.types.v1.Bandwidth bandwidth = 5 [(gogoproto.nullable) = false];
+  google.protobuf.Duration duration = 6 [
+    (gogoproto.stdduration) = true,
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp inactive_at = 7 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  sentinel.types.v1.Status status = 8;
+  google.protobuf.Timestamp status_at = 9 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }

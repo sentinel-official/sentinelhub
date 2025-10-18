@@ -1,7 +1,7 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 )
 
 const (
@@ -10,7 +10,7 @@ const (
 )
 
 var (
-	PrecisionLoss = sdk.NewInt(100)
+	PrecisionLoss = sdkmath.NewInt(100)
 )
 
 var (

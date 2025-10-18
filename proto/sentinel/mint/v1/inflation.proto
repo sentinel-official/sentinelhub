@@ -4,29 +4,29 @@ package sentinel.mint.v1;
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package            = "github.com/sentinel-official/hub/x/mint/types";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/mint/types/v1";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message Inflation {
   string max = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.moretags)   = "yaml:\"max\"",
-    (gogoproto.nullable)   = false
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.moretags) = "yaml:\"max\"",
+    (gogoproto.nullable) = false
   ];
   string min = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.moretags)   = "yaml:\"min\"",
-    (gogoproto.nullable)   = false
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.moretags) = "yaml:\"min\"",
+    (gogoproto.nullable) = false
   ];
   string rate_change = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.moretags)   = "yaml:\"rate_change\"",
-    (gogoproto.nullable)   = false
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.moretags) = "yaml:\"rate_change\"",
+    (gogoproto.nullable) = false
   ];
   google.protobuf.Timestamp timestamp = 4 [
     (gogoproto.moretags) = "yaml:\"timestamp\"",
     (gogoproto.nullable) = false,
-    (gogoproto.stdtime)  = true
+    (gogoproto.stdtime) = true
   ];
 }

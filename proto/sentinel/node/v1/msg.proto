@@ -1,0 +1,47 @@
+syntax = "proto3";
+package sentinel.node.v1;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/node/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message MsgRegisterRequest {
+  string from = 1;
+  string provider = 2;
+  repeated cosmos.base.v1beta1.Coin price = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
+}
+
+message MsgSetStatusRequest {
+  string from = 1;
+  sentinel.types.v1.Status status = 2;
+}
+
+message MsgUpdateRequest {
+  string from = 1;
+  string provider = 2;
+  repeated cosmos.base.v1beta1.Coin price = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
+}
+
+message MsgRegisterResponse {}
+
+message MsgSetStatusResponse {}
+
+message MsgUpdateResponse {}
+
+service MsgService {
+  rpc MsgRegister(MsgRegisterRequest) returns (MsgRegisterResponse);
+  rpc MsgSetStatus(MsgSetStatusRequest) returns (MsgSetStatusResponse);
+  rpc MsgUpdate(MsgUpdateRequest) returns (MsgUpdateResponse);
+}

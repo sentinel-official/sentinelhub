@@ -1,28 +1,31 @@
 syntax = "proto3";
 package sentinel.plan.v2;
 
-option go_package = "github.com/sentinel-official/hub/x/plan/types";
-
 import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 import "sentinel/types/v1/status.proto";
 
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v2";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message Plan {
-  uint64 id                         = 1 [ (gogoproto.customname) = "ID" ];
-  string provider_address           = 2;
-  google.protobuf.Duration duration = 3
-      [ (gogoproto.nullable) = false, (gogoproto.stdduration) = true ];
-  int64 gigabytes                          = 4;
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string provider_address = 2;
+  google.protobuf.Duration duration = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true
+  ];
+  int64 gigabytes = 4;
   repeated cosmos.base.v1beta1.Coin prices = 5 [
-    (gogoproto.nullable)     = false,
+    (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
-  sentinel.types.v1.Status status     = 6;
-  google.protobuf.Timestamp status_at = 7
-      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+  sentinel.types.v1.Status status = 6;
+  google.protobuf.Timestamp status_at = 7 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }

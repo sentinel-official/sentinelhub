@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
+	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client"
 	clientconfig "github.com/cosmos/cosmos-sdk/client/config"
 	"github.com/cosmos/cosmos-sdk/client/debug"
@@ -11,35 +12,20 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/server"
-	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	authcli "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/spf13/cobra"
-	tmcli "github.com/tendermint/tendermint/libs/cli"
+	"github.com/spf13/viper"
 
-	"github.com/sentinel-official/hub/app"
+	"github.com/sentinel-official/sentinelhub/v12/app"
 )
-
-func initAppConfig() (string, interface{}) {
-	type Config struct {
-		*serverconfig.Config
-	}
-
-	cfg := Config{Config: serverconfig.DefaultConfig()}
-	cfg.BaseConfig.MinGasPrices = "0.1udvpn"
-	cfg.StateSync.SnapshotInterval = 1000
-
-	cfgTemplate := serverconfig.DefaultConfigTemplate
-
-	return cfgTemplate, cfg
-}
 
 func moduleInitFlags(cmd *cobra.Command) {
 	crisis.AddModuleInitFlags(cmd)
 	wasm.AddModuleInitFlags(cmd)
+	cmd.Flags().Bool(flagSkipOverwriteConfig, false, "Skip overwriting config with recommended values")
 }
 
 func queryCommand() *cobra.Command {
@@ -94,9 +80,20 @@ func txCommand() *cobra.Command {
 func NewRootCmd(homeDir string) *cobra.Command {
 	encCfg := app.DefaultEncodingConfig()
 	cmd := &cobra.Command{
-		Use:   "sentinelhub",
-		Short: "Sentinel Hub application",
+		Use:          "sentinelhub",
+		Short:        "Sentinel Hub application",
+		SilenceUsage: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) (err error) {
+			if !viper.GetBool(flagSkipOverwriteConfig) {
+				if err := overwriteTendermintConfig(); err != nil {
+					return err
+				}
+
+				if err := overwriteAppConfig(); err != nil {
+					return err
+				}
+			}
+
 			clientCtx := client.Context{}.
 				WithAccountRetriever(authtypes.AccountRetriever{}).
 				WithCodec(encCfg.Codec).
@@ -105,7 +102,7 @@ func NewRootCmd(homeDir string) *cobra.Command {
 				WithInterfaceRegistry(encCfg.InterfaceRegistry).
 				WithLegacyAmino(encCfg.Amino).
 				WithTxConfig(encCfg.TxConfig).
-				WithViper("SENTINELHUB")
+				WithViper("")
 
 			clientCtx, err = client.ReadPersistentCommandFlags(clientCtx, cmd.Flags())
 			if err != nil {
@@ -121,19 +118,18 @@ func NewRootCmd(homeDir string) *cobra.Command {
 				return err
 			}
 
-			cfgTemplate, cfg := initAppConfig()
-			return server.InterceptConfigsPreRunHandler(cmd, cfgTemplate, cfg)
+			appConfigTemplate, appConfig := initAppConfig()
+			tmConfig := initTendermintConfig()
+
+			return server.InterceptConfigsPreRunHandler(cmd, appConfigTemplate, appConfig, tmConfig)
 		},
 	}
 
 	cmd.AddCommand(
-		addGenesisAccountCmd(homeDir),
 		clientconfig.Cmd(),
 		debug.Cmd(),
-		genutilcli.CollectGenTxsCmd(banktypes.GenesisBalancesIterator{}, homeDir),
-		genutilcli.GenTxCmd(app.ModuleBasics, encCfg.TxConfig, banktypes.GenesisBalancesIterator{}, homeDir),
 		genutilcli.InitCmd(app.ModuleBasics, homeDir),
-		genutilcli.ValidateGenesisCmd(app.ModuleBasics),
+		genutilcli.GenesisCoreCommand(encCfg.TxConfig, app.ModuleBasics, homeDir),
 		keys.Commands(homeDir),
 		queryCommand(),
 		rpc.StatusCommand(),

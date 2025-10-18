@@ -1,39 +1,56 @@
 package cli
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/pflag"
+
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
 )
 
 const (
-	flagGigabytes      = "gigabytes"
+	flagDenom          = "denom"
 	flagGigabytePrices = "gigabyte-prices"
-	flagHours          = "hours"
+	flagGigabytes      = "gigabytes"
 	flagHourlyPrices   = "hourly-prices"
-	flagPlan           = "plan"
-	flagRemoteURL      = "remote-url"
+	flagHours          = "hours"
+	flagMaxPrice       = "max-price"
+	flagRemoteAddrs    = "remote-addrs"
 )
 
-func GetGigabytePrices(flags *pflag.FlagSet) (sdk.Coins, error) {
+func GetGigabytePrices(flags *pflag.FlagSet) (v1base.Prices, error) {
 	s, err := flags.GetString(flagGigabytePrices)
 	if err != nil {
 		return nil, err
 	}
+
 	if s == "" {
 		return nil, nil
 	}
 
-	return sdk.ParseCoinsNormalized(s)
+	return v1base.NewPricesFromString(s)
 }
 
-func GetHourlyPrices(flags *pflag.FlagSet) (sdk.Coins, error) {
+func GetHourlyPrices(flags *pflag.FlagSet) (v1base.Prices, error) {
 	s, err := flags.GetString(flagHourlyPrices)
 	if err != nil {
 		return nil, err
 	}
+
 	if s == "" {
 		return nil, nil
 	}
 
-	return sdk.ParseCoinsNormalized(s)
+	return v1base.NewPricesFromString(s)
+}
+
+func GetMaxPrice(flags *pflag.FlagSet) (v1base.Price, error) {
+	s, err := flags.GetString(flagMaxPrice)
+	if err != nil {
+		return v1base.Price{}, err
+	}
+
+	if s == "" {
+		return v1base.ZeroPrice(""), nil
+	}
+
+	return v1base.NewPriceFromString(s)
 }

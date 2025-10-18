@@ -1,5 +1,3 @@
-// DO NOT COVER
-
 package cli
 
 import (
@@ -20,11 +18,11 @@ func GetTxCommands() []*cobra.Command {
 	}
 
 	cmd.AddCommand(
-		txCreate(),
-		txUpdateStatus(),
+		txCreatePlan(),
 		txLinkNode(),
 		txUnlinkNode(),
-		txSubscribe(),
+		txUpdatePlanDetails(),
+		txUpdatePlanStatus(),
 	)
 
 	return []*cobra.Command{cmd}

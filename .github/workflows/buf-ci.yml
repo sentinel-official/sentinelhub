@@ -1,0 +1,34 @@
+name: Buf CI
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  push:
+    branches:
+      - development
+      - master
+    tags:
+      - '*'
+  release:
+    types:
+      - published
+
+jobs:
+  buf:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Buf Action
+        uses: bufbuild/buf-action@8f4a1456a0ab6a1eb80ba68e53832e6fcfacc16c #v1.3.0
+        with:
+          breaking: false
+          token: ${{ secrets.BUF_TOKEN }}

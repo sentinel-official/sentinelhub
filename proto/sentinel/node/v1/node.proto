@@ -6,19 +6,21 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/hub/x/node/legacy/v1/types";
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/node/types/v1";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message Node {
-  string address                          = 1;
-  string provider                         = 2;
+  string address = 1;
+  string provider = 2;
   repeated cosmos.base.v1beta1.Coin price = 3 [
-    (gogoproto.nullable)     = false,
+    (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
-  string remote_url               = 4 [ (gogoproto.customname) = "RemoteURL" ];
+  string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
   sentinel.types.v1.Status status = 5;
-  google.protobuf.Timestamp status_at = 6
-      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+  google.protobuf.Timestamp status_at = 6 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }

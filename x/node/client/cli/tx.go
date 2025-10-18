@@ -1,21 +1,22 @@
-// DO NOT COVER
-
 package cli
 
 import (
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	hubtypes "github.com/sentinel-official/hub/types"
-	"github.com/sentinel-official/hub/x/node/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
 )
 
-func txRegister() *cobra.Command {
+func txRegisterNode() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "register [remote-url]",
-		Short: "Register a node",
+		Use:   "register-node [remote-addrs]",
+		Short: "Register a new node with a remote addrs and pricing details",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
@@ -28,16 +29,16 @@ func txRegister() *cobra.Command {
 				return err
 			}
 
-			hourlyPrice, err := GetHourlyPrices(cmd.Flags())
+			hourlyPrices, err := GetHourlyPrices(cmd.Flags())
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgRegisterRequest(
-				ctx.FromAddress,
+			msg := v3.NewMsgRegisterNodeRequest(
+				ctx.FromAddress.Bytes(),
 				gigabytePrices,
-				hourlyPrice,
-				args[0],
+				hourlyPrices,
+				strings.Split(args[0], ","),
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -48,16 +49,16 @@ func txRegister() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(flagGigabytePrices, "", "prices per one gigabyte of bandwidth provision")
-	cmd.Flags().String(flagHourlyPrices, "", "prices per one hour of bandwidth provision")
+	cmd.Flags().String(flagGigabytePrices, "", "prices for one gigabyte of bandwidth (e.g., 1000token")
+	cmd.Flags().String(flagHourlyPrices, "", "prices for one hour of bandwidth (e.g., 500token")
 
 	return cmd
 }
 
-func txUpdateDetails() *cobra.Command {
+func txUpdateNodeDetails() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-details",
-		Short: "Update the details of a node",
+		Use:   "update-node-details",
+		Short: "Update the pricing and remote URL details of an existing node",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -69,21 +70,21 @@ func txUpdateDetails() *cobra.Command {
 				return err
 			}
 
-			hourlyPrice, err := GetHourlyPrices(cmd.Flags())
+			hourlyPrices, err := GetHourlyPrices(cmd.Flags())
 			if err != nil {
 				return err
 			}
 
-			remoteURL, err := cmd.Flags().GetString(flagRemoteURL)
+			remoteAddrs, err := cmd.Flags().GetString(flagRemoteAddrs)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgUpdateDetailsRequest(
+			msg := v3.NewMsgUpdateNodeDetailsRequest(
 				ctx.FromAddress.Bytes(),
 				gigabytePrices,
-				hourlyPrice,
-				remoteURL,
+				hourlyPrices,
+				strings.Split(remoteAddrs, ","),
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -94,17 +95,17 @@ func txUpdateDetails() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(flagGigabytePrices, "", "prices per one gigabyte of bandwidth provision")
-	cmd.Flags().String(flagHourlyPrices, "", "prices per one hour of bandwidth provision")
-	cmd.Flags().String(flagRemoteURL, "", "remote URL address of the node")
+	cmd.Flags().String(flagGigabytePrices, "", "prices for one gigabyte of bandwidth (e.g., 1000token)")
+	cmd.Flags().String(flagHourlyPrices, "", "prices for one hour of bandwidth (e.g., 500token)")
+	cmd.Flags().String(flagRemoteAddrs, "", "remote addrs for the node")
 
 	return cmd
 }
 
-func txUpdateStatus() *cobra.Command {
+func txUpdateNodeStatus() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-status [status]",
-		Short: "Update the status for a node",
+		Use:   "update-node-status [status]",
+		Short: "Update the operational status of a node",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
@@ -112,9 +113,9 @@ func txUpdateStatus() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgUpdateStatusRequest(
+			msg := v3.NewMsgUpdateNodeStatusRequest(
 				ctx.FromAddress.Bytes(),
-				hubtypes.StatusFromString(args[0]),
+				v1base.StatusFromString(args[0]),
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -129,18 +130,18 @@ func txUpdateStatus() *cobra.Command {
 	return cmd
 }
 
-func txSubscribe() *cobra.Command {
+func txStartSession() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "subscribe [node-addr] [denom]",
-		Short: "Subscribe to a node",
-		Args:  cobra.ExactArgs(2),
+		Use:   "start-session [node-addr]",
+		Short: "Start a session with a node",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			addr, err := hubtypes.NodeAddressFromBech32(args[0])
+			nodeAddr, err := base.NodeAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
@@ -155,12 +156,17 @@ func txSubscribe() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgSubscribeRequest(
-				ctx.FromAddress,
-				addr,
+			maxPrice, err := GetMaxPrice(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			msg := v3.NewMsgStartSessionRequest(
+				ctx.FromAddress.Bytes(),
+				nodeAddr,
 				gigabytes,
 				hours,
-				args[2],
+				maxPrice,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
@@ -171,8 +177,9 @@ func txSubscribe() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().Int64(flagGigabytes, 0, "gigabytes")
-	cmd.Flags().Int64(flagHours, 0, "hours")
+	cmd.Flags().Int64(flagGigabytes, 0, "Specify the number of gigabytes to purchase for the session")
+	cmd.Flags().Int64(flagHours, 0, "Specify the number of hours to purchase for the session")
+	cmd.Flags().String(flagMaxPrice, "", "Specify the maximum hourly or gigabyte price for the session")
 
 	return cmd
 }

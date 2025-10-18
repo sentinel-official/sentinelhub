@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/types/address"
+	sdkaddress "github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/stretchr/testify/require"
 )
 
@@ -20,7 +20,7 @@ func TestDepositKey(t *testing.T) {
 		if i < 256 {
 			require.Equal(
 				t,
-				append(DepositKeyPrefix, address.MustLengthPrefix(addr)...),
+				append(DepositKeyPrefix, sdkaddress.MustLengthPrefix(addr)...),
 				DepositKey(addr),
 			)
 

@@ -1,0 +1,41 @@
+syntax = "proto3";
+package sentinel.plan.v3;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message EventCreate {
+  uint64 plan_id = 1 [(gogoproto.customname) = "PlanID"];
+  string prov_address = 2;
+  string bytes = 3;
+  string duration = 4;
+  string prices = 5;
+  bool private = 6;
+}
+
+message EventLinkNode {
+  uint64 plan_id = 1 [(gogoproto.customname) = "PlanID"];
+  string prov_address = 2;
+  string node_address = 3;
+}
+
+message EventUnlinkNode {
+  uint64 plan_id = 1 [(gogoproto.customname) = "PlanID"];
+  string prov_address = 2;
+  string node_address = 3;
+}
+
+message EventUpdateDetails {
+  uint64 plan_id = 1 [(gogoproto.customname) = "PlanID"];
+  string prov_address = 2;
+  bool private = 3;
+}
+
+message EventUpdateStatus {
+  uint64 plan_id = 1 [(gogoproto.customname) = "PlanID"];
+  string prov_address = 2;
+  string status = 3;
+}

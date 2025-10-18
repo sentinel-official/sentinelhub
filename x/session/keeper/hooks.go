@@ -1,55 +1,119 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	hubtypes "github.com/sentinel-official/hub/types"
-	"github.com/sentinel-official/hub/x/session/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
 )
 
-func (k *Keeper) SubscriptionInactivePendingHook(ctx sdk.Context, id uint64) error {
-	// Get the status change delay from the store.
-	statusChangeDelay := k.StatusChangeDelay(ctx)
+// NodeInactivePreHook handles the necessary operations when a node becomes inactive.
+func (k *Keeper) NodeInactivePreHook(ctx sdk.Context, addr base.NodeAddress) error {
+	k.Logger(ctx).Info("Running node inactive pre-hook", "address", addr.String())
 
-	// Iterate through sessions associated with the subscription.
-	k.IterateSessionsForSubscription(ctx, id, func(_ int, item types.Session) (stop bool) {
-		// Skip non-active sessions.
-		if !item.Status.Equal(hubtypes.StatusActive) {
-			return false
+	// Iterate through all active sessions associated with the given node address.
+	return k.IterateSessionsForNode(ctx, addr, func(_ int, item v3.Session) (bool, error) {
+		// Skip the session if it is not active.
+		if !item.GetStatus().Equal(v1base.StatusActive) {
+			return false, nil
 		}
 
-		// Delete the session's entry from the InactiveAt index before updating the InactiveAt value.
-		k.DeleteSessionForInactiveAt(ctx, item.InactiveAt, item.ID)
+		// Create a message to cancel the active session.
+		msg := &v3.MsgCancelSessionRequest{
+			From: item.GetAccAddress(),
+			ID:   item.GetID(),
+		}
 
-		// Calculate the new InactiveAt value by adding the status change delay to the current block time.
-		item.InactiveAt = ctx.BlockTime().Add(statusChangeDelay)
+		// Retrieve the handler for the cancel session message, and return an error if it is nil.
+		handler := k.router.Handler(msg)
+		if handler == nil {
+			return false, fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg))
+		}
 
-		// Set the session status to 'InactivePending' to mark it for an upcoming status update.
-		item.Status = hubtypes.StatusInactivePending
+		// Execute the handler to process the session cancellation.
+		resp, err := handler(ctx, msg)
+		if err != nil {
+			return false, err
+		}
 
-		// Record the time of the status update in 'StatusAt' field.
-		item.StatusAt = ctx.BlockTime()
+		// Emit any events generated during the session cancellation process.
+		ctx.EventManager().EmitEvents(resp.GetEvents())
 
-		// Update the session entry in the store with the new status and status update time.
-		k.SetSession(ctx, item)
-
-		// Update the session entry in the InactiveAt index with the new InactiveAt value.
-		k.SetSessionForInactiveAt(ctx, item.InactiveAt, item.ID)
-
-		// Emit an event to notify that the session status has been updated.
-		ctx.EventManager().EmitTypedEvent(
-			&types.EventUpdateStatus{
-				Status:         hubtypes.StatusInactivePending,
-				Address:        item.Address,
-				NodeAddress:    item.NodeAddress,
-				ID:             item.ID,
-				PlanID:         0,
-				SubscriptionID: item.SubscriptionID,
-			},
-		)
-
-		return false
+		return false, nil
 	})
+}
 
-	return nil
+// SubscriptionInactivePendingPreHook handles the necessary operations when a subscription becomes inactive pending.
+func (k *Keeper) SubscriptionInactivePendingPreHook(ctx sdk.Context, id uint64) error {
+	k.Logger(ctx).Info("Running subscription inactive pending pre-hook", "id", id)
+
+	// Iterate through all active sessions associated with the given subscription ID.
+	return k.IterateSessionsForSubscription(ctx, id, func(_ int, item v3.Session) (bool, error) {
+		// Skip the session if it is not active.
+		if !item.GetStatus().Equal(v1base.StatusActive) {
+			return false, nil
+		}
+
+		// Create a message to cancel the active session.
+		msg := &v3.MsgCancelSessionRequest{
+			From: item.GetAccAddress(),
+			ID:   item.GetID(),
+		}
+
+		// Retrieve the handler for the cancel session message, and return an error if it is nil.
+		handler := k.router.Handler(msg)
+		if handler == nil {
+			return false, fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg))
+		}
+
+		// Execute the handler to process the session cancellation.
+		resp, err := handler(ctx, msg)
+		if err != nil {
+			return false, err
+		}
+
+		// Emit any events generated during the session cancellation process.
+		ctx.EventManager().EmitEvents(resp.GetEvents())
+
+		return false, nil
+	})
+}
+
+// PlanUnlinkNodePreHook handles the necessary operations when unlinking a node from a plan.
+func (k *Keeper) PlanUnlinkNodePreHook(ctx sdk.Context, id uint64, addr base.NodeAddress) error {
+	k.Logger(ctx).Info("Running plan unlink node pre-hook", "id", id, "address", addr.String())
+
+	// Iterate through all active sessions associated with the given plan ID and node address.
+	return k.IterateSessionsForPlanByNode(ctx, id, addr, func(_ int, item v3.Session) (bool, error) {
+		// Skip the session if it is not active.
+		if !item.GetStatus().Equal(v1base.StatusActive) {
+			return false, nil
+		}
+
+		// Create a message to cancel the active session.
+		msg := &v3.MsgCancelSessionRequest{
+			From: item.GetAccAddress(),
+			ID:   item.GetID(),
+		}
+
+		// Retrieve the handler for the cancel session message, and return an error if it is nil.
+		handler := k.router.Handler(msg)
+		if handler == nil {
+			return false, fmt.Errorf("nil handler for message route: %s", sdk.MsgTypeURL(msg))
+		}
+
+		// Execute the handler to process the session cancellation.
+		resp, err := handler(ctx, msg)
+		if err != nil {
+			return false, err
+		}
+
+		// Emit any events generated during the session cancellation process.
+		ctx.EventManager().EmitEvents(resp.GetEvents())
+
+		return false, nil
+	})
 }

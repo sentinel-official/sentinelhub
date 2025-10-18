@@ -3,82 +3,89 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/hub/x/subscription/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2"
 )
 
-func (k *Keeper) SetAllocation(ctx sdk.Context, alloc types.Allocation) {
-	var (
-		store = k.Store(ctx)
-		key   = types.AllocationKey(alloc.ID, alloc.GetAddress())
-		value = k.cdc.MustMarshal(&alloc)
-	)
+// SetAllocation sets the allocation for a given ID and address in the KVStore.
+func (k *Keeper) SetAllocation(ctx sdk.Context, alloc v2.Allocation) {
+	addr, err := sdk.AccAddressFromBech32(alloc.Address)
+	if err != nil {
+		panic(err)
+	}
+
+	store := k.Store(ctx)
+	key := types.AllocationKey(alloc.ID, addr)
+	value := k.cdc.MustMarshal(&alloc)
 
 	store.Set(key, value)
 }
 
-func (k *Keeper) GetAllocation(ctx sdk.Context, id uint64, addr sdk.AccAddress) (alloc types.Allocation, found bool) {
-	var (
-		store = k.Store(ctx)
-		key   = types.AllocationKey(id, addr)
-		value = store.Get(key)
-	)
+// GetAllocation retrieves the allocation for a given ID and address from the KVStore.
+// It returns the allocation and a boolean indicating if the allocation was found.
+func (k *Keeper) GetAllocation(ctx sdk.Context, id uint64, addr sdk.AccAddress) (alloc v2.Allocation, found bool) {
+	store := k.Store(ctx)
+	key := types.AllocationKey(id, addr)
+	value := store.Get(key)
 
 	if value == nil {
 		return alloc, false
 	}
 
 	k.cdc.MustUnmarshal(value, &alloc)
+
 	return alloc, true
 }
 
+// HasAllocation checks if an allocation for a given ID and address exists in the KVStore.
 func (k *Keeper) HasAllocation(ctx sdk.Context, id uint64, addr sdk.AccAddress) bool {
-	var (
-		store = k.Store(ctx)
-		key   = types.AllocationKey(id, addr)
-	)
+	store := k.Store(ctx)
+	key := types.AllocationKey(id, addr)
 
 	return store.Has(key)
 }
 
+// DeleteAllocation removes the allocation for a given ID and address from the KVStore.
 func (k *Keeper) DeleteAllocation(ctx sdk.Context, id uint64, addr sdk.AccAddress) {
-	var (
-		store = k.Store(ctx)
-		key   = types.AllocationKey(id, addr)
-	)
+	store := k.Store(ctx)
+	key := types.AllocationKey(id, addr)
 
 	store.Delete(key)
 }
 
-func (k *Keeper) GetAllocationsForSubscription(ctx sdk.Context, id uint64) (items types.Allocations) {
-	var (
-		store = k.Store(ctx)
-		iter  = sdk.KVStorePrefixIterator(store, types.GetAllocationForSubscriptionKeyPrefix(id))
-	)
+// GetAllocationsForSubscription retrieves all allocations for a given subscription ID.
+func (k *Keeper) GetAllocationsForSubscription(ctx sdk.Context, id uint64) (items v2.Allocations) {
+	store := k.Store(ctx)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetAllocationForSubscriptionKeyPrefix(id))
 
-	defer iter.Close()
+	defer iterator.Close()
 
-	for ; iter.Valid(); iter.Next() {
-		var item types.Allocation
-		k.cdc.MustUnmarshal(iter.Value(), &item)
+	for ; iterator.Valid(); iterator.Next() {
+		var item v2.Allocation
+		k.cdc.MustUnmarshal(iterator.Value(), &item)
+
 		items = append(items, item)
 	}
 
 	return items
 }
 
-func (k *Keeper) IterateAllocationsForSubscription(ctx sdk.Context, id uint64, fn func(index int, item types.Allocation) (stop bool)) {
+// IterateAllocationsForSubscription iterates over all allocations for a given subscription ID,
+// calling the provided function for each allocation.
+func (k *Keeper) IterateAllocationsForSubscription(ctx sdk.Context, id uint64, fn func(index int, item v2.Allocation) (stop bool)) {
 	store := k.Store(ctx)
 
-	iter := sdk.KVStorePrefixIterator(store, types.GetAllocationForSubscriptionKeyPrefix(id))
-	defer iter.Close()
+	iterator := sdk.KVStorePrefixIterator(store, types.GetAllocationForSubscriptionKeyPrefix(id))
+	defer iterator.Close()
 
-	for i := 0; iter.Valid(); iter.Next() {
-		var alloc types.Allocation
-		k.cdc.MustUnmarshal(iter.Value(), &alloc)
+	for i := 0; iterator.Valid(); iterator.Next() {
+		var item v2.Allocation
+		k.cdc.MustUnmarshal(iterator.Value(), &item)
 
-		if stop := fn(i, alloc); stop {
+		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }

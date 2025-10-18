@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/types/address"
+	sdkaddress "github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/stretchr/testify/require"
 )
 
@@ -20,7 +20,7 @@ func TestActiveProviderKey(t *testing.T) {
 		if i < 256 {
 			require.Equal(
 				t,
-				append(ActiveProviderKeyPrefix, address.MustLengthPrefix(addr)...),
+				append(ActiveProviderKeyPrefix, sdkaddress.MustLengthPrefix(addr)...),
 				ActiveProviderKey(addr),
 			)
 
@@ -45,7 +45,7 @@ func TestInactiveProviderKey(t *testing.T) {
 		if i < 256 {
 			require.Equal(
 				t,
-				append(InactiveProviderKeyPrefix, address.MustLengthPrefix(addr)...),
+				append(InactiveProviderKeyPrefix, sdkaddress.MustLengthPrefix(addr)...),
 				InactiveProviderKey(addr),
 			)
 

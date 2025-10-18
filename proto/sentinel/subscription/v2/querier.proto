@@ -9,39 +9,18 @@ import "sentinel/subscription/v2/allocation.proto";
 import "sentinel/subscription/v2/params.proto";
 import "sentinel/subscription/v2/payout.proto";
 
-option go_package = "github.com/sentinel-official/hub/x/subscription/types";
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
-message QuerySubscriptionsRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-message QuerySubscriptionsForAccountRequest {
-  string address                                   = 1;
+message QueryAllocationsRequest {
+  uint64 id = 1;
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
-
-message QuerySubscriptionsForNodeRequest {
-  string address                                   = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
-
-message QuerySubscriptionsForPlanRequest {
-  uint64 id                                        = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
-
-message QuerySubscriptionRequest { uint64 id = 1; }
 
 message QueryAllocationRequest {
-  uint64 id      = 1;
+  uint64 id = 1;
   string address = 2;
-}
-
-message QueryAllocationsRequest {
-  uint64 id                                        = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QueryPayoutsRequest {
@@ -49,129 +28,135 @@ message QueryPayoutsRequest {
 }
 
 message QueryPayoutsForAccountRequest {
-  string address                                   = 1;
+  string address = 1;
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QueryPayoutsForNodeRequest {
-  string address                                   = 1;
+  string address = 1;
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
-message QueryPayoutRequest { uint64 id = 1; }
+message QueryPayoutRequest {
+  uint64 id = 1;
+}
+
+message QuerySubscriptionsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QuerySubscriptionsForAccountRequest {
+  string address = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QuerySubscriptionsForNodeRequest {
+  string address = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QuerySubscriptionsForPlanRequest {
+  uint64 id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QuerySubscriptionRequest {
+  uint64 id = 1;
+}
 
 message QueryParamsRequest {}
 
-message QuerySubscriptionsResponse {
-  repeated google.protobuf.Any subscriptions        = 1;
+message QueryAllocationsResponse {
+  repeated Allocation allocations = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
-
-message QuerySubscriptionsForAccountResponse {
-  repeated google.protobuf.Any subscriptions        = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-message QuerySubscriptionsForNodeResponse {
-  repeated google.protobuf.Any subscriptions        = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-message QuerySubscriptionsForPlanResponse {
-  repeated google.protobuf.Any subscriptions        = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-message QuerySubscriptionResponse { google.protobuf.Any subscription = 1; }
 
 message QueryAllocationResponse {
-  Allocation allocation = 1 [ (gogoproto.nullable) = false ];
-}
-
-message QueryAllocationsResponse {
-  repeated Allocation allocations = 1 [ (gogoproto.nullable) = false ];
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  Allocation allocation = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryPayoutsResponse {
-  repeated Payout payouts = 1 [ (gogoproto.nullable) = false ];
+  repeated Payout payouts = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryPayoutsForAccountResponse {
-  repeated Payout payouts = 1 [ (gogoproto.nullable) = false ];
+  repeated Payout payouts = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryPayoutsForNodeResponse {
-  repeated Payout payouts = 1 [ (gogoproto.nullable) = false ];
+  repeated Payout payouts = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryPayoutResponse {
-  Payout payout = 1 [ (gogoproto.nullable) = false ];
+  Payout payout = 1 [(gogoproto.nullable) = false];
+}
+
+message QuerySubscriptionsResponse {
+  repeated google.protobuf.Any subscriptions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySubscriptionsForAccountResponse {
+  repeated google.protobuf.Any subscriptions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySubscriptionsForNodeResponse {
+  repeated google.protobuf.Any subscriptions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySubscriptionsForPlanResponse {
+  repeated google.protobuf.Any subscriptions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QuerySubscriptionResponse {
+  google.protobuf.Any subscription = 1;
 }
 
 message QueryParamsResponse {
-  Params params = 1 [ (gogoproto.nullable) = false ];
+  Params params = 1 [(gogoproto.nullable) = false];
 }
 
 service QueryService {
-  rpc QuerySubscriptions(QuerySubscriptionsRequest)
-      returns (QuerySubscriptionsResponse) {
-    option (google.api.http).get = "/sentinel/subscriptions";
+  rpc QueryAllocation(QueryAllocationRequest) returns (QueryAllocationResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v2/subscriptions/{id}/allocations/{address}";
   }
-
-  rpc QuerySubscriptionsForAccount(QuerySubscriptionsForAccountRequest)
-      returns (QuerySubscriptionsForAccountResponse) {
-    option (google.api.http).get = "/sentinel/accounts/{address}/subscriptions";
+  rpc QueryAllocations(QueryAllocationsRequest) returns (QueryAllocationsResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v2/subscriptions/{id}/allocations";
   }
-
-  rpc QuerySubscriptionsForNode(QuerySubscriptionsForNodeRequest)
-      returns (QuerySubscriptionsForNodeResponse) {
-    option (google.api.http).get = "/sentinel/nodes/{address}/subscriptions";
-  }
-
-  rpc QuerySubscriptionsForPlan(QuerySubscriptionsForPlanRequest)
-      returns (QuerySubscriptionsForPlanResponse) {
-    option (google.api.http).get = "/sentinel/plans/{id}/subscriptions";
-  }
-
-  rpc QuerySubscription(QuerySubscriptionRequest)
-      returns (QuerySubscriptionResponse) {
-    option (google.api.http).get = "/sentinel/subscriptions/{id}";
-  }
-
-  rpc QueryAllocations(QueryAllocationsRequest)
-      returns (QueryAllocationsResponse) {
-    option (google.api.http).get = "/sentinel/subscriptions/{id}/allocations";
-  }
-
-  rpc QueryAllocation(QueryAllocationRequest)
-      returns (QueryAllocationResponse) {
-    option (google.api.http).get =
-        "/sentinel/subscriptions/{id}/allocations/{address}";
-  }
-
   rpc QueryPayouts(QueryPayoutsRequest) returns (QueryPayoutsResponse) {
-    option (google.api.http).get = "/sentinel/payouts";
+    option (google.api.http).get = "/sentinel/subscription/v2/payouts";
   }
-
-  rpc QueryPayoutsForAccount(QueryPayoutsForAccountRequest)
-      returns (QueryPayoutsForAccountResponse) {
-    option (google.api.http).get = "/sentinel/accounts/{address}/payouts";
+  rpc QueryPayoutsForAccount(QueryPayoutsForAccountRequest) returns (QueryPayoutsForAccountResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v2/accounts/{address}/payouts";
   }
-
-  rpc QueryPayoutsForNode(QueryPayoutsForNodeRequest)
-      returns (QueryPayoutsForNodeResponse) {
-    option (google.api.http).get = "/sentinel/nodes/{address}/payouts";
+  rpc QueryPayoutsForNode(QueryPayoutsForNodeRequest) returns (QueryPayoutsForNodeResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v2/nodes/{address}/payouts";
   }
-
   rpc QueryPayout(QueryPayoutRequest) returns (QueryPayoutResponse) {
-    option (google.api.http).get = "/sentinel/payouts/{id}";
+    option (google.api.http).get = "/sentinel/subscription/v2/payouts/{id}";
   }
-
+  rpc QuerySubscriptions(QuerySubscriptionsRequest) returns (QuerySubscriptionsResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v2/subscriptions";
+  }
+  rpc QuerySubscriptionsForAccount(QuerySubscriptionsForAccountRequest) returns (QuerySubscriptionsForAccountResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v2/accounts/{address}/subscriptions";
+  }
+  rpc QuerySubscriptionsForNode(QuerySubscriptionsForNodeRequest) returns (QuerySubscriptionsForNodeResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v2/nodes/{address}/subscriptions";
+  }
+  rpc QuerySubscriptionsForPlan(QuerySubscriptionsForPlanRequest) returns (QuerySubscriptionsForPlanResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v2/plans/{id}/subscriptions";
+  }
+  rpc QuerySubscription(QuerySubscriptionRequest) returns (QuerySubscriptionResponse) {
+    option (google.api.http).get = "/sentinel/subscription/v2/subscriptions/{id}";
+  }
   rpc QueryParams(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/sentinel/modules/subscription/params";
+    option (google.api.http).get = "/sentinel/subscription/v2/params";
   }
 }

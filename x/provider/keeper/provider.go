@@ -5,160 +5,169 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	hubtypes "github.com/sentinel-official/hub/types"
-	"github.com/sentinel-official/hub/x/provider/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
 )
 
-func (k *Keeper) SetActiveProvider(ctx sdk.Context, v types.Provider) {
-	var (
-		store = k.Store(ctx)
-		key   = types.ActiveProviderKey(v.GetAddress())
-		value = k.cdc.MustMarshal(&v)
-	)
+// SetActiveProvider stores an active provider in the module's KVStore.
+func (k *Keeper) SetActiveProvider(ctx sdk.Context, v v2.Provider) {
+	addr, err := base.ProvAddressFromBech32(v.Address)
+	if err != nil {
+		panic(err)
+	}
+
+	store := k.Store(ctx)
+	key := types.ActiveProviderKey(addr)
+	value := k.cdc.MustMarshal(&v)
 
 	store.Set(key, value)
 }
 
-func (k *Keeper) HasActiveProvider(ctx sdk.Context, addr hubtypes.ProvAddress) bool {
-	var (
-		store = k.Store(ctx)
-		key   = types.ActiveProviderKey(addr)
-	)
+// HasActiveProvider checks if an active provider exists in the module's KVStore based on the provider address.
+func (k *Keeper) HasActiveProvider(ctx sdk.Context, addr base.ProvAddress) bool {
+	store := k.Store(ctx)
+	key := types.ActiveProviderKey(addr)
 
 	return store.Has(key)
 }
 
-func (k *Keeper) GetActiveProvider(ctx sdk.Context, addr hubtypes.ProvAddress) (v types.Provider, found bool) {
-	var (
-		store = k.Store(ctx)
-		key   = types.ActiveProviderKey(addr)
-		value = store.Get(key)
-	)
+// GetActiveProvider retrieves an active provider from the module's KVStore based on the provider address.
+// If the provider exists, it returns the provider and 'found' as true; otherwise, it returns 'found' as false.
+func (k *Keeper) GetActiveProvider(ctx sdk.Context, addr base.ProvAddress) (v v2.Provider, found bool) {
+	store := k.Store(ctx)
+	key := types.ActiveProviderKey(addr)
+	value := store.Get(key)
 
 	if value == nil {
 		return v, false
 	}
 
 	k.cdc.MustUnmarshal(value, &v)
+
 	return v, true
 }
 
-func (k *Keeper) DeleteActiveProvider(ctx sdk.Context, addr hubtypes.ProvAddress) {
-	var (
-		store = k.Store(ctx)
-		key   = types.ActiveProviderKey(addr)
-	)
+// DeleteActiveProvider removes an active provider from the module's KVStore based on the provider address.
+func (k *Keeper) DeleteActiveProvider(ctx sdk.Context, addr base.ProvAddress) {
+	store := k.Store(ctx)
+	key := types.ActiveProviderKey(addr)
 
 	store.Delete(key)
 }
 
-func (k *Keeper) SetInactiveProvider(ctx sdk.Context, v types.Provider) {
-	var (
-		store = k.Store(ctx)
-		key   = types.InactiveProviderKey(v.GetAddress())
-		value = k.cdc.MustMarshal(&v)
-	)
+// SetInactiveProvider stores an inactive provider in the module's KVStore.
+func (k *Keeper) SetInactiveProvider(ctx sdk.Context, v v2.Provider) {
+	addr, err := base.ProvAddressFromBech32(v.Address)
+	if err != nil {
+		panic(err)
+	}
+
+	store := k.Store(ctx)
+	key := types.InactiveProviderKey(addr)
+	value := k.cdc.MustMarshal(&v)
 
 	store.Set(key, value)
 }
 
-func (k *Keeper) HasInactiveProvider(ctx sdk.Context, addr hubtypes.ProvAddress) bool {
-	var (
-		store = k.Store(ctx)
-		key   = types.InactiveProviderKey(addr)
-	)
+// HasInactiveProvider checks if an inactive provider exists in the module's KVStore based on the provider address.
+func (k *Keeper) HasInactiveProvider(ctx sdk.Context, addr base.ProvAddress) bool {
+	store := k.Store(ctx)
+	key := types.InactiveProviderKey(addr)
 
 	return store.Has(key)
 }
 
-func (k *Keeper) GetInactiveProvider(ctx sdk.Context, addr hubtypes.ProvAddress) (v types.Provider, found bool) {
-	var (
-		store = k.Store(ctx)
-		key   = types.InactiveProviderKey(addr)
-		value = store.Get(key)
-	)
+// GetInactiveProvider retrieves an inactive provider from the module's KVStore based on the provider address.
+// If the provider exists, it returns the provider and 'found' as true; otherwise, it returns 'found' as false.
+func (k *Keeper) GetInactiveProvider(ctx sdk.Context, addr base.ProvAddress) (v v2.Provider, found bool) {
+	store := k.Store(ctx)
+	key := types.InactiveProviderKey(addr)
+	value := store.Get(key)
 
 	if value == nil {
 		return v, false
 	}
 
 	k.cdc.MustUnmarshal(value, &v)
+
 	return v, true
 }
 
-func (k *Keeper) DeleteInactiveProvider(ctx sdk.Context, addr hubtypes.ProvAddress) {
-	var (
-		store = k.Store(ctx)
-		key   = types.InactiveProviderKey(addr)
-	)
+// DeleteInactiveProvider removes an inactive provider from the module's KVStore based on the provider address.
+func (k *Keeper) DeleteInactiveProvider(ctx sdk.Context, addr base.ProvAddress) {
+	store := k.Store(ctx)
+	key := types.InactiveProviderKey(addr)
 
 	store.Delete(key)
 }
 
-// SetProvider is for inserting a provider into the KVStore.
-func (k *Keeper) SetProvider(ctx sdk.Context, provider types.Provider) {
+// SetProvider stores a provider in the module's KVStore based on its status.
+func (k *Keeper) SetProvider(ctx sdk.Context, provider v2.Provider) {
 	switch provider.Status {
-	case hubtypes.StatusActive:
+	case v1base.StatusActive:
 		k.SetActiveProvider(ctx, provider)
-	case hubtypes.StatusInactive:
+	case v1base.StatusInactive:
 		k.SetInactiveProvider(ctx, provider)
 	default:
 		panic(fmt.Errorf("failed to set the provider %v", provider))
 	}
 }
 
-// HasProvider is for checking whether a provider with an address exists or not in the KVStore.
-func (k *Keeper) HasProvider(ctx sdk.Context, addr hubtypes.ProvAddress) bool {
+// HasProvider checks if a provider exists in the module's KVStore based on the provider address.
+func (k *Keeper) HasProvider(ctx sdk.Context, addr base.ProvAddress) bool {
 	return k.HasActiveProvider(ctx, addr) || k.HasInactiveProvider(ctx, addr)
 }
 
-// GetProvider is for getting a provider with an address from the KVStore.
-func (k *Keeper) GetProvider(ctx sdk.Context, addr hubtypes.ProvAddress) (provider types.Provider, found bool) {
+// GetProvider retrieves a provider from the module's KVStore based on the provider address.
+// If the provider exists, it returns the provider and 'found' as true; otherwise, it returns 'found' as false.
+func (k *Keeper) GetProvider(ctx sdk.Context, addr base.ProvAddress) (provider v2.Provider, found bool) {
 	provider, found = k.GetActiveProvider(ctx, addr)
 	if found {
-		return
+		return provider, true
 	}
 
 	provider, found = k.GetInactiveProvider(ctx, addr)
 	if found {
-		return
+		return provider, true
 	}
 
 	return provider, false
 }
 
-// GetProviders is for getting the providers from the KVStore.
-func (k *Keeper) GetProviders(ctx sdk.Context) (items types.Providers) {
-	var (
-		store = k.Store(ctx)
-		iter  = sdk.KVStorePrefixIterator(store, types.ProviderKeyPrefix)
-	)
+// GetProviders retrieves all providers from the module's KVStore.
+func (k *Keeper) GetProviders(ctx sdk.Context) (items v2.Providers) {
+	store := k.Store(ctx)
+	iterator := sdk.KVStorePrefixIterator(store, types.ProviderKeyPrefix)
 
-	defer iter.Close()
+	defer iterator.Close()
 
-	for ; iter.Valid(); iter.Next() {
-		var item types.Provider
-		k.cdc.MustUnmarshal(iter.Value(), &item)
+	for ; iterator.Valid(); iterator.Next() {
+		var item v2.Provider
+		k.cdc.MustUnmarshal(iterator.Value(), &item)
+
 		items = append(items, item)
 	}
 
 	return items
 }
 
-// IterateProviders is for iterating over the providers to perform an action.
-func (k *Keeper) IterateProviders(ctx sdk.Context, fn func(index int, item types.Provider) (stop bool)) {
+// IterateProviders iterates over all providers in the module's KVStore and performs the specified action.
+func (k *Keeper) IterateProviders(ctx sdk.Context, fn func(index int, item v2.Provider) (stop bool)) {
 	store := k.Store(ctx)
+	iterator := sdk.KVStorePrefixIterator(store, types.ProviderKeyPrefix)
 
-	iter := sdk.KVStorePrefixIterator(store, types.ProviderKeyPrefix)
-	defer iter.Close()
+	defer iterator.Close()
 
-	for i := 0; iter.Valid(); iter.Next() {
-		var item types.Provider
-		k.cdc.MustUnmarshal(iter.Value(), &item)
+	for i := 0; iterator.Valid(); iterator.Next() {
+		var item v2.Provider
+		k.cdc.MustUnmarshal(iterator.Value(), &item)
 
 		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }

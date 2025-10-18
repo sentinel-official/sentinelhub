@@ -1,79 +1,131 @@
-// DO NOT COVER
-
 package types
 
 import (
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	hubtypes "github.com/sentinel-official/hub/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+)
+
+const (
+	_ = 100 + iota
+	ErrCodeAllocationNotFound
+	ErrCodeInsufficientBytes
+	ErrCodeInvalidAllocation
+	ErrCodeInvalidMessage
+	ErrCodeInvalidNodeStatus
+	ErrCodeInvalidPlanStatus
+	ErrCodeInvalidRenewalPolicy
+	ErrCodeInvalidSessionStatus
+	ErrCodeInvalidSubscriptionStatus
+	ErrCodeMaxAllocationsReached
+	ErrCodeNodeForPlanNotFound
+	ErrCodeNodeNotFound
+	ErrCodePlanNotFound
+	ErrCodePriceNotFound
+	ErrCodeSessionNotFound
+	ErrCodeSubscriptionNotFound
+	ErrCodeUnauthorized
 )
 
 var (
-	ErrorInvalidMessage = errors.Register(ModuleName, 101, "invalid message")
-
-	ErrorAllocationNotFound        = errors.Register(ModuleName, 201, "allocation not found")
-	ErrorInsufficientBytes         = errors.Register(ModuleName, 202, "insufficient bytes")
-	ErrorInvalidAllocation         = errors.Register(ModuleName, 203, "invalid allocation")
-	ErrorInvalidNodeStatus         = errors.Register(ModuleName, 204, "invalid node status")
-	ErrorInvalidPlanStatus         = errors.Register(ModuleName, 205, "invalid plan status")
-	ErrorInvalidSubscription       = errors.Register(ModuleName, 206, "invalid subscription")
-	ErrorInvalidSubscriptionStatus = errors.Register(ModuleName, 207, "invalid subscription status")
-	ErrorNodeNotFound              = errors.Register(ModuleName, 208, "node not found")
-	ErrorPayoutNotFound            = errors.Register(ModuleName, 209, "payout not found")
-	ErrorPlanNotFound              = errors.Register(ModuleName, 210, "plan not found")
-	ErrorPriceNotFound             = errors.Register(ModuleName, 211, "price does not exist")
-	ErrorSubscriptionNotFound      = errors.Register(ModuleName, 212, "subscription not found")
-	ErrorUnauthorized              = errors.Register(ModuleName, 213, "unauthorised")
+	ErrAllocationNotFound        = sdkerrors.Register(ModuleName, ErrCodeAllocationNotFound, "allocation not found")
+	ErrInsufficientBytes         = sdkerrors.Register(ModuleName, ErrCodeInsufficientBytes, "insufficient bytes")
+	ErrInvalidAllocation         = sdkerrors.Register(ModuleName, ErrCodeInvalidAllocation, "invalid allocation")
+	ErrInvalidMessage            = sdkerrors.Register(ModuleName, ErrCodeInvalidMessage, "invalid message")
+	ErrInvalidNodeStatus         = sdkerrors.Register(ModuleName, ErrCodeInvalidNodeStatus, "invalid node status")
+	ErrInvalidPlanStatus         = sdkerrors.Register(ModuleName, ErrCodeInvalidPlanStatus, "invalid plan status")
+	ErrInvalidRenewalPolicy      = sdkerrors.Register(ModuleName, ErrCodeInvalidRenewalPolicy, "invalid renewal policy")
+	ErrInvalidSessionStatus      = sdkerrors.Register(ModuleName, ErrCodeInvalidSessionStatus, "invalid session status")
+	ErrInvalidSubscriptionStatus = sdkerrors.Register(ModuleName, ErrCodeInvalidSubscriptionStatus, "invalid subscription status")
+	ErrMaxAllocationsReached     = sdkerrors.Register(ModuleName, ErrCodeMaxAllocationsReached, "max allocations reached")
+	ErrNodeForPlanNotFound       = sdkerrors.Register(ModuleName, ErrCodeNodeForPlanNotFound, "node for plan not found")
+	ErrNodeNotFound              = sdkerrors.Register(ModuleName, ErrCodeNodeNotFound, "node not found")
+	ErrPlanNotFound              = sdkerrors.Register(ModuleName, ErrCodePlanNotFound, "plan not found")
+	ErrPriceNotFound             = sdkerrors.Register(ModuleName, ErrCodePriceNotFound, "price not found")
+	ErrSessionNotFound           = sdkerrors.Register(ModuleName, ErrCodeSessionNotFound, "session not found")
+	ErrSubscriptionNotFound      = sdkerrors.Register(ModuleName, ErrCodeSubscriptionNotFound, "subscription not found")
+	ErrUnauthorized              = sdkerrors.Register(ModuleName, ErrCodeUnauthorized, "unauthorized")
 )
 
-func NewErrorAllocationNotFound(id uint64, addr interface{}) error {
-	return errors.Wrapf(ErrorAllocationNotFound, "allocation %d/%s does not exist", id, addr)
+// NewErrorAllocationNotFound returns an error indicating that the specified allocation does not exist.
+func NewErrorAllocationNotFound(id uint64, addr sdk.AccAddress) error {
+	return sdkerrors.Wrapf(ErrAllocationNotFound, "allocation %d/%s does not exist", id, addr)
 }
 
-func NewErrorInsufficientBytes(id uint64, addr interface{}) error {
-	return errors.Wrapf(ErrorInsufficientBytes, "insufficient bytes for allocation %d/%s", id, addr)
+// NewErrorInsufficientBytes returns an error indicating that there are insufficient bytes for the specified subscription.
+func NewErrorInsufficientBytes(id uint64, bytes sdkmath.Int) error {
+	return sdkerrors.Wrapf(ErrInsufficientBytes, "insufficient bytes %s for subscription %d", bytes, id)
 }
 
-func NewErrorInvalidAllocation(id uint64, addr interface{}) error {
-	return errors.Wrapf(ErrorInvalidAllocation, "invalid allocation %d/%s", id, addr)
+// NewErrorInvalidAllocation returns an error indicating that the allocation is invalid.
+func NewErrorInvalidAllocation(id uint64, addr sdk.AccAddress) error {
+	return sdkerrors.Wrapf(ErrInvalidAllocation, "invalid allocation %d/%s", id, addr)
 }
 
-func NewErrorInvalidNodeStatus(addr interface{}, status hubtypes.Status) error {
-	return errors.Wrapf(ErrorInvalidNodeStatus, "invalid status %s for node %s", status, addr)
+// NewErrorInvalidMessage returns an error indicating that the provided message is invalid.
+func NewErrorInvalidMessage(desc interface{}) error {
+	return sdkerrors.Wrapf(ErrInvalidMessage, "%v", desc)
 }
 
-func NewErrorInvalidPlanStatus(id uint64, status hubtypes.Status) error {
-	return errors.Wrapf(ErrorInvalidPlanStatus, "invalid status %s for plan %d", status, id)
+// NewErrorInvalidNodeStatus returns an error indicating that the provided status is invalid for the node.
+func NewErrorInvalidNodeStatus(addr base.NodeAddress, status v1base.Status) error {
+	return sdkerrors.Wrapf(ErrInvalidNodeStatus, "invalid status %s for node %s", status, addr)
 }
 
-func NewErrorInvalidSubscription(id uint64) error {
-	return errors.Wrapf(ErrorInvalidSubscription, "invalid subscription %d", id)
+// NewErrorInvalidPlanStatus returns an error indicating that the provided status is invalid for the plan.
+func NewErrorInvalidPlanStatus(id uint64, status v1base.Status) error {
+	return sdkerrors.Wrapf(ErrInvalidPlanStatus, "invalid status %s for plan %d", status, id)
 }
 
-func NewErrorInvalidSubscriptionStatus(id uint64, status hubtypes.Status) error {
-	return errors.Wrapf(ErrorInvalidSubscriptionStatus, "invalid status %s for subscription %d", status, id)
+// NewErrorInvalidSessionStatus returns an error indicating that the provided status is invalid for the session.
+func NewErrorInvalidSessionStatus(id uint64, status v1base.Status) error {
+	return sdkerrors.Wrapf(ErrInvalidSessionStatus, "invalid status %s for session %d", status, id)
 }
 
-func NewErrorNodeNotFound(addr interface{}) error {
-	return errors.Wrapf(ErrorNodeNotFound, "node %s does not exist", addr)
+// NewErrorInvalidSubscriptionStatus returns an error indicating that the provided status is invalid for the subscription.
+func NewErrorInvalidSubscriptionStatus(id uint64, status v1base.Status) error {
+	return sdkerrors.Wrapf(ErrInvalidSubscriptionStatus, "invalid status %s for subscription %d", status, id)
 }
 
-func NewErrorPayoutNotFound(id uint64) error {
-	return errors.Wrapf(ErrorPayoutNotFound, "payout %d does not exist", id)
+// NewErrorMaxAllocationsReached returns an error indicating that the specified subscription has reached maximum allocations.
+func NewErrorMaxAllocationsReached(id uint64) error {
+	return sdkerrors.Wrapf(ErrNodeForPlanNotFound, "subscription %d has reached maximum allocations", id)
 }
 
+// NewErrorNodeForPlanNotFound returns an error indicating that the specified node does not exist for the plan.
+func NewErrorNodeForPlanNotFound(id uint64, addr base.NodeAddress) error {
+	return sdkerrors.Wrapf(ErrNodeForPlanNotFound, "node %s for plan %d does not exist", addr, id)
+}
+
+// NewErrorNodeNotFound returns an error indicating that the specified node does not exist.
+func NewErrorNodeNotFound(addr base.NodeAddress) error {
+	return sdkerrors.Wrapf(ErrNodeNotFound, "node %s does not exist", addr)
+}
+
+// NewErrorPlanNotFound returns an error indicating that the specified plan does not exist.
 func NewErrorPlanNotFound(id uint64) error {
-	return errors.Wrapf(ErrorPlanNotFound, "plan %d does not exist", id)
+	return sdkerrors.Wrapf(ErrPlanNotFound, "plan %d does not exist", id)
 }
 
+// NewErrorPriceNotFound returns an error indicating that the price for the specified denomination does not exist.
 func NewErrorPriceNotFound(denom string) error {
-	return errors.Wrapf(ErrorPriceNotFound, "price for denom %s does not exist", denom)
+	return sdkerrors.Wrapf(ErrPriceNotFound, "price for denom %s does not exist", denom)
 }
 
+// NewErrorSessionNotFound returns an error indicating that the specified session does not exist.
+func NewErrorSessionNotFound(id uint64) error {
+	return sdkerrors.Wrapf(ErrSessionNotFound, "session %d does not exist", id)
+}
+
+// NewErrorSubscriptionNotFound returns an error indicating that the specified subscription does not exist.
 func NewErrorSubscriptionNotFound(id uint64) error {
-	return errors.Wrapf(ErrorSubscriptionNotFound, "subscription %d does not exist", id)
+	return sdkerrors.Wrapf(ErrSubscriptionNotFound, "subscription %d does not exist", id)
 }
 
-func NewErrorUnauthorized(addr interface{}) error {
-	return errors.Wrapf(ErrorUnauthorized, "address %s is not authorized", addr)
+// NewErrorUnauthorized returns an error indicating that the specified address is not authorized.
+func NewErrorUnauthorized(addr string) error {
+	return sdkerrors.Wrapf(ErrUnauthorized, "address %s is not authorized", addr)
 }

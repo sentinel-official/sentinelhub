@@ -3,19 +3,19 @@ package sentinel.subscription.v2;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/sentinel-official/hub/x/subscription/types";
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message Allocation {
-  uint64 id            = 1 [ (gogoproto.customname) = "ID" ];
-  string address       = 2;
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string address = 2;
   string granted_bytes = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable)   = false
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
   ];
   string utilised_bytes = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable)   = false
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
   ];
 }

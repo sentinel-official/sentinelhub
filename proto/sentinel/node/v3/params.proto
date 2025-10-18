@@ -1,0 +1,21 @@
+syntax = "proto3";
+package sentinel.node.v3;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+import "sentinel/types/v1/price.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Params {
+  cosmos.base.v1beta1.Coin deposit = 1 [(gogoproto.nullable) = false];
+  repeated sentinel.types.v1.Price min_gigabyte_prices = 2 [(gogoproto.nullable) = false];
+  repeated sentinel.types.v1.Price min_hourly_prices = 3 [(gogoproto.nullable) = false];
+  google.protobuf.Duration status_timeout = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true
+  ];
+}

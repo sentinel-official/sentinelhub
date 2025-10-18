@@ -4,44 +4,36 @@ package sentinel.session.v2;
 import "gogoproto/gogo.proto";
 import "sentinel/session/v2/proof.proto";
 
-option go_package = "github.com/sentinel-official/hub/x/session/types";
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v2";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
-// MsgStartRequest defines the SDK message for starting a session
-message MsgStartRequest {
-  string from    = 1;
-  uint64 id      = 2 [ (gogoproto.customname) = "ID" ];
-  string address = 3;
-}
-
-// MsgUpdateDetailsRequest defines the SDK message for updating a session
-message MsgUpdateDetailsRequest {
-  string from     = 1;
-  Proof proof     = 2 [ (gogoproto.nullable) = false ];
-  bytes signature = 3;
-}
-
-// MsgEndRequest defines the SDK message for ending a session
 message MsgEndRequest {
-  string from   = 1;
-  uint64 id     = 2 [ (gogoproto.customname) = "ID" ];
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
   uint64 rating = 3;
 }
 
-// MsgStartResponse defines the response of message MsgStartRequest
+message MsgStartRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+  string address = 3;
+}
+
+message MsgUpdateDetailsRequest {
+  string from = 1;
+  Proof proof = 2 [(gogoproto.nullable) = false];
+  bytes signature = 3;
+}
+
+message MsgEndResponse {}
+
 message MsgStartResponse {}
 
-// MsgUpdateDetailsResponse defines the response of message
-// MsgUpdateDetailsRequest
 message MsgUpdateDetailsResponse {}
-
-// MsgEndResponse defines the response of message MsgEndRequest
-message MsgEndResponse {}
 
 service MsgService {
   rpc MsgStart(MsgStartRequest) returns (MsgStartResponse);
-  rpc MsgUpdateDetails(MsgUpdateDetailsRequest)
-      returns (MsgUpdateDetailsResponse);
+  rpc MsgUpdateDetails(MsgUpdateDetailsRequest) returns (MsgUpdateDetailsResponse);
   rpc MsgEnd(MsgEndRequest) returns (MsgEndResponse);
 }

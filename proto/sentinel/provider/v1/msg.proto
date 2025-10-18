@@ -1,0 +1,33 @@
+syntax = "proto3";
+package sentinel.provider.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message MsgRegisterRequest {
+  string from = 1;
+  string name = 2;
+  string identity = 3;
+  string website = 4;
+  string description = 5;
+}
+
+message MsgUpdateRequest {
+  string from = 1;
+  string name = 2;
+  string identity = 3;
+  string website = 4;
+  string description = 5;
+}
+
+message MsgRegisterResponse {}
+
+message MsgUpdateResponse {}
+
+service MsgService {
+  rpc MsgRegister(MsgRegisterRequest) returns (MsgRegisterResponse);
+  rpc MsgUpdate(MsgUpdateRequest) returns (MsgUpdateResponse);
+}

@@ -1,31 +1,34 @@
 syntax = "proto3";
 package sentinel.subscription.v1;
 
-option go_package = "github.com/sentinel-official/hub/x/subscription/legacy/v1/types";
-
 import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "sentinel/types/v1/status.proto";
 
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v1";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message Subscription {
-  uint64 id                        = 1;
-  string owner                     = 2;
-  string node                      = 3;
-  cosmos.base.v1beta1.Coin price   = 4 [ (gogoproto.nullable) = false ];
-  cosmos.base.v1beta1.Coin deposit = 5 [ (gogoproto.nullable) = false ];
-  uint64 plan                      = 6;
-  string denom                     = 7;
-  google.protobuf.Timestamp expiry = 8
-      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+  uint64 id = 1;
+  string owner = 2;
+  string node = 3;
+  cosmos.base.v1beta1.Coin price = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin deposit = 5 [(gogoproto.nullable) = false];
+  uint64 plan = 6;
+  string denom = 7;
+  google.protobuf.Timestamp expiry = 8 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
   string free = 9 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable)   = false
+    (gogoproto.nullable) = false
   ];
-  sentinel.types.v1.Status status     = 10;
-  google.protobuf.Timestamp status_at = 11
-      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+  sentinel.types.v1.Status status = 10;
+  google.protobuf.Timestamp status_at = 11 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }

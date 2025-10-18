@@ -1,0 +1,16 @@
+syntax = "proto3";
+package osmosis.poolmanager.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/poolmanager/client/queryproto";
+
+message SpotPriceRequest {
+  uint64 pool_id = 1 [(gogoproto.moretags) = "yaml:\"pool_id\""];
+  string base_asset_denom = 2 [(gogoproto.moretags) = "yaml:\"base_asset_denom\""];
+  string quote_asset_denom = 3 [(gogoproto.moretags) = "yaml:\"quote_asset_denom\""];
+}
+
+message SpotPriceResponse {
+  string spot_price = 1 [(gogoproto.moretags) = "yaml:\"spot_price\""];
+}

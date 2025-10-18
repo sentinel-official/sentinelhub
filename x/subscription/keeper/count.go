@@ -4,25 +4,24 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
-	"github.com/sentinel-official/hub/x/subscription/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types"
 )
 
-func (k *Keeper) SetCount(ctx sdk.Context, count uint64) {
-	var (
-		key   = types.CountKey
-		value = k.cdc.MustMarshal(&protobuf.UInt64Value{Value: count})
-		store = k.Store(ctx)
-	)
+// SetSubscriptionCount sets the count value in the KVStore.
+func (k *Keeper) SetSubscriptionCount(ctx sdk.Context, count uint64) {
+	store := k.Store(ctx)
+	key := types.CountKey
+	value := k.cdc.MustMarshal(&protobuf.UInt64Value{Value: count})
 
 	store.Set(key, value)
 }
 
-func (k *Keeper) GetCount(ctx sdk.Context) uint64 {
-	var (
-		store = k.Store(ctx)
-		key   = types.CountKey
-		value = store.Get(key)
-	)
+// GetSubscriptionCount retrieves the count value from the KVStore.
+// If the count value does not exist, it returns 0 as the default.
+func (k *Keeper) GetSubscriptionCount(ctx sdk.Context) uint64 {
+	store := k.Store(ctx)
+	key := types.CountKey
+	value := store.Get(key)
 
 	if value == nil {
 		return 0

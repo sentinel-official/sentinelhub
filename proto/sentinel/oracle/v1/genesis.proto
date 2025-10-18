@@ -1,0 +1,16 @@
+syntax = "proto3";
+package sentinel.oracle.v1;
+
+import "gogoproto/gogo.proto";
+import "sentinel/oracle/v1/asset.proto";
+import "sentinel/oracle/v1/params.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message GenesisState {
+  repeated sentinel.oracle.v1.Asset assets = 1 [(gogoproto.nullable) = false];
+  Params params = 2 [(gogoproto.nullable) = false];
+  string port_id = 3 [(gogoproto.customname) = "PortID"];
+}

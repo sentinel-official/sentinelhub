@@ -5,11 +5,11 @@ import "gogoproto/gogo.proto";
 import "sentinel/provider/v2/params.proto";
 import "sentinel/provider/v2/provider.proto";
 
-option go_package = "github.com/sentinel-official/hub/x/provider/types";
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message GenesisState {
-  repeated Provider providers = 1 [ (gogoproto.nullable) = false ];
-  Params params               = 2 [ (gogoproto.nullable) = false ];
+  repeated Provider providers = 1 [(gogoproto.nullable) = false];
+  Params params = 2 [(gogoproto.nullable) = false];
 }

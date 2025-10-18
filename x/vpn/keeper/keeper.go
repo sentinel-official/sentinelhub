@@ -1,85 +1,78 @@
 package keeper
 
 import (
-	"fmt"
-
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
-	depositkeeper "github.com/sentinel-official/hub/x/deposit/keeper"
-	nodekeeper "github.com/sentinel-official/hub/x/node/keeper"
-	nodetypes "github.com/sentinel-official/hub/x/node/types"
-	plankeeper "github.com/sentinel-official/hub/x/plan/keeper"
-	providerkeeper "github.com/sentinel-official/hub/x/provider/keeper"
-	providertypes "github.com/sentinel-official/hub/x/provider/types"
-	sessionkeeper "github.com/sentinel-official/hub/x/session/keeper"
-	sessiontypes "github.com/sentinel-official/hub/x/session/types"
-	subscriptionkeeper "github.com/sentinel-official/hub/x/subscription/keeper"
-	subscriptiontypes "github.com/sentinel-official/hub/x/subscription/types"
-	"github.com/sentinel-official/hub/x/vpn/expected"
-	"github.com/sentinel-official/hub/x/vpn/types"
+	depositkeeper "github.com/sentinel-official/sentinelhub/v12/x/deposit/keeper"
+	leasekeeper "github.com/sentinel-official/sentinelhub/v12/x/lease/keeper"
+	nodekeeper "github.com/sentinel-official/sentinelhub/v12/x/node/keeper"
+	plankeeper "github.com/sentinel-official/sentinelhub/v12/x/plan/keeper"
+	providerkeeper "github.com/sentinel-official/sentinelhub/v12/x/provider/keeper"
+	sessionkeeper "github.com/sentinel-official/sentinelhub/v12/x/session/keeper"
+	subscriptionkeeper "github.com/sentinel-official/sentinelhub/v12/x/subscription/keeper"
 )
 
 type Keeper struct {
 	Deposit      depositkeeper.Keeper
-	Provider     providerkeeper.Keeper
+	Lease        leasekeeper.Keeper
 	Node         nodekeeper.Keeper
 	Plan         plankeeper.Keeper
-	Subscription subscriptionkeeper.Keeper
+	Provider     providerkeeper.Keeper
 	Session      sessionkeeper.Keeper
+	Subscription subscriptionkeeper.Keeper
 }
 
 func NewKeeper(
-	cdc codec.BinaryCodec,
-	key sdk.StoreKey,
-	paramsKeeper expected.ParamsKeeper,
-	accountKeeper expected.AccountKeeper,
-	bankKeeper expected.BankKeeper,
-	distributionKeeper expected.DistributionKeeper,
-	feeCollectorName string,
-) (k Keeper) {
-	k.Deposit = depositkeeper.NewKeeper(cdc, key)
+	cdc codec.BinaryCodec, key storetypes.StoreKey, accountKeeper AccountKeeper,
+	bankKeeper BankKeeper, distributionKeeper DistributionKeeper, oracleKeeper OracleKeeper,
+	router *baseapp.MsgServiceRouter, authority, feeCollectorName string,
+) Keeper {
+	k := Keeper{
+		Deposit:      depositkeeper.NewKeeper(cdc, key),
+		Lease:        leasekeeper.NewKeeper(cdc, key, router, authority, feeCollectorName),
+		Node:         nodekeeper.NewKeeper(cdc, key, router, authority, feeCollectorName),
+		Plan:         plankeeper.NewKeeper(cdc, key, router),
+		Provider:     providerkeeper.NewKeeper(cdc, key, router, authority),
+		Session:      sessionkeeper.NewKeeper(cdc, key, router, authority, feeCollectorName),
+		Subscription: subscriptionkeeper.NewKeeper(cdc, key, router, authority, feeCollectorName),
+	}
+
 	k.Deposit.WithBankKeeper(bankKeeper)
 
-	k.Provider = providerkeeper.NewKeeper(
-		cdc, key, paramsKeeper.Subspace(fmt.Sprintf("%s/%s", types.ModuleName, providertypes.ModuleName)),
-	)
-	k.Provider.WithDistributionKeeper(distributionKeeper)
+	k.Lease.WithDepositKeeper(&k.Deposit)
+	k.Lease.WithNodeKeeper(&k.Node)
+	k.Lease.WithPlanKeeper(&k.Plan)
+	k.Lease.WithOracleKeeper(oracleKeeper)
+	k.Lease.WithProviderKeeper(&k.Provider)
 
-	k.Node = nodekeeper.NewKeeper(
-		cdc, key, paramsKeeper.Subspace(fmt.Sprintf("%s/%s", types.ModuleName, nodetypes.ModuleName)),
-	)
+	k.Node.WithDepositKeeper(&k.Deposit)
 	k.Node.WithDistributionKeeper(distributionKeeper)
-	k.Node.WithProviderKeeper(&k.Provider)
-	k.Node.WithSubscriptionKeeper(&k.Subscription)
+	k.Node.WithLeaseKeeper(&k.Lease)
+	k.Node.WithOracleKeeper(oracleKeeper)
+	k.Node.WithSessionKeeper(&k.Session)
 
-	k.Plan = plankeeper.NewKeeper(cdc, key)
-	k.Plan.WithBankKeeper(bankKeeper)
-	k.Plan.WithProviderKeeper(&k.Provider)
+	k.Plan.WithLeaseKeeper(&k.Lease)
 	k.Plan.WithNodeKeeper(&k.Node)
+	k.Plan.WithProviderKeeper(&k.Provider)
+	k.Plan.WithSessionKeeper(&k.Session)
 	k.Plan.WithSubscriptionKeeper(&k.Subscription)
 
-	k.Subscription = subscriptionkeeper.NewKeeper(
-		cdc, key, paramsKeeper.Subspace(fmt.Sprintf("%s/%s", types.ModuleName, subscriptiontypes.ModuleName)),
-		feeCollectorName,
-	)
-	k.Subscription.WithBankKeeper(bankKeeper)
-	k.Subscription.WithDepositKeeper(&k.Deposit)
-	k.Subscription.WithProviderKeeper(&k.Provider)
-	k.Subscription.WithNodeKeeper(&k.Node)
-	k.Subscription.WithPlanKeeper(&k.Plan)
-	k.Subscription.WithSessionKeeper(&k.Session)
+	k.Provider.WithDistributionKeeper(distributionKeeper)
+	k.Provider.WithPlanKeeper(&k.Plan)
+	k.Provider.WithLeaseKeeper(&k.Lease)
 
-	k.Session = sessionkeeper.NewKeeper(
-		cdc, key, paramsKeeper.Subspace(fmt.Sprintf("%s/%s", types.ModuleName, sessiontypes.ModuleName)),
-		feeCollectorName,
-	)
 	k.Session.WithAccountKeeper(accountKeeper)
-	k.Session.WithBankKeeper(bankKeeper)
 	k.Session.WithDepositKeeper(&k.Deposit)
 	k.Session.WithNodeKeeper(&k.Node)
-	k.Session.WithPlanKeeper(&k.Plan)
 	k.Session.WithSubscriptionKeeper(&k.Subscription)
+
+	k.Subscription.WithBankKeeper(bankKeeper)
+	k.Subscription.WithNodeKeeper(&k.Node)
+	k.Subscription.WithOracleKeeper(oracleKeeper)
+	k.Subscription.WithPlanKeeper(&k.Plan)
+	k.Subscription.WithSessionKeeper(&k.Session)
 
 	return k
 }

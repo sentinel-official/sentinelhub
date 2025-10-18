@@ -1,22 +1,20 @@
-// DO NOT COVER
-
 package cli
 
 import (
-	"context"
 	"encoding/hex"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/sentinel-official/hub/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/swap/types/v1"
 )
 
 func querySwap() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "swap",
-		Short: "Query a swap",
+		Short: "Query a swap by transaction hash",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientQueryContext(cmd)
@@ -29,15 +27,11 @@ func querySwap() *cobra.Command {
 				return err
 			}
 
-			var (
-				qc = types.NewQueryServiceClient(ctx)
-			)
+			qc := v1.NewQueryServiceClient(ctx)
 
 			res, err := qc.QuerySwap(
-				context.Background(),
-				types.NewQuerySwapRequest(
-					types.BytesToHash(txHash),
-				),
+				cmd.Context(),
+				v1.NewQuerySwapRequest(types.BytesToHash(txHash)),
 			)
 			if err != nil {
 				return err
@@ -55,7 +49,7 @@ func querySwap() *cobra.Command {
 func querySwaps() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "swaps",
-		Short: "Query swaps",
+		Short: "Query all swaps with optional filters and pagination",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -67,15 +61,11 @@ func querySwaps() *cobra.Command {
 				return err
 			}
 
-			var (
-				qc = types.NewQueryServiceClient(ctx)
-			)
+			qc := v1.NewQueryServiceClient(ctx)
 
 			res, err := qc.QuerySwaps(
-				context.Background(),
-				types.NewQuerySwapsRequest(
-					pagination,
-				),
+				cmd.Context(),
+				v1.NewQuerySwapsRequest(pagination),
 			)
 			if err != nil {
 				return err
@@ -94,20 +84,18 @@ func querySwaps() *cobra.Command {
 func queryParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "params",
-		Short: "Query swap module parameters",
+		Short: "Query the swap module parameters",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			var (
-				qc = types.NewQueryServiceClient(ctx)
-			)
+			qc := v1.NewQueryServiceClient(ctx)
 
 			res, err := qc.QueryParams(
-				context.Background(),
-				types.NewQueryParamsRequest(),
+				cmd.Context(),
+				v1.NewQueryParamsRequest(),
 			)
 			if err != nil {
 				return err

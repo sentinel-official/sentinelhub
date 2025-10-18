@@ -1,0 +1,22 @@
+syntax = "proto3";
+package sentinel.oracle.v1;
+
+import "gogoproto/gogo.proto";
+import "osmosis/poolmanager/v1beta1/query.proto";
+import "osmosis/protorev/v1beta1/query.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message Asset {
+  string denom = 1;
+  int64 decimals = 2;
+  osmosis.protorev.v1beta1.QueryGetProtoRevPoolRequest proto_rev_pool_request = 3 [(gogoproto.nullable) = false];
+  osmosis.poolmanager.v1beta1.SpotPriceRequest spot_price_request = 4 [(gogoproto.nullable) = false];
+  string spot_price = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  int64 spot_price_height = 6;
+}

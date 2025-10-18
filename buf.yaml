@@ -1,0 +1,17 @@
+version: v2
+modules:
+  - path: proto
+    name: buf.build/sentinel-official/sentinelhub
+  - path: third_party/osmosis/proto
+    name: buf.build/sentinel-official/osmosis
+deps:
+  - buf.build/cosmos/cosmos-proto:1935555c206d4afb9e94615dfd0fad31
+  - buf.build/cosmos/cosmos-sdk:v0.47.0
+  - buf.build/cosmos/gogo-proto:34d970b699f84aa382f3c29773a60836
+  - buf.build/googleapis/googleapis:75b4300737fb4efca0831636be94e517
+lint:
+  use:
+    - STANDARD
+  ignore_only:
+    ENUM_VALUE_PREFIX:
+      - proto/sentinel/subscription/v2/subscription.proto

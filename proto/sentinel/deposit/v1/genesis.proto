@@ -1,0 +1,16 @@
+syntax = "proto3";
+package sentinel.deposit.v1;
+
+import "gogoproto/gogo.proto";
+import "sentinel/deposit/v1/deposit.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/deposit/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message GenesisState {
+  repeated Deposit deposits = 1 [
+    (gogoproto.moretags) = "yaml:\"deposits\"",
+    (gogoproto.nullable) = false
+  ];
+}

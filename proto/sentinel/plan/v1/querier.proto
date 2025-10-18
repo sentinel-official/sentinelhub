@@ -1,0 +1,67 @@
+syntax = "proto3";
+package sentinel.plan.v1;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "sentinel/node/v1/node.proto";
+import "sentinel/plan/v1/plan.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message QueryPlansRequest {
+  sentinel.types.v1.Status status = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryPlansForProviderRequest {
+  string address = 1;
+  sentinel.types.v1.Status status = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+message QueryPlanRequest {
+  uint64 id = 1;
+}
+
+message QueryNodesForPlanRequest {
+  uint64 id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryPlansResponse {
+  repeated Plan plans = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryPlansForProviderResponse {
+  repeated Plan plans = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryPlanResponse {
+  Plan plan = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryNodesForPlanResponse {
+  repeated sentinel.node.v1.Node nodes = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+service QueryService {
+  rpc QueryPlans(QueryPlansRequest) returns (QueryPlansResponse) {
+    option (google.api.http).get = "/sentinel/plan/v1/plans";
+  }
+  rpc QueryPlansForProvider(QueryPlansForProviderRequest) returns (QueryPlansForProviderResponse) {
+    option (google.api.http).get = "/sentinel/plan/v1/providers/{address}/plans";
+  }
+  rpc QueryPlan(QueryPlanRequest) returns (QueryPlanResponse) {
+    option (google.api.http).get = "/sentinel/plan/v1/plans/{id}";
+  }
+  rpc QueryNodesForPlan(QueryNodesForPlanRequest) returns (QueryNodesForPlanResponse) {
+    option (google.api.http).get = "/sentinel/plan/v1/plans/{id}/nodes";
+  }
+}

@@ -1,70 +1,25 @@
-// DO NOT COVER
-
 package cli
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
-	hubtypes "github.com/sentinel-official/hub/types"
-	"github.com/sentinel-official/hub/x/plan/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
 )
 
-func txCreate() *cobra.Command {
+func txCreatePlan() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create [duration] [gigabytes] [prices]",
-		Short: "Create a subscription plan",
-		Args:  cobra.ExactArgs(3),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			duration, err := time.ParseDuration(args[0])
-			if err != nil {
-				return err
-			}
-
-			gigabytes, err := strconv.ParseInt(args[1], 10, 64)
-			if err != nil {
-				return err
-			}
-
-			prices, err := sdk.ParseCoinsNormalized(args[2])
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgCreateRequest(
-				ctx.FromAddress.Bytes(),
-				duration,
-				gigabytes,
-				prices,
-			)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(ctx, cmd.Flags(), msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func txUpdateStatus() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "update-status [plan-id] [status]",
-		Short: "Update status for a subscription plan",
+		Use:   "create-plan [bytes] [duration]",
+		Short: "Create a new subscription plan with bytes, duration, pricing details, and privacy setting",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
@@ -72,15 +27,32 @@ func txUpdateStatus() *cobra.Command {
 				return err
 			}
 
-			id, err := strconv.ParseUint(args[0], 10, 64)
+			bytes, ok := sdkmath.NewIntFromString(args[0])
+			if !ok {
+				return fmt.Errorf("invalid bytes %s", args[0])
+			}
+
+			duration, err := time.ParseDuration(args[1])
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgUpdateStatusRequest(
+			prices, err := GetPrices(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			private, err := GetPrivate(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			msg := v3.NewMsgCreatePlanRequest(
 				ctx.FromAddress.Bytes(),
-				id,
-				hubtypes.StatusFromString(args[1]),
+				bytes,
+				duration,
+				prices,
+				private,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -91,14 +63,16 @@ func txUpdateStatus() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().Bool(flagPrivate, false, "set whether the plan should be private or not")
+	cmd.Flags().String(flagPrices, "", "specify the list of prices (e.g., 1000token)")
 
 	return cmd
 }
 
 func txLinkNode() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-node [plan-id] [node-addr]",
-		Short: "Add node to a subscription plan",
+		Use:   "link-node [id] [node-addr]",
+		Short: "Link a node to a subscription plan",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
@@ -111,12 +85,12 @@ func txLinkNode() *cobra.Command {
 				return err
 			}
 
-			addr, err := hubtypes.NodeAddressFromBech32(args[1])
+			addr, err := base.NodeAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgLinkNodeRequest(
+			msg := v3.NewMsgLinkNodeRequest(
 				ctx.FromAddress.Bytes(),
 				id,
 				addr,
@@ -136,8 +110,8 @@ func txLinkNode() *cobra.Command {
 
 func txUnlinkNode() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-node [plan-id] [node-addr]",
-		Short: "Remove node from a subscription plan",
+		Use:   "unlink-node [id] [node-addr]",
+		Short: "Unlink a node from a subscription plan",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
@@ -150,12 +124,12 @@ func txUnlinkNode() *cobra.Command {
 				return err
 			}
 
-			addr, err := hubtypes.NodeAddressFromBech32(args[1])
+			addr, err := base.NodeAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgUnlinkNodeRequest(
+			msg := v3.NewMsgUnlinkNodeRequest(
 				ctx.FromAddress.Bytes(),
 				id,
 				addr,
@@ -173,10 +147,10 @@ func txUnlinkNode() *cobra.Command {
 	return cmd
 }
 
-func txSubscribe() *cobra.Command {
+func txUpdatePlanDetails() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "subscribe [plan-id] [denom]",
-		Short: "Subscribe to a subscription plan",
+		Use:   "update-plan-details [id]",
+		Short: "Update the details of an existing subscription plan",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx, err := client.GetClientTxContext(cmd)
@@ -189,12 +163,52 @@ func txSubscribe() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgSubscribeRequest(
-				ctx.FromAddress,
+			private, err := GetPrivate(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			msg := v3.NewMsgUpdatePlanDetailsRequest(
+				ctx.FromAddress.Bytes(),
 				id,
-				args[1],
+				private,
 			)
-			if err = msg.ValidateBasic(); err != nil {
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(ctx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().Bool(flagPrivate, false, "set whether the plan should be private or not")
+
+	return cmd
+}
+
+func txUpdatePlanStatus() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-plan-status [id] [status]",
+		Short: "Update the status of an existing subscription plan",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			id, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			msg := v3.NewMsgUpdatePlanStatusRequest(
+				ctx.FromAddress.Bytes(),
+				id,
+				v1base.StatusFromString(args[1]),
+			)
+			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
 

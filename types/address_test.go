@@ -11,6 +11,7 @@ func TestNodeAddressFromBech32(t *testing.T) {
 	type args struct {
 		s string
 	}
+
 	tests := []struct {
 		name    string
 		args    args
@@ -55,8 +56,10 @@ func TestNodeAddressFromBech32(t *testing.T) {
 			got, err := NodeAddressFromBech32(tt.args.s)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NodeAddressFromBech32() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
+
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NodeAddressFromBech32() got = %v, want %v", got, tt.want)
 			}
@@ -149,6 +152,7 @@ func TestNodeAddress_Equals(t *testing.T) {
 	type args struct {
 		address sdk.Address
 	}
+
 	tests := []struct {
 		name string
 		n    NodeAddress
@@ -264,8 +268,10 @@ func TestNodeAddress_Marshal(t *testing.T) {
 			got, err := tt.n.Marshal()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Marshal() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
+
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Marshal() got = %v, want %v", got, tt.want)
 			}
@@ -316,8 +322,10 @@ func TestNodeAddress_MarshalJSON(t *testing.T) {
 			got, err := tt.n.MarshalJSON()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("MarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
+
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MarshalJSON() got = %v, want %v", got, tt.want)
 			}
@@ -368,8 +376,10 @@ func TestNodeAddress_MarshalYAML(t *testing.T) {
 			got, err := tt.n.MarshalYAML()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("MarshalYAML() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
+
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MarshalYAML() got = %v, want %v", got, tt.want)
 			}
@@ -422,6 +432,7 @@ func TestNodeAddress_Unmarshal(t *testing.T) {
 	type args struct {
 		data []byte
 	}
+
 	tests := []struct {
 		name    string
 		n       NodeAddress
@@ -482,6 +493,7 @@ func TestNodeAddress_UnmarshalJSON(t *testing.T) {
 	type args struct {
 		data []byte
 	}
+
 	tests := []struct {
 		name    string
 		n       NodeAddress
@@ -542,6 +554,7 @@ func TestNodeAddress_UnmarshalYAML(t *testing.T) {
 	type args struct {
 		data []byte
 	}
+
 	tests := []struct {
 		name    string
 		n       NodeAddress
@@ -602,6 +615,7 @@ func TestProvAddressFromBech32(t *testing.T) {
 	type args struct {
 		s string
 	}
+
 	tests := []struct {
 		name    string
 		args    args
@@ -644,8 +658,10 @@ func TestProvAddressFromBech32(t *testing.T) {
 			got, err := ProvAddressFromBech32(tt.args.s)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ProvAddressFromBech32() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
+
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ProvAddressFromBech32() got = %v, want %v", got, tt.want)
 			}
@@ -739,6 +755,7 @@ func TestProvAddress_Equals(t *testing.T) {
 	type args struct {
 		address sdk.Address
 	}
+
 	tests := []struct {
 		name string
 		p    ProvAddress
@@ -854,8 +871,10 @@ func TestProvAddress_Marshal(t *testing.T) {
 			got, err := tt.p.Marshal()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Marshal() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
+
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Marshal() got = %v, want %v", got, tt.want)
 			}
@@ -906,8 +925,10 @@ func TestProvAddress_MarshalJSON(t *testing.T) {
 			got, err := tt.p.MarshalJSON()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("MarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
+
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MarshalJSON() got = %v, want %v", got, tt.want)
 			}
@@ -958,8 +979,10 @@ func TestProvAddress_MarshalYAML(t *testing.T) {
 			got, err := tt.p.MarshalYAML()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("MarshalYAML() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
+
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MarshalYAML() got = %v, want %v", got, tt.want)
 			}
@@ -1012,6 +1035,7 @@ func TestProvAddress_Unmarshal(t *testing.T) {
 	type args struct {
 		data []byte
 	}
+
 	tests := []struct {
 		name    string
 		p       ProvAddress
@@ -1072,6 +1096,7 @@ func TestProvAddress_UnmarshalJSON(t *testing.T) {
 	type args struct {
 		data []byte
 	}
+
 	tests := []struct {
 		name    string
 		p       ProvAddress
@@ -1132,6 +1157,7 @@ func TestProvAddress_UnmarshalYAML(t *testing.T) {
 	type args struct {
 		data []byte
 	}
+
 	tests := []struct {
 		name    string
 		p       ProvAddress

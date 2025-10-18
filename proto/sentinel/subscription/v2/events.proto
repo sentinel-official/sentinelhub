@@ -4,83 +4,90 @@ package sentinel.subscription.v2;
 import "gogoproto/gogo.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/hub/x/subscription/types";
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
-message EventUpdateStatus {
-  sentinel.types.v1.Status status = 1
-      [ (gogoproto.moretags) = "yaml:\"status\"" ];
-  string address = 2 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  uint64 id      = 3
-      [ (gogoproto.customname) = "ID", (gogoproto.moretags) = "yaml:\"id\"" ];
-  uint64 plan_id = 4 [
-    (gogoproto.customname) = "PlanID",
-    (gogoproto.moretags)   = "yaml:\"plan_id\""
-  ];
-}
-
 message EventAllocate {
-  string address       = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
   string granted_bytes = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable)   = false
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
   ];
   string utilised_bytes = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable)   = false
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
   ];
-  uint64 id = 4
-      [ (gogoproto.customname) = "ID", (gogoproto.moretags) = "yaml:\"id\"" ];
+  uint64 id = 4 [
+    (gogoproto.customname) = "ID",
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
 }
 
 message EventCreatePayout {
-  string address      = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  string node_address = 2 [ (gogoproto.moretags) = "yaml:\"node_address\"" ];
-  uint64 id           = 3
-      [ (gogoproto.customname) = "ID", (gogoproto.moretags) = "yaml:\"id\"" ];
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
+  string node_address = 2 [(gogoproto.moretags) = "yaml:\"node_address\""];
+  uint64 id = 3 [
+    (gogoproto.customname) = "ID",
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
 }
 
 message EventPayForPayout {
-  string address        = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  string node_address   = 2 [ (gogoproto.moretags) = "yaml:\"node_address\"" ];
-  string payment        = 3 [ (gogoproto.moretags) = "yaml:\"payment\"" ];
-  string staking_reward = 4
-      [ (gogoproto.moretags) = "yaml:\"staking_reward\"" ];
-  uint64 id = 5
-      [ (gogoproto.customname) = "ID", (gogoproto.moretags) = "yaml:\"id\"" ];
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
+  string node_address = 2 [(gogoproto.moretags) = "yaml:\"node_address\""];
+  string payment = 3 [(gogoproto.moretags) = "yaml:\"payment\""];
+  string staking_reward = 4 [(gogoproto.moretags) = "yaml:\"staking_reward\""];
+  uint64 id = 5 [
+    (gogoproto.customname) = "ID",
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
 }
 
 message EventPayForPlan {
-  string address          = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  string payment          = 2 [ (gogoproto.moretags) = "yaml:\"payment\"" ];
-  string provider_address = 3
-      [ (gogoproto.moretags) = "yaml:\"provider_address\"" ];
-  string staking_reward = 4
-      [ (gogoproto.moretags) = "yaml:\"staking_reward\"" ];
-  uint64 id = 5
-      [ (gogoproto.customname) = "ID", (gogoproto.moretags) = "yaml:\"id\"" ];
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
+  string payment = 2 [(gogoproto.moretags) = "yaml:\"payment\""];
+  string provider_address = 3 [(gogoproto.moretags) = "yaml:\"provider_address\""];
+  string staking_reward = 4 [(gogoproto.moretags) = "yaml:\"staking_reward\""];
+  uint64 id = 5 [
+    (gogoproto.customname) = "ID",
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
 }
 
 message EventPayForSession {
-  string address        = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  string node_address   = 2 [ (gogoproto.moretags) = "yaml:\"node_address\"" ];
-  string payment        = 3 [ (gogoproto.moretags) = "yaml:\"payment\"" ];
-  string staking_reward = 4
-      [ (gogoproto.moretags) = "yaml:\"staking_reward\"" ];
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
+  string node_address = 2 [(gogoproto.moretags) = "yaml:\"node_address\""];
+  string payment = 3 [(gogoproto.moretags) = "yaml:\"payment\""];
+  string staking_reward = 4 [(gogoproto.moretags) = "yaml:\"staking_reward\""];
   uint64 session_id = 5 [
     (gogoproto.customname) = "SessionID",
-    (gogoproto.moretags)   = "yaml:\"session_id\""
+    (gogoproto.moretags) = "yaml:\"session_id\""
   ];
   uint64 subscription_id = 6 [
     (gogoproto.customname) = "SubscriptionID",
-    (gogoproto.moretags)   = "yaml:\"subscription_id\""
+    (gogoproto.moretags) = "yaml:\"subscription_id\""
   ];
 }
 
 message EventRefund {
-  string address = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
-  string amount  = 2 [ (gogoproto.moretags) = "yaml:\"amount\"" ];
-  uint64 id      = 3
-      [ (gogoproto.customname) = "ID", (gogoproto.moretags) = "yaml:\"id\"" ];
+  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
+  string amount = 2 [(gogoproto.moretags) = "yaml:\"amount\""];
+  uint64 id = 3 [
+    (gogoproto.customname) = "ID",
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
+}
+
+message EventUpdateStatus {
+  sentinel.types.v1.Status status = 1 [(gogoproto.moretags) = "yaml:\"status\""];
+  string address = 2 [(gogoproto.moretags) = "yaml:\"address\""];
+  uint64 id = 3 [
+    (gogoproto.customname) = "ID",
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
+  uint64 plan_id = 4 [
+    (gogoproto.customname) = "PlanID",
+    (gogoproto.moretags) = "yaml:\"plan_id\""
+  ];
 }

@@ -1,0 +1,62 @@
+syntax = "proto3";
+package sentinel.lease.v1;
+
+import "gogoproto/gogo.proto";
+import "sentinel/lease/v1/params.proto";
+import "sentinel/types/v1/price.proto";
+import "sentinel/types/v1/renewal.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message MsgEndLeaseRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+}
+
+message MsgRenewLeaseRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+  int64 hours = 3;
+  sentinel.types.v1.Price max_price = 4 [(gogoproto.nullable) = false];
+}
+
+message MsgStartLeaseRequest {
+  string from = 1;
+  string node_address = 2;
+  int64 hours = 3;
+  sentinel.types.v1.Price max_price = 4 [(gogoproto.nullable) = false];
+  sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 5;
+}
+
+message MsgUpdateLeaseRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+  sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 3;
+}
+
+message MsgUpdateParamsRequest {
+  string from = 1;
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgEndLeaseResponse {}
+
+message MsgRenewLeaseResponse {}
+
+message MsgStartLeaseResponse {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+}
+
+message MsgUpdateLeaseResponse {}
+
+message MsgUpdateParamsResponse {}
+
+service MsgService {
+  rpc MsgEndLease(MsgEndLeaseRequest) returns (MsgEndLeaseResponse);
+  rpc MsgRenewLease(MsgRenewLeaseRequest) returns (MsgRenewLeaseResponse);
+  rpc MsgStartLease(MsgStartLeaseRequest) returns (MsgStartLeaseResponse);
+  rpc MsgUpdateLease(MsgUpdateLeaseRequest) returns (MsgUpdateLeaseResponse);
+  rpc MsgUpdateParams(MsgUpdateParamsRequest) returns (MsgUpdateParamsResponse);
+}

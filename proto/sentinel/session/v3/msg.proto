@@ -1,0 +1,50 @@
+syntax = "proto3";
+package sentinel.session.v3;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+import "sentinel/session/v3/params.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message MsgCancelSessionRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+}
+
+message MsgUpdateSessionRequest {
+  string from = 1;
+  uint64 id = 2 [(gogoproto.customname) = "ID"];
+  string download_bytes = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string upload_bytes = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Duration duration = 5 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true
+  ];
+  bytes signature = 6;
+}
+
+message MsgUpdateParamsRequest {
+  string from = 1;
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgCancelSessionResponse {}
+
+message MsgUpdateSessionResponse {}
+
+message MsgUpdateParamsResponse {}
+
+service MsgService {
+  rpc MsgCancelSession(MsgCancelSessionRequest) returns (MsgCancelSessionResponse);
+  rpc MsgUpdateSession(MsgUpdateSessionRequest) returns (MsgUpdateSessionResponse);
+  rpc MsgUpdateParams(MsgUpdateParamsRequest) returns (MsgUpdateParamsResponse);
+}

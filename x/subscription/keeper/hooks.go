@@ -1,113 +1,111 @@
 package keeper
 
 import (
-	"fmt"
-
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	hubtypes "github.com/sentinel-official/hub/types"
-	hubutils "github.com/sentinel-official/hub/utils"
-	"github.com/sentinel-official/hub/x/subscription/types"
+	base "github.com/sentinel-official/sentinelhub/v12/types"
+	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
 )
 
-// SessionInactiveHook is a function that handles the end of a session.
-// It updates the allocation's utilized bytes, calculates and sends payments, and staking rewards.
-func (k *Keeper) SessionInactiveHook(ctx sdk.Context, id uint64, accAddr sdk.AccAddress, nodeAddr hubtypes.NodeAddress, utilisedBytes sdk.Int) error {
-	// Retrieve the session associated with the provided session ID.
-	session, found := k.GetSession(ctx, id)
+// SessionInactivePreHook performs cleanup operations when a session transitions to an inactive state.
+func (k *Keeper) SessionInactivePreHook(ctx sdk.Context, id uint64) error {
+	k.Logger(ctx).Info("Running session inactive pre-hook", "id", id)
+
+	// Retrieve the session by ID; return an error if it doesn't exist.
+	item, found := k.GetSession(ctx, id)
 	if !found {
-		return fmt.Errorf("session %d does not exist", id)
+		return types.NewErrorSessionNotFound(id)
 	}
 
-	// Check if the session has the correct status for processing.
-	if !session.Status.Equal(hubtypes.StatusInactivePending) {
-		return fmt.Errorf("invalid status %s for session %d", session.Status, session.ID)
-	}
-
-	// Retrieve the subscription associated with the session.
-	subscription, found := k.GetSubscription(ctx, session.SubscriptionID)
-	if !found {
-		return fmt.Errorf("subscription %d does not exist", session.SubscriptionID)
-	}
-
-	// If the subscription is a NodeSubscription with non-zero duration (hours), no further action is needed.
-	if s, ok := subscription.(*types.NodeSubscription); ok && s.Hours != 0 {
+	// Ensure the session is of type v3.Session; do nothing if it's not.
+	session, ok := item.(*v3.Session)
+	if !ok {
 		return nil
 	}
 
-	// Retrieve the allocation associated with the subscription and account address.
-	alloc, found := k.GetAllocation(ctx, subscription.GetID(), accAddr)
+	// Verify that the session's status is "InactivePending"; otherwise, return an error.
+	if !session.Status.Equal(v1base.StatusInactivePending) {
+		return types.NewErrorInvalidSessionStatus(session.ID, session.Status)
+	}
+
+	// Fetch the subscription associated with the session; return an error if it doesn't exist.
+	subscription, found := k.GetSubscription(ctx, session.SubscriptionID)
 	if !found {
-		return fmt.Errorf("subscription allocation %d/%s does not exist", subscription.GetID(), accAddr)
+		return types.NewErrorSubscriptionNotFound(session.SubscriptionID)
 	}
 
-	var (
-		gigabytePrice  sdk.Coin        // Gigabyte price based on the deposit amount and gigabytes (for NodeSubscription).
-		previousAmount = sdk.ZeroInt() // Amount paid for previous utilization (for NodeSubscription).
-	)
-
-	// Calculate payment amounts based on the subscription type (NodeSubscription).
-	if s, ok := subscription.(*types.NodeSubscription); ok && s.Gigabytes != 0 {
-		gigabytePrice = sdk.NewCoin(
-			s.Deposit.Denom,
-			s.Deposit.Amount.QuoRaw(s.Gigabytes),
-		)
-		previousAmount = hubutils.AmountForBytes(gigabytePrice.Amount, alloc.UtilisedBytes)
+	// Decode the session's account address from Bech32 format.
+	accAddr, err := sdk.AccAddressFromBech32(session.AccAddress)
+	if err != nil {
+		return err
 	}
 
-	// Update the allocation's utilized bytes by adding the provided bytes.
-	alloc.UtilisedBytes = alloc.UtilisedBytes.Add(utilisedBytes)
-	// Ensure that the utilized bytes don't exceed the granted bytes.
-	if alloc.UtilisedBytes.GT(alloc.GrantedBytes) {
-		alloc.UtilisedBytes = alloc.GrantedBytes
+	// Decode the session's node address from Bech32 format.
+	nodeAddr, err := base.NodeAddressFromBech32(session.NodeAddress)
+	if err != nil {
+		return err
 	}
 
-	// Save the updated allocation to the store.
+	// Remove session references for allocation, node, plan, and subscription.
+	k.DeleteSessionForAllocation(ctx, subscription.ID, accAddr, session.ID)
+	k.DeleteSessionForPlanByNode(ctx, subscription.PlanID, nodeAddr, session.ID)
+	k.DeleteSessionForSubscription(ctx, subscription.ID, session.ID)
+
+	return nil
+}
+
+// SessionUpdatePreHook updates session and allocation details during a session update.
+func (k *Keeper) SessionUpdatePreHook(ctx sdk.Context, id uint64, currBytes sdkmath.Int) error {
+	k.Logger(ctx).Info("Running session update pre-hook", "id", id)
+
+	// Retrieve the session by ID; return an error if it doesn't exist.
+	item, found := k.GetSession(ctx, id)
+	if !found {
+		return types.NewErrorSessionNotFound(id)
+	}
+
+	// Ensure the session is of type v3.Session; do nothing if it's not.
+	session, ok := item.(*v3.Session)
+	if !ok {
+		return nil
+	}
+
+	// Ensure the session is not in the "Inactive" state; return an error if it is.
+	if session.Status.Equal(v1base.StatusInactive) {
+		return types.NewErrorInvalidSessionStatus(session.ID, session.Status)
+	}
+
+	// Decode the session's account address from Bech32 format.
+	accAddr, err := sdk.AccAddressFromBech32(session.AccAddress)
+	if err != nil {
+		return err
+	}
+
+	// Fetch the allocation for the subscription and account; return an error if it doesn't exist.
+	alloc, found := k.GetAllocation(ctx, session.SubscriptionID, accAddr)
+	if !found {
+		return types.NewErrorAllocationNotFound(session.SubscriptionID, accAddr)
+	}
+
+	// Update allocation's utilised bytes based on the difference between current and previous session bytes.
+	diffBytes := currBytes.Sub(session.TotalBytes())
+	alloc.UtilisedBytes = alloc.UtilisedBytes.Add(diffBytes)
+
+	// Store the updated allocation in the keeper.
 	k.SetAllocation(ctx, alloc)
+
+	// Emit an event logging the updated allocation details.
 	ctx.EventManager().EmitTypedEvent(
-		&types.EventAllocate{
-			Address:       alloc.Address,
-			GrantedBytes:  alloc.GrantedBytes,
-			UtilisedBytes: alloc.UtilisedBytes,
-			ID:            alloc.ID,
+		&v3.EventAllocate{
+			SubscriptionID: alloc.ID,
+			AccAddress:     alloc.Address,
+			GrantedBytes:   alloc.GrantedBytes.String(),
+			UtilisedBytes:  alloc.UtilisedBytes.String(),
 		},
 	)
-
-	// Calculate the current payment amount based on the subscription type (NodeSubscription).
-	if s, ok := subscription.(*types.NodeSubscription); ok && s.Gigabytes != 0 {
-		// Calculate the payment to be made for the current utilization.
-		var (
-			currentAmount = hubutils.AmountForBytes(gigabytePrice.Amount, alloc.UtilisedBytes)
-			payment       = sdk.NewCoin(gigabytePrice.Denom, currentAmount.Sub(previousAmount))
-			stakingShare  = k.node.StakingShare(ctx)
-			stakingReward = hubutils.GetProportionOfCoin(payment, stakingShare)
-		)
-
-		// Move the staking reward from the deposit to the fee collector module account.
-		if err := k.SendCoinFromDepositToModule(ctx, accAddr, k.feeCollectorName, stakingReward); err != nil {
-			return err
-		}
-
-		// Subtract the staking reward from the payment to get the final payment amount.
-		payment = payment.Sub(stakingReward)
-
-		// Send the payment amount from the deposit to the node address.
-		if err := k.SendCoinFromDepositToAccount(ctx, accAddr, nodeAddr.Bytes(), payment); err != nil {
-			return err
-		}
-
-		// Emit an event for the session payment.
-		ctx.EventManager().EmitTypedEvent(
-			&types.EventPayForSession{
-				Address:        session.Address,
-				NodeAddress:    session.NodeAddress,
-				Payment:        payment.String(),
-				StakingReward:  stakingReward.String(),
-				SessionID:      session.ID,
-				SubscriptionID: session.SubscriptionID,
-			},
-		)
-	}
 
 	return nil
 }

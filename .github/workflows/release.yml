@@ -3,31 +3,34 @@ name: "Release"
 on:
   release:
     types:
-      - created
+      - published
 
 jobs:
   artifacts:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v5
 
-      - name: Build Docker image
-        run: docker build --compress --file Dockerfile --force-rm --tag sentinel-official/sentinelhub .
+      - name: Build and Tag Docker Image
+        run: make build-image
 
-      - name: Copy binary file
+      - name: Extract Binary
         run: |
-          docker create --name container sentinel-official/sentinelhub && \
-          docker cp container:/usr/local/bin/sentinelhub ./sentinelhub && \
-          docker rm container
+          docker create --name artifacts sentinelhub:latest
+          docker cp artifacts:/usr/local/bin/sentinelhub ./sentinelhub
+          docker rm artifacts
 
-      - name: Save SHA256 sum
-        run: sha256sum ./sentinelhub > ./sentinelhub_sha256.txt
+      - name: Generate SHA256 Checksum
+        run: sha256sum sentinelhub > ./checksums.txt
 
-      - name: Upload release artifacts
-        uses: softprops/action-gh-release@v1
+      - name: Upload Release Artifacts
+        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 #v2.4.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
+            checksums.txt
             sentinelhub
-            sentinelhub_sha256.txt

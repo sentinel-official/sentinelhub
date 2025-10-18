@@ -6,38 +6,41 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/hub/x/subscription/types";
-option (gogoproto.equal_all)           = false;
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2";
+option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 enum SubscriptionType {
   option (gogoproto.goproto_enum_prefix) = false;
-  TYPE_UNSPECIFIED = 0 [ (gogoproto.enumvalue_customname) = "TypeUnspecified" ];
-  TYPE_NODE        = 1 [ (gogoproto.enumvalue_customname) = "TypeNode" ];
-  TYPE_PLAN        = 2 [ (gogoproto.enumvalue_customname) = "TypePlan" ];
+  TYPE_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "TypeUnspecified"];
+  TYPE_NODE = 1 [(gogoproto.enumvalue_customname) = "TypeNode"];
+  TYPE_PLAN = 2 [(gogoproto.enumvalue_customname) = "TypePlan"];
 }
 
 message BaseSubscription {
-  uint64 id                             = 1 [ (gogoproto.customname) = "ID" ];
-  string address                        = 2;
-  google.protobuf.Timestamp inactive_at = 3
-      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
-
-  sentinel.types.v1.Status status     = 4;
-  google.protobuf.Timestamp status_at = 5
-      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string address = 2;
+  google.protobuf.Timestamp inactive_at = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  sentinel.types.v1.Status status = 4;
+  google.protobuf.Timestamp status_at = 5 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }
 
 message NodeSubscription {
-  BaseSubscription base            = 1 [ (gogoproto.embed) = true ];
-  string node_address              = 2;
-  int64 gigabytes                  = 3;
-  int64 hours                      = 4;
-  cosmos.base.v1beta1.Coin deposit = 5 [ (gogoproto.nullable) = false ];
+  BaseSubscription base = 1 [(gogoproto.embed) = true];
+  string node_address = 2;
+  int64 gigabytes = 3;
+  int64 hours = 4;
+  cosmos.base.v1beta1.Coin deposit = 5 [(gogoproto.nullable) = false];
 }
 
 message PlanSubscription {
-  BaseSubscription base = 1 [ (gogoproto.embed) = true ];
-  uint64 plan_id        = 2 [ (gogoproto.customname) = "PlanID" ];
-  string denom          = 3;
+  BaseSubscription base = 1 [(gogoproto.embed) = true];
+  uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
+  string denom = 3;
 }

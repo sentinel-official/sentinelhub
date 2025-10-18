@@ -7,62 +7,53 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
-	hubtypes "github.com/sentinel-official/hub/types"
-	hubutils "github.com/sentinel-official/hub/utils"
-	"github.com/sentinel-official/hub/x/subscription/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types"
+	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
 )
 
-func (k *Keeper) SetSubscription(ctx sdk.Context, subscription types.Subscription) {
-	var (
-		store = k.Store(ctx)
-		key   = types.SubscriptionKey(subscription.GetID())
-	)
-
-	value, err := k.cdc.MarshalInterface(subscription)
-	if err != nil {
-		panic(err)
-	}
+// SetSubscription stores a subscription in the module's KVStore.
+func (k *Keeper) SetSubscription(ctx sdk.Context, subscription v3.Subscription) {
+	store := k.Store(ctx)
+	key := types.SubscriptionKey(subscription.ID)
+	value := k.cdc.MustMarshal(&subscription)
 
 	store.Set(key, value)
 }
 
-func (k *Keeper) GetSubscription(ctx sdk.Context, id uint64) (subscription types.Subscription, found bool) {
-	var (
-		store = k.Store(ctx)
-		key   = types.SubscriptionKey(id)
-		value = store.Get(key)
-	)
+// GetSubscription retrieves a subscription from the module's KVStore based on the subscription ID.
+// Returns the subscription and a boolean indicating if it was found.
+func (k *Keeper) GetSubscription(ctx sdk.Context, id uint64) (subscription v3.Subscription, found bool) {
+	store := k.Store(ctx)
+	key := types.SubscriptionKey(id)
+	value := store.Get(key)
 
 	if value == nil {
 		return subscription, false
 	}
-	if err := k.cdc.UnmarshalInterface(value, &subscription); err != nil {
-		panic(err)
-	}
+
+	k.cdc.MustUnmarshal(value, &subscription)
 
 	return subscription, true
 }
 
+// DeleteSubscription removes a subscription from the module's KVStore based on the subscription ID.
 func (k *Keeper) DeleteSubscription(ctx sdk.Context, id uint64) {
+	store := k.Store(ctx)
 	key := types.SubscriptionKey(id)
 
-	store := k.Store(ctx)
 	store.Delete(key)
 }
 
-func (k *Keeper) GetSubscriptions(ctx sdk.Context) (items types.Subscriptions) {
-	var (
-		store = k.Store(ctx)
-		iter  = sdk.KVStorePrefixIterator(store, types.SubscriptionKeyPrefix)
-	)
+// GetSubscriptions retrieves all subscriptions from the module's KVStore.
+func (k *Keeper) GetSubscriptions(ctx sdk.Context) (items []v3.Subscription) {
+	store := k.Store(ctx)
+	iterator := sdk.KVStorePrefixIterator(store, types.SubscriptionKeyPrefix)
 
-	defer iter.Close()
+	defer iterator.Close()
 
-	for ; iter.Valid(); iter.Next() {
-		var item types.Subscription
-		if err := k.cdc.UnmarshalInterface(iter.Value(), &item); err != nil {
-			panic(err)
-		}
+	for ; iterator.Valid(); iterator.Next() {
+		var item v3.Subscription
+		k.cdc.MustUnmarshal(iterator.Value(), &item)
 
 		items = append(items, item)
 	}
@@ -70,65 +61,62 @@ func (k *Keeper) GetSubscriptions(ctx sdk.Context) (items types.Subscriptions) {
 	return items
 }
 
-func (k *Keeper) IterateSubscriptions(ctx sdk.Context, fn func(index int, item types.Subscription) (stop bool)) {
+// IterateSubscriptions iterates over all subscriptions in the module's KVStore and calls the provided function for each subscription.
+// The iteration stops when the provided function returns 'true'.
+func (k *Keeper) IterateSubscriptions(ctx sdk.Context, fn func(index int, item v3.Subscription) (stop bool)) {
 	store := k.Store(ctx)
+	iterator := sdk.KVStorePrefixIterator(store, types.SubscriptionKeyPrefix)
 
-	iter := sdk.KVStorePrefixIterator(store, types.SubscriptionKeyPrefix)
-	defer iter.Close()
+	defer iterator.Close()
 
-	for i := 0; iter.Valid(); iter.Next() {
-		var subscription types.Subscription
-		if err := k.cdc.UnmarshalInterface(iter.Value(), &subscription); err != nil {
-			panic(err)
-		}
+	for i := 0; iterator.Valid(); iterator.Next() {
+		var item v3.Subscription
+		k.cdc.MustUnmarshal(iterator.Value(), &item)
 
-		if stop := fn(i, subscription); stop {
+		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }
 
+// SetSubscriptionForAccount links a subscription ID to an account address in the module's KVStore.
 func (k *Keeper) SetSubscriptionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64) {
-	var (
-		store = k.Store(ctx)
-		key   = types.SubscriptionForAccountKey(addr, id)
-		value = k.cdc.MustMarshal(&protobuf.BoolValue{Value: true})
-	)
+	store := k.Store(ctx)
+	key := types.SubscriptionForAccountKey(addr, id)
+	value := k.cdc.MustMarshal(&protobuf.BoolValue{Value: true})
 
 	store.Set(key, value)
 }
 
+// HasSubscriptionForAccount checks if there is a subscription ID associated with a given account address.
 func (k *Keeper) HasSubscriptionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64) bool {
-	var (
-		store = k.Store(ctx)
-		key   = types.SubscriptionForAccountKey(addr, id)
-	)
+	store := k.Store(ctx)
+	key := types.SubscriptionForAccountKey(addr, id)
 
 	return store.Has(key)
 }
 
+// DeleteSubscriptionForAccount removes the association between a subscription ID and an account address from the module's KVStore.
 func (k *Keeper) DeleteSubscriptionForAccount(ctx sdk.Context, addr sdk.AccAddress, id uint64) {
-	var (
-		store = k.Store(ctx)
-		key   = types.SubscriptionForAccountKey(addr, id)
-	)
+	store := k.Store(ctx)
+	key := types.SubscriptionForAccountKey(addr, id)
 
 	store.Delete(key)
 }
 
-func (k *Keeper) GetSubscriptionsForAccount(ctx sdk.Context, addr sdk.AccAddress) (items types.Subscriptions) {
-	var (
-		store = k.Store(ctx)
-		iter  = sdk.KVStorePrefixIterator(store, types.GetSubscriptionForAccountKeyPrefix(addr))
-	)
+// GetSubscriptionsForAccount retrieves all subscriptions associated with a specific account address.
+func (k *Keeper) GetSubscriptionsForAccount(ctx sdk.Context, addr sdk.AccAddress) (items []v3.Subscription) {
+	store := k.Store(ctx)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetSubscriptionForAccountKeyPrefix(addr))
 
-	defer iter.Close()
+	defer iterator.Close()
 
-	for ; iter.Valid(); iter.Next() {
-		item, found := k.GetSubscription(ctx, types.IDFromSubscriptionForAccountKey(iter.Key()))
+	for ; iterator.Valid(); iterator.Next() {
+		item, found := k.GetSubscription(ctx, types.IDFromSubscriptionForAccountKey(iterator.Key()))
 		if !found {
-			panic(fmt.Errorf("subscription for account key %X does not exist", iter.Key()))
+			panic(fmt.Errorf("subscription for account key %X does not exist", iterator.Key()))
 		}
 
 		items = append(items, item)
@@ -137,94 +125,42 @@ func (k *Keeper) GetSubscriptionsForAccount(ctx sdk.Context, addr sdk.AccAddress
 	return items
 }
 
-func (k *Keeper) SetSubscriptionForNode(ctx sdk.Context, addr hubtypes.NodeAddress, id uint64) {
-	var (
-		store = k.Store(ctx)
-		key   = types.SubscriptionForNodeKey(addr, id)
-		value = k.cdc.MustMarshal(&protobuf.BoolValue{Value: true})
-	)
-
-	store.Set(key, value)
-}
-
-func (k *Keeper) HashSubscriptionForNode(ctx sdk.Context, addr hubtypes.NodeAddress, id uint64) bool {
-	var (
-		store = k.Store(ctx)
-		key   = types.SubscriptionForNodeKey(addr, id)
-	)
-
-	return store.Has(key)
-}
-
-func (k *Keeper) DeleteSubscriptionForNode(ctx sdk.Context, addr hubtypes.NodeAddress, id uint64) {
-	var (
-		store = k.Store(ctx)
-		key   = types.SubscriptionForNodeKey(addr, id)
-	)
-
-	store.Delete(key)
-}
-
-func (k *Keeper) GetSubscriptionsForNode(ctx sdk.Context, addr hubtypes.NodeAddress) (items types.Subscriptions) {
-	var (
-		store = k.Store(ctx)
-		iter  = sdk.KVStorePrefixIterator(store, types.GetSubscriptionForNodeKeyPrefix(addr))
-	)
-
-	defer iter.Close()
-
-	for ; iter.Valid(); iter.Next() {
-		item, found := k.GetSubscription(ctx, types.IDFromSubscriptionForNodeKey(iter.Key()))
-		if !found {
-			panic(fmt.Errorf("subscription for node key %X does not exist", iter.Key()))
-		}
-
-		items = append(items, item)
-	}
-
-	return items
-}
-
+// SetSubscriptionForPlan links a subscription ID to a plan ID in the module's KVStore.
 func (k *Keeper) SetSubscriptionForPlan(ctx sdk.Context, planID, subscriptionID uint64) {
-	var (
-		store = k.Store(ctx)
-		key   = types.SubscriptionForPlanKey(planID, subscriptionID)
-		value = k.cdc.MustMarshal(&protobuf.BoolValue{Value: true})
-	)
+	store := k.Store(ctx)
+	key := types.SubscriptionForPlanKey(planID, subscriptionID)
+	value := k.cdc.MustMarshal(&protobuf.BoolValue{Value: true})
 
 	store.Set(key, value)
 }
 
-func (k *Keeper) HashSubscriptionForPlan(ctx sdk.Context, planID, subscriptionID uint64) bool {
-	var (
-		store = k.Store(ctx)
-		key   = types.SubscriptionForPlanKey(planID, subscriptionID)
-	)
+// HasSubscriptionForPlan checks if there is a subscription ID associated with a given plan ID.
+func (k *Keeper) HasSubscriptionForPlan(ctx sdk.Context, planID, subscriptionID uint64) bool {
+	store := k.Store(ctx)
+	key := types.SubscriptionForPlanKey(planID, subscriptionID)
 
 	return store.Has(key)
 }
 
+// DeleteSubscriptionForPlan removes the association between a subscription ID and a plan ID from the module's KVStore.
 func (k *Keeper) DeleteSubscriptionForPlan(ctx sdk.Context, planID, subscriptionID uint64) {
-	var (
-		store = k.Store(ctx)
-		key   = types.SubscriptionForPlanKey(planID, subscriptionID)
-	)
+	store := k.Store(ctx)
+	key := types.SubscriptionForPlanKey(planID, subscriptionID)
 
 	store.Delete(key)
 }
 
-func (k *Keeper) GetSubscriptionsForPlan(ctx sdk.Context, id uint64) (items types.Subscriptions) {
-	var (
-		store = k.Store(ctx)
-		iter  = sdk.KVStorePrefixIterator(store, types.GetSubscriptionForPlanKeyPrefix(id))
-	)
+// GetSubscriptionsForPlan retrieves all subscriptions associated with a specific plan ID.
+func (k *Keeper) GetSubscriptionsForPlan(ctx sdk.Context, id uint64) (items []v3.Subscription) {
+	store := k.Store(ctx)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetSubscriptionForPlanKeyPrefix(id))
 
-	defer iter.Close()
+	defer iterator.Close()
 
-	for ; iter.Valid(); iter.Next() {
-		item, found := k.GetSubscription(ctx, types.IDFromSubscriptionForPlanKey(iter.Key()))
+	for ; iterator.Valid(); iterator.Next() {
+		item, found := k.GetSubscription(ctx, types.IDFromSubscriptionForPlanKey(iterator.Key()))
 		if !found {
-			panic(fmt.Errorf("subscription for plan key %X does not exist", iter.Key()))
+			panic(fmt.Errorf("subscription for plan key %X does not exist", iterator.Key()))
 		}
 
 		items = append(items, item)
@@ -233,244 +169,96 @@ func (k *Keeper) GetSubscriptionsForPlan(ctx sdk.Context, id uint64) (items type
 	return items
 }
 
+// SetSubscriptionForInactiveAt sets a subscription to be inactive at a specified time in the module's KVStore.
 func (k *Keeper) SetSubscriptionForInactiveAt(ctx sdk.Context, at time.Time, id uint64) {
+	if at.IsZero() {
+		return
+	}
+
+	store := k.Store(ctx)
 	key := types.SubscriptionForInactiveAtKey(at, id)
 	value := k.cdc.MustMarshal(&protobuf.BoolValue{Value: true})
 
-	store := k.Store(ctx)
 	store.Set(key, value)
 }
 
+// DeleteSubscriptionForInactiveAt removes the inactive subscription record from the module's KVStore based on the specified time and subscription ID.
 func (k *Keeper) DeleteSubscriptionForInactiveAt(ctx sdk.Context, at time.Time, id uint64) {
-	key := types.SubscriptionForInactiveAtKey(at, id)
+	if at.IsZero() {
+		return
+	}
 
 	store := k.Store(ctx)
+	key := types.SubscriptionForInactiveAtKey(at, id)
+
 	store.Delete(key)
 }
 
-func (k *Keeper) IterateSubscriptionsForInactiveAt(ctx sdk.Context, endTime time.Time, fn func(index int, item types.Subscription) (stop bool)) {
+// IterateSubscriptionsForInactiveAt iterates over all subscriptions that will be inactive before a specified time and calls the provided function for each subscription.
+// The iteration stops when the provided function returns 'true'.
+func (k *Keeper) IterateSubscriptionsForInactiveAt(ctx sdk.Context, at time.Time, fn func(index int, item v3.Subscription) (stop bool)) {
 	store := k.Store(ctx)
+	iterator := store.Iterator(types.SubscriptionForInactiveAtKeyPrefix, sdk.PrefixEndBytes(types.GetSubscriptionForInactiveAtKeyPrefix(at)))
 
-	iter := store.Iterator(types.SubscriptionForInactiveAtKeyPrefix, sdk.PrefixEndBytes(types.GetSubscriptionForInactiveAtKeyPrefix(endTime)))
-	defer iter.Close()
+	defer iterator.Close()
 
-	for i := 0; iter.Valid(); iter.Next() {
-		subscription, found := k.GetSubscription(ctx, types.IDFromSubscriptionForInactiveAtKey(iter.Key()))
+	for i := 0; iterator.Valid(); iterator.Next() {
+		item, found := k.GetSubscription(ctx, types.IDFromSubscriptionForInactiveAtKey(iterator.Key()))
 		if !found {
-			panic(fmt.Errorf("subscription for inactive at key %X does not exist", iter.Key()))
+			panic(fmt.Errorf("subscription for inactive at key %X does not exist", iterator.Key()))
 		}
 
-		if stop := fn(i, subscription); stop {
+		if stop := fn(i, item); stop {
 			break
 		}
+
 		i++
 	}
 }
 
-// CreateSubscriptionForNode creates a new NodeSubscription for a specific node and account.
-func (k *Keeper) CreateSubscriptionForNode(ctx sdk.Context, accAddr sdk.AccAddress, nodeAddr hubtypes.NodeAddress, gigabytes, hours int64, denom string) (*types.NodeSubscription, error) {
-	// Check if the node exists and is in an active status.
-	node, found := k.GetNode(ctx, nodeAddr)
-	if !found {
-		return nil, types.NewErrorNodeNotFound(nodeAddr)
-	}
-	if !node.Status.Equal(hubtypes.StatusActive) {
-		return nil, types.NewErrorInvalidNodeStatus(nodeAddr, node.Status)
+// SetSubscriptionForRenewalAt sets a subscription to be renewed at a specified time in the module's KVStore.
+func (k *Keeper) SetSubscriptionForRenewalAt(ctx sdk.Context, at time.Time, id uint64) {
+	if at.IsZero() {
+		return
 	}
 
-	// Retrieve the current count and create a new NodeSubscription.
-	count := k.GetCount(ctx)
-	subscription := &types.NodeSubscription{
-		BaseSubscription: &types.BaseSubscription{
-			ID:         count + 1,
-			Address:    accAddr.String(),
-			InactiveAt: time.Time{},
-			Status:     hubtypes.StatusActive,
-			StatusAt:   ctx.BlockTime(),
-		},
-		NodeAddress: nodeAddr.String(),
-		Gigabytes:   gigabytes,
-		Hours:       hours,
-		Deposit:     sdk.Coin{},
-	}
+	store := k.Store(ctx)
+	key := types.SubscriptionForRenewalAtKey(at, id)
+	value := k.cdc.MustMarshal(&protobuf.BoolValue{Value: true})
 
-	// Based on the provided gigabytes and hours, calculate the deposit and set the InactiveAt time.
-	if gigabytes != 0 {
-		price, found := node.GigabytePrice(denom)
-		if !found {
-			return nil, types.NewErrorPriceNotFound(denom)
-		}
-		subscription.InactiveAt = ctx.BlockTime().Add(90 * types.Day) // TODO: move to params
-		subscription.Deposit = sdk.NewCoin(
-			price.Denom,
-			hubutils.AmountForBytes(price.Amount, hubtypes.Gigabyte.MulRaw(gigabytes)),
-		)
-	}
-	if hours != 0 {
-		price, found := node.HourlyPrice(denom)
-		if !found {
-			return nil, types.NewErrorPriceNotFound(denom)
-		}
-		subscription.InactiveAt = ctx.BlockTime().Add(
-			time.Duration(hours) * time.Hour,
-		)
-		subscription.Deposit = sdk.NewCoin(
-			price.Denom,
-			price.Amount.MulRaw(hours),
-		)
-	}
-
-	// Add the required deposit to the account's balance.
-	if err := k.AddDeposit(ctx, accAddr, subscription.Deposit); err != nil {
-		return nil, err
-	}
-
-	// Save the new NodeSubscription to the store and update the count.
-	k.SetCount(ctx, count+1)
-	k.SetSubscription(ctx, subscription)
-	k.SetSubscriptionForAccount(ctx, accAddr, subscription.GetID())
-	k.SetSubscriptionForNode(ctx, nodeAddr, subscription.GetID())
-	k.SetSubscriptionForInactiveAt(ctx, subscription.GetInactiveAt(), subscription.GetID())
-
-	// If the subscription is based on gigabytes, create an allocation and emit an event.
-	if gigabytes != 0 {
-		alloc := types.Allocation{
-			ID:            subscription.GetID(),
-			Address:       accAddr.String(),
-			GrantedBytes:  hubtypes.Gigabyte.MulRaw(gigabytes),
-			UtilisedBytes: sdk.ZeroInt(),
-		}
-
-		k.SetAllocation(ctx, alloc)
-		ctx.EventManager().EmitTypedEvent(
-			&types.EventAllocate{
-				Address:       alloc.Address,
-				GrantedBytes:  alloc.GrantedBytes,
-				UtilisedBytes: alloc.UtilisedBytes,
-				ID:            alloc.ID,
-			},
-		)
-	}
-
-	// If the subscription is based on hours, create a payout and emit an event.
-	if hours != 0 {
-		payout := types.Payout{
-			ID:          subscription.GetID(),
-			Address:     accAddr.String(),
-			NodeAddress: nodeAddr.String(),
-			Hours:       hours,
-			Price: sdk.NewCoin(
-				subscription.Deposit.Denom,
-				subscription.Deposit.Amount.QuoRaw(hours),
-			),
-			NextAt: ctx.BlockTime(),
-		}
-
-		k.SetPayout(ctx, payout)
-		k.SetPayoutForAccount(ctx, accAddr, payout.ID)
-		k.SetPayoutForNode(ctx, nodeAddr, payout.ID)
-		k.SetPayoutForAccountByNode(ctx, accAddr, nodeAddr, payout.ID)
-		k.SetPayoutForNextAt(ctx, payout.NextAt, payout.ID)
-		ctx.EventManager().EmitTypedEvent(
-			&types.EventCreatePayout{
-				Address:     payout.Address,
-				NodeAddress: payout.NodeAddress,
-				ID:          payout.ID,
-			},
-		)
-	}
-
-	return subscription, nil
+	store.Set(key, value)
 }
 
-// CreateSubscriptionForPlan creates a new PlanSubscription for a specific plan and account.
-func (k *Keeper) CreateSubscriptionForPlan(ctx sdk.Context, accAddr sdk.AccAddress, id uint64, denom string) (*types.PlanSubscription, error) {
-	// Check if the plan exists and is in an active status.
-	plan, found := k.GetPlan(ctx, id)
-	if !found {
-		return nil, types.NewErrorPlanNotFound(id)
-	}
-	if !plan.Status.Equal(hubtypes.StatusActive) {
-		return nil, types.NewErrorInvalidPlanStatus(plan.ID, plan.Status)
+// DeleteSubscriptionForRenewalAt removes the renewal subscription record from the module's KVStore based on the specified time and subscription ID.
+func (k *Keeper) DeleteSubscriptionForRenewalAt(ctx sdk.Context, at time.Time, id uint64) {
+	if at.IsZero() {
+		return
 	}
 
-	// Get the price of the plan in the specified denomination.
-	price, found := plan.Price(denom)
-	if !found {
-		return nil, types.NewErrorPriceNotFound(denom)
+	store := k.Store(ctx)
+	key := types.SubscriptionForRenewalAtKey(at, id)
+
+	store.Delete(key)
+}
+
+// IterateSubscriptionsForRenewalAt iterates over all subscriptions that will be renewed before a specified time and calls the provided function for each subscription.
+// The iteration stops when the provided function returns 'true'.
+func (k *Keeper) IterateSubscriptionsForRenewalAt(ctx sdk.Context, at time.Time, fn func(index int, item v3.Subscription) (stop bool)) {
+	store := k.Store(ctx)
+	iterator := store.Iterator(types.SubscriptionForRenewalAtKeyPrefix, sdk.PrefixEndBytes(types.GetSubscriptionForRenewalAtKeyPrefix(at)))
+
+	defer iterator.Close()
+
+	for i := 0; iterator.Valid(); iterator.Next() {
+		item, found := k.GetSubscription(ctx, types.IDFromSubscriptionForRenewalAtKey(iterator.Key()))
+		if !found {
+			panic(fmt.Errorf("subscription for renewal at key %X does not exist", iterator.Key()))
+		}
+
+		if stop := fn(i, item); stop {
+			break
+		}
+
+		i++
 	}
-
-	// Calculate the staking reward based on the plan price and staking share.
-	var (
-		stakingShare  = k.provider.StakingShare(ctx)
-		stakingReward = hubutils.GetProportionOfCoin(price, stakingShare)
-	)
-
-	// Move the staking reward from the account to the fee collector module account.
-	if err := k.SendCoinFromAccountToModule(ctx, accAddr, k.feeCollectorName, stakingReward); err != nil {
-		return nil, err
-	}
-
-	// Calculate the payment amount after deducting the staking reward.
-	var (
-		provAddr = plan.GetProviderAddress()
-		payment  = price.Sub(stakingReward)
-	)
-
-	// Send the payment amount from the account to the plan provider address.
-	if err := k.SendCoin(ctx, accAddr, provAddr.Bytes(), payment); err != nil {
-		return nil, err
-	}
-
-	// Emit an event for the plan payment.
-	ctx.EventManager().EmitTypedEvent(
-		&types.EventPayForPlan{
-			Address:         accAddr.String(),
-			Payment:         payment.String(),
-			ProviderAddress: plan.ProviderAddress,
-			StakingReward:   stakingReward.String(),
-			ID:              plan.ID,
-		},
-	)
-
-	// Retrieve the current count and create a new PlanSubscription.
-	count := k.GetCount(ctx)
-	subscription := &types.PlanSubscription{
-		BaseSubscription: &types.BaseSubscription{
-			ID:         count + 1,
-			Address:    accAddr.String(),
-			InactiveAt: ctx.BlockTime().Add(plan.Duration),
-			Status:     hubtypes.StatusActive,
-			StatusAt:   ctx.BlockTime(),
-		},
-		PlanID: plan.ID,
-		Denom:  price.Denom,
-	}
-
-	// Save the new PlanSubscription to the store and update the count.
-	k.SetCount(ctx, count+1)
-	k.SetSubscription(ctx, subscription)
-	k.SetSubscriptionForAccount(ctx, accAddr, subscription.GetID())
-	k.SetSubscriptionForPlan(ctx, plan.ID, subscription.GetID())
-	k.SetSubscriptionForInactiveAt(ctx, subscription.GetInactiveAt(), subscription.GetID())
-
-	// Create an allocation for the plan subscription and emit an event.
-	alloc := types.Allocation{
-		ID:            subscription.GetID(),
-		Address:       accAddr.String(),
-		GrantedBytes:  hubtypes.Gigabyte.MulRaw(plan.Gigabytes),
-		UtilisedBytes: sdk.ZeroInt(),
-	}
-
-	k.SetAllocation(ctx, alloc)
-	ctx.EventManager().EmitTypedEvent(
-		&types.EventAllocate{
-			Address:       alloc.Address,
-			GrantedBytes:  alloc.GrantedBytes,
-			UtilisedBytes: alloc.UtilisedBytes,
-			ID:            alloc.ID,
-		},
-	)
-
-	return subscription, nil
 }

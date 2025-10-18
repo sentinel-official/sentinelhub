@@ -1,75 +1,64 @@
 syntax = "proto3";
 package sentinel.node.v2;
 
-import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package            = "github.com/sentinel-official/hub/x/node/types";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/node/types/v2";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
-// MsgRegisterRequest defines the SDK message for registering a node
 message MsgRegisterRequest {
-  string from                                       = 1;
+  string from = 1;
   repeated cosmos.base.v1beta1.Coin gigabyte_prices = 2 [
-    (gogoproto.nullable)     = false,
+    (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   repeated cosmos.base.v1beta1.Coin hourly_prices = 3 [
-    (gogoproto.nullable)     = false,
+    (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
-  string remote_url = 4 [ (gogoproto.customname) = "RemoteURL" ];
+  string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
 }
 
-// MsgUpdateDetailsRequest defines the SDK message for updating the node details
 message MsgUpdateDetailsRequest {
-  string from                                       = 1;
+  string from = 1;
   repeated cosmos.base.v1beta1.Coin gigabyte_prices = 2 [
-    (gogoproto.nullable)     = false,
+    (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   repeated cosmos.base.v1beta1.Coin hourly_prices = 3 [
-    (gogoproto.nullable)     = false,
+    (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
-  string remote_url = 4 [ (gogoproto.customname) = "RemoteURL" ];
+  string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
 }
 
-// MsgUpdateStatusRequest defines the SDK message for updating the node status
 message MsgUpdateStatusRequest {
-  string from                     = 1;
+  string from = 1;
   sentinel.types.v1.Status status = 2;
 }
 
-// MsgSubscribeRequest defines the SDK message for subscribe to a node
 message MsgSubscribeRequest {
-  string from         = 1;
+  string from = 1;
   string node_address = 2;
-  int64 gigabytes     = 3;
-  int64 hours         = 4;
-  string denom        = 5;
+  int64 gigabytes = 3;
+  int64 hours = 4;
+  string denom = 5;
 }
 
-// MsgRegisterResponse defines the response of message MsgRegisterRequest
 message MsgRegisterResponse {}
 
-// MsgUpdateDetailsResponse defines the response of message
-// MsgUpdateDetailsRequest
 message MsgUpdateDetailsResponse {}
 
-// MsgUpdateStatusResponse defines the response of message
-// MsgUpdateStatusRequest
 message MsgUpdateStatusResponse {}
 
-// MsgSubscribeResponse defines the response of message MsgSubscribeRequest
 message MsgSubscribeResponse {}
 
 service MsgService {
   rpc MsgRegister(MsgRegisterRequest) returns (MsgRegisterResponse);
-  rpc MsgUpdateDetails(MsgUpdateDetailsRequest)
-      returns (MsgUpdateDetailsResponse);
+  rpc MsgUpdateDetails(MsgUpdateDetailsRequest) returns (MsgUpdateDetailsResponse);
   rpc MsgUpdateStatus(MsgUpdateStatusRequest) returns (MsgUpdateStatusResponse);
   rpc MsgSubscribe(MsgSubscribeRequest) returns (MsgSubscribeResponse);
 }

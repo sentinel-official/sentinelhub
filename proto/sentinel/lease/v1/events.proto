@@ -1,0 +1,52 @@
+syntax = "proto3";
+package sentinel.lease.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message EventCreate {
+  uint64 lease_id = 1 [(gogoproto.customname) = "LeaseID"];
+  string node_address = 2;
+  string prov_address = 3;
+  int64 max_hours = 4;
+  string price = 5;
+  string renewal_price_policy = 6;
+}
+
+message EventEnd {
+  uint64 lease_id = 1 [(gogoproto.customname) = "LeaseID"];
+  string node_address = 2;
+  string prov_address = 3;
+}
+
+message EventPay {
+  uint64 lease_id = 1 [(gogoproto.customname) = "LeaseID"];
+  string node_address = 2;
+  string prov_address = 3;
+  string payment = 4;
+  string staking_reward = 5;
+}
+
+message EventRefund {
+  uint64 lease_id = 1 [(gogoproto.customname) = "LeaseID"];
+  string prov_address = 2;
+  string value = 3;
+}
+
+message EventRenew {
+  uint64 lease_id = 1 [(gogoproto.customname) = "LeaseID"];
+  string node_address = 2;
+  string prov_address = 3;
+  int64 max_hours = 4;
+  string price = 5;
+}
+
+message EventUpdateDetails {
+  uint64 lease_id = 1 [(gogoproto.customname) = "LeaseID"];
+  string node_address = 2;
+  string prov_address = 3;
+  string renewal_price_policy = 4;
+}

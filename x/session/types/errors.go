@@ -43,7 +43,7 @@ func NewErrorInvalidDuration(duration time.Duration) error {
 }
 
 // NewErrorInvalidMessage returns an error indicating that the provided message is invalid.
-func NewErrorInvalidMessage(desc interface{}) error {
+func NewErrorInvalidMessage(desc any) error {
 	return sdkerrors.Wrapf(ErrInvalidMessage, "%v", desc)
 }
 

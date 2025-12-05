@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
@@ -84,16 +85,6 @@ func NewRootCmd(homeDir string) *cobra.Command {
 		Short:        "Sentinel Hub application",
 		SilenceUsage: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) (err error) {
-			if !viper.GetBool(flagSkipOverwriteConfig) {
-				if err := overwriteTendermintConfig(); err != nil {
-					return err
-				}
-
-				if err := overwriteAppConfig(); err != nil {
-					return err
-				}
-			}
-
 			clientCtx := client.Context{}.
 				WithAccountRetriever(authtypes.AccountRetriever{}).
 				WithCodec(encCfg.Codec).
@@ -139,6 +130,26 @@ func NewRootCmd(homeDir string) *cobra.Command {
 
 	creator := appCreator{encCfg: encCfg}
 	server.AddCommands(cmd, homeDir, creator.NewApp, creator.AppExport, moduleInitFlags)
+
+	startCmd, _, err := cmd.Find([]string{"start"})
+	if err != nil {
+		panic(fmt.Errorf("start command does not exist: %w", err))
+	}
+
+	startCmdRunE := startCmd.RunE
+	startCmd.RunE = func(cmd *cobra.Command, args []string) error {
+		if !viper.GetBool(flagSkipOverwriteConfig) {
+			if err := overwriteTendermintConfig(); err != nil {
+				return fmt.Errorf("overwriting tendermint config: %w", err)
+			}
+
+			if err := overwriteAppConfig(); err != nil {
+				return fmt.Errorf("overwriting app config: %w", err)
+			}
+		}
+
+		return startCmdRunE(cmd, args)
+	}
 
 	return cmd
 }

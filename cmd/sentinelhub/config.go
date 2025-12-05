@@ -14,7 +14,7 @@ import (
 const flagSkipOverwriteConfig = "skip-overwrite-config"
 
 // applyRecommendedValues sets default values for specific configuration types.
-func applyRecommendedValues(cfg interface{}) {
+func applyRecommendedValues(cfg any) {
 	switch c := cfg.(type) {
 	case *serverconfig.Config:
 		c.MinGasPrices = "0.1udvpn"
@@ -24,7 +24,7 @@ func applyRecommendedValues(cfg interface{}) {
 }
 
 // initAppConfig initializes the application configuration with defaults.
-func initAppConfig() (string, interface{}) {
+func initAppConfig() (string, any) {
 	cfg := serverconfig.DefaultConfig()
 	cfgTemplate := serverconfig.DefaultConfigTemplate
 
@@ -42,7 +42,7 @@ func initTendermintConfig() *tmcfg.Config {
 }
 
 // overwriteConfig reads, updates, and writes a configuration file.
-func overwriteConfig(name string, cfg interface{}, write func(string, interface{}) error) error {
+func overwriteConfig(name string, cfg any, write func(string, any) error) error {
 	homeDir := viper.GetString(flags.FlagHome)
 	cfgPath := filepath.Join(homeDir, "config", name)
 
@@ -68,7 +68,7 @@ func overwriteConfig(name string, cfg interface{}, write func(string, interface{
 
 // overwriteAppConfig updates and writes the app configuration.
 func overwriteAppConfig() error {
-	return overwriteConfig("app.toml", serverconfig.DefaultConfig(), func(cfgPath string, cfg interface{}) error {
+	return overwriteConfig("app.toml", serverconfig.DefaultConfig(), func(cfgPath string, cfg any) error {
 		serverconfig.WriteConfigFile(cfgPath, cfg.(*serverconfig.Config))
 
 		return nil
@@ -77,7 +77,7 @@ func overwriteAppConfig() error {
 
 // overwriteTendermintConfig updates and writes the Tendermint configuration.
 func overwriteTendermintConfig() error {
-	return overwriteConfig("config.toml", tmcfg.DefaultConfig(), func(cfgPath string, cfg interface{}) error {
+	return overwriteConfig("config.toml", tmcfg.DefaultConfig(), func(cfgPath string, cfg any) error {
 		tmcfg.WriteConfigFile(cfgPath, cfg.(*tmcfg.Config))
 
 		return nil

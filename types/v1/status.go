@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"slices"
 	"strings"
 )
 
@@ -33,13 +34,7 @@ func (s Status) Equal(v Status) bool {
 }
 
 func (s Status) IsOneOf(items ...Status) bool {
-	for _, item := range items {
-		if s.Equal(item) {
-			return true
-		}
-	}
-
-	return false
+	return slices.ContainsFunc(items, s.Equal)
 }
 
 func StatusFromString(s string) Status {

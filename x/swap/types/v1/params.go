@@ -52,7 +52,7 @@ func (m *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 		{
 			Key:   KeySwapEnabled,
 			Value: &m.SwapEnabled,
-			ValidatorFn: func(v interface{}) error {
+			ValidatorFn: func(v any) error {
 				_, ok := v.(bool)
 				if !ok {
 					return fmt.Errorf("invalid parameter type %T", v)
@@ -64,7 +64,7 @@ func (m *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 		{
 			Key:   KeySwapDenom,
 			Value: &m.SwapDenom,
-			ValidatorFn: func(v interface{}) error {
+			ValidatorFn: func(v any) error {
 				value, ok := v.(string)
 				if !ok {
 					return fmt.Errorf("invalid parameter type %T", v)
@@ -84,7 +84,7 @@ func (m *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 		{
 			Key:   KeyApproveBy,
 			Value: &m.ApproveBy,
-			ValidatorFn: func(v interface{}) error {
+			ValidatorFn: func(v any) error {
 				value, ok := v.(string)
 				if !ok {
 					return fmt.Errorf("invalid parameter type %T", v)

@@ -337,7 +337,7 @@ func TestNodeAddress_MarshalYAML(t *testing.T) {
 	tests := []struct {
 		name    string
 		n       NodeAddress
-		want    interface{}
+		want    any
 		wantErr bool
 	}{
 		{
@@ -940,7 +940,7 @@ func TestProvAddress_MarshalYAML(t *testing.T) {
 	tests := []struct {
 		name    string
 		p       ProvAddress
-		want    interface{}
+		want    any
 		wantErr bool
 	}{
 		{

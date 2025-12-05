@@ -66,7 +66,7 @@ func NewErrorInvalidAllocation(id uint64, addr sdk.AccAddress) error {
 }
 
 // NewErrorInvalidMessage returns an error indicating that the provided message is invalid.
-func NewErrorInvalidMessage(desc interface{}) error {
+func NewErrorInvalidMessage(desc any) error {
 	return sdkerrors.Wrapf(ErrInvalidMessage, "%v", desc)
 }
 

@@ -123,7 +123,7 @@ func (p ProvAddress) MarshalJSON() ([]byte, error) {
 	return json.Marshal(p.String())
 }
 
-func (p ProvAddress) MarshalYAML() (interface{}, error) {
+func (p ProvAddress) MarshalYAML() (any, error) {
 	return p.String(), nil
 }
 
@@ -233,7 +233,7 @@ func (n NodeAddress) MarshalJSON() ([]byte, error) {
 	return json.Marshal(n.String())
 }
 
-func (n NodeAddress) MarshalYAML() (interface{}, error) {
+func (n NodeAddress) MarshalYAML() (any, error) {
 	return n.String(), nil
 }
 

@@ -1,9 +1,9 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
 	depositkeeper "github.com/sentinel-official/sentinelhub/v13/x/deposit/keeper"
 	leasekeeper "github.com/sentinel-official/sentinelhub/v13/x/lease/keeper"

@@ -3,8 +3,8 @@ package types
 import (
 	sdkerrors "cosmossdk.io/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	ibcporttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
-	ibcerrors "github.com/cosmos/ibc-go/v7/modules/core/errors"
+	ibcporttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
+	ibcerrors "github.com/cosmos/ibc-go/v10/modules/core/errors"
 )
 
 const (

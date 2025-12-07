@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"cosmossdk.io/store/prefix"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sentinel-official/sentinelhub/v13/types"

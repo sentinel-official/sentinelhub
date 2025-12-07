@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ibchost "github.com/cosmos/ibc-go/v7/modules/core/24-host"
+	ibchost "github.com/cosmos/ibc-go/v10/modules/core/24-host"
 
 	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types"
 )

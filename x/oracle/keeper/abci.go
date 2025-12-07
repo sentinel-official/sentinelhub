@@ -3,7 +3,7 @@ package keeper
 import (
 	abcitypes "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ibchost "github.com/cosmos/ibc-go/v7/modules/core/24-host"
+	ibchost "github.com/cosmos/ibc-go/v10/modules/core/24-host"
 
 	protorevtypes "github.com/sentinel-official/sentinelhub/v13/third_party/osmosis/x/protorev/types"
 	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types/v1"

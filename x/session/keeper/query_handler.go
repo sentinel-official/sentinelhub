@@ -10,9 +10,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/session/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/session/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/session/types/v3"
 )
 
 // HandleQuerySession handles a query to retrieve a single session by its ID.

@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkaddress "github.com/cosmos/cosmos-sdk/types/address"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
 )
 
 const (

@@ -14,11 +14,11 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/swap/client/cli"
-	"github.com/sentinel-official/sentinelhub/v12/x/swap/keeper"
-	"github.com/sentinel-official/sentinelhub/v12/x/swap/services"
-	"github.com/sentinel-official/sentinelhub/v12/x/swap/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/swap/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/swap/client/cli"
+	"github.com/sentinel-official/sentinelhub/v13/x/swap/keeper"
+	"github.com/sentinel-official/sentinelhub/v13/x/swap/services"
+	"github.com/sentinel-official/sentinelhub/v13/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/swap/types/v1"
 )
 
 var (

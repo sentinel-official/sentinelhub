@@ -3,8 +3,8 @@ package migrations
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
+	"github.com/sentinel-official/sentinelhub/v13/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/plan/types/v3"
 )
 
 type LeaseKeeper interface {

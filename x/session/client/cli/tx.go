@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
+	"github.com/sentinel-official/sentinelhub/v13/x/session/types/v3"
 )
 
 func txCancelSession() *cobra.Command {

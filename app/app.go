@@ -29,7 +29,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/app/ante"
+	"github.com/sentinel-official/sentinelhub/v13/app/ante"
 )
 
 const (

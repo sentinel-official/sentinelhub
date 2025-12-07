@@ -59,15 +59,15 @@ import (
 	ibcsolomachine "github.com/cosmos/ibc-go/v7/modules/light-clients/06-solomachine"
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 
-	deposittypes "github.com/sentinel-official/sentinelhub/v12/x/deposit/types"
-	custommint "github.com/sentinel-official/sentinelhub/v12/x/mint"
-	customminttypes "github.com/sentinel-official/sentinelhub/v12/x/mint/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/oracle"
-	oracletypes "github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/swap"
-	swaptypes "github.com/sentinel-official/sentinelhub/v12/x/swap/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/vpn"
-	vpntypes "github.com/sentinel-official/sentinelhub/v12/x/vpn/types"
+	deposittypes "github.com/sentinel-official/sentinelhub/v13/x/deposit/types"
+	custommint "github.com/sentinel-official/sentinelhub/v13/x/mint"
+	customminttypes "github.com/sentinel-official/sentinelhub/v13/x/mint/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/oracle"
+	oracletypes "github.com/sentinel-official/sentinelhub/v13/x/oracle/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/swap"
+	swaptypes "github.com/sentinel-official/sentinelhub/v13/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/vpn"
+	vpntypes "github.com/sentinel-official/sentinelhub/v13/x/vpn/types"
 )
 
 var (

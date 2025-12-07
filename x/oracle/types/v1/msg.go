@@ -5,9 +5,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/poolmanager/client/queryproto"
-	protorev "github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/protorev/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
+	"github.com/sentinel-official/sentinelhub/v13/third_party/osmosis/x/poolmanager/client/queryproto"
+	protorev "github.com/sentinel-official/sentinelhub/v13/third_party/osmosis/x/protorev/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types"
 )
 
 // Ensure the message types implement sdk.Msg interface.

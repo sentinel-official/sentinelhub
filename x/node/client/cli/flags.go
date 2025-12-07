@@ -3,7 +3,7 @@ package cli
 import (
 	"github.com/spf13/pflag"
 
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
 )
 
 const (

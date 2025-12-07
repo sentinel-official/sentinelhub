@@ -7,9 +7,9 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
-	"github.com/sentinel-official/sentinelhub/v12/x/plan/types"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/plan/types"
 )
 
 // Ensure the message types implement sdk.Msg interface.

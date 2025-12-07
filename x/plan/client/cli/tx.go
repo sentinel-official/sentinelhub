@@ -11,9 +11,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
-	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/plan/types/v3"
 )
 
 func txCreatePlan() *cobra.Command {

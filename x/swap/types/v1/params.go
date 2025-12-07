@@ -8,7 +8,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/swap/types"
 )
 
 var (

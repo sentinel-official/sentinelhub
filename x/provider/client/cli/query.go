@@ -5,9 +5,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
-	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/provider/types/v2"
+	"github.com/sentinel-official/sentinelhub/v13/x/provider/types/v3"
 )
 
 func queryProvider() *cobra.Command {

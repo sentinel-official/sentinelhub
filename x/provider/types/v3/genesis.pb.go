@@ -7,7 +7,7 @@ import (
 	fmt "fmt"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
-	v2 "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
+	v2 "github.com/sentinel-official/sentinelhub/v13/x/provider/types/v2"
 	io "io"
 	math "math"
 	math_bits "math/bits"

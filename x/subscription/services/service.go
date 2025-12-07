@@ -3,11 +3,11 @@ package services
 import (
 	sdkmodule "github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/subscription/keeper"
-	"github.com/sentinel-official/sentinelhub/v12/x/subscription/services/v2"
-	"github.com/sentinel-official/sentinelhub/v12/x/subscription/services/v3"
-	v2types "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2"
-	v3types "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
+	"github.com/sentinel-official/sentinelhub/v13/x/subscription/keeper"
+	"github.com/sentinel-official/sentinelhub/v13/x/subscription/services/v2"
+	"github.com/sentinel-official/sentinelhub/v13/x/subscription/services/v3"
+	v2types "github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v2"
+	v3types "github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v3"
 )
 
 func RegisterServices(configurator sdkmodule.Configurator, k keeper.Keeper) {

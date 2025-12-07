@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
 )
 
 func (k *Keeper) FundCommunityPool(ctx sdk.Context, fromAddr sdk.AccAddress, coin sdk.Coin) error {

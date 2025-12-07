@@ -27,10 +27,10 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 
-	customminttypes "github.com/sentinel-official/sentinelhub/v12/x/mint/types"
-	oracletypes "github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
-	swaptypes "github.com/sentinel-official/sentinelhub/v12/x/swap/types"
-	vpntypes "github.com/sentinel-official/sentinelhub/v12/x/vpn/types"
+	customminttypes "github.com/sentinel-official/sentinelhub/v13/x/mint/types"
+	oracletypes "github.com/sentinel-official/sentinelhub/v13/x/oracle/types"
+	swaptypes "github.com/sentinel-official/sentinelhub/v13/x/swap/types"
+	vpntypes "github.com/sentinel-official/sentinelhub/v13/x/vpn/types"
 )
 
 type StoreKeys struct {

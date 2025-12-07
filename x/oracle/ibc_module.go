@@ -11,8 +11,8 @@ import (
 	ibcerrors "github.com/cosmos/ibc-go/v7/modules/core/errors"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/oracle/keeper"
-	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/oracle/keeper"
+	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types"
 )
 
 var (

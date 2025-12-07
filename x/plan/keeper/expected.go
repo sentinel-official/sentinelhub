@@ -4,11 +4,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	leasetypes "github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
-	nodetypes "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
-	providertypes "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
-	subscriptiontypes "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	leasetypes "github.com/sentinel-official/sentinelhub/v13/x/lease/types/v1"
+	nodetypes "github.com/sentinel-official/sentinelhub/v13/x/node/types/v3"
+	providertypes "github.com/sentinel-official/sentinelhub/v13/x/provider/types/v2"
+	subscriptiontypes "github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v3"
 )
 
 type AccountKeeper interface {

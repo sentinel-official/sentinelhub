@@ -3,7 +3,7 @@ package v3
 import (
 	"errors"
 
-	sessiontypes "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
+	sessiontypes "github.com/sentinel-official/sentinelhub/v13/x/session/types/v3"
 )
 
 var _ sessiontypes.Session = (*Session)(nil)

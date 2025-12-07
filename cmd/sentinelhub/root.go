@@ -20,7 +20,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/sentinel-official/sentinelhub/v12/app"
+	"github.com/sentinel-official/sentinelhub/v13/app"
 )
 
 func moduleInitFlags(cmd *cobra.Command) {

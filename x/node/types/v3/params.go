@@ -8,7 +8,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
 )
 
 var (

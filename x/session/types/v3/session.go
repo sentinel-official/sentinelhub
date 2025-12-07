@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
 )
 
 // Session defines the behavior of a session, including bandwidth, timing, and status-related accessors and mutators.

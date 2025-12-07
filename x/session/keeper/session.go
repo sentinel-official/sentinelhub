@@ -7,9 +7,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/session/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/session/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/session/types/v3"
 )
 
 // SetSession stores a session in the module's KVStore.

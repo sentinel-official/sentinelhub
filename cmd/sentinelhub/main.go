@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	servercmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
 )
 
 func HomeDir() (string, error) {

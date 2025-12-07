@@ -6,7 +6,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/mint/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/mint/types"
 )
 
 type Keeper struct {

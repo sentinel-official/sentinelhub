@@ -9,10 +9,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
-	"github.com/sentinel-official/sentinelhub/v12/x/plan/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/plan/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/plan/types/v3"
 )
 
 // HandleQueryPlan handles a query to fetch a single plan by its ID.

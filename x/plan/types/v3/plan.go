@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
 )
 
 // GetPrices returns the list of prices associated with the plan.

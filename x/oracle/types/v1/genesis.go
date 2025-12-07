@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types"
 )
 
 func NewGenesisState(assets []Asset, params Params, portID string) *GenesisState {

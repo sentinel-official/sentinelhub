@@ -4,14 +4,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	deposit "github.com/sentinel-official/sentinelhub/v12/x/deposit/migrations"
-	lease "github.com/sentinel-official/sentinelhub/v12/x/lease/migrations"
-	node "github.com/sentinel-official/sentinelhub/v12/x/node/migrations"
-	plan "github.com/sentinel-official/sentinelhub/v12/x/plan/migrations"
-	provider "github.com/sentinel-official/sentinelhub/v12/x/provider/migrations"
-	session "github.com/sentinel-official/sentinelhub/v12/x/session/migrations"
-	subscription "github.com/sentinel-official/sentinelhub/v12/x/subscription/migrations"
-	"github.com/sentinel-official/sentinelhub/v12/x/vpn/keeper"
+	deposit "github.com/sentinel-official/sentinelhub/v13/x/deposit/migrations"
+	lease "github.com/sentinel-official/sentinelhub/v13/x/lease/migrations"
+	node "github.com/sentinel-official/sentinelhub/v13/x/node/migrations"
+	plan "github.com/sentinel-official/sentinelhub/v13/x/plan/migrations"
+	provider "github.com/sentinel-official/sentinelhub/v13/x/provider/migrations"
+	session "github.com/sentinel-official/sentinelhub/v13/x/session/migrations"
+	subscription "github.com/sentinel-official/sentinelhub/v13/x/subscription/migrations"
+	"github.com/sentinel-official/sentinelhub/v13/x/vpn/keeper"
 )
 
 type Migrator struct {

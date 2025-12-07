@@ -5,9 +5,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
-	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2"
-	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v2"
+	"github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v3"
 )
 
 // handleInactivePendingSubscriptions processes pending subscriptions that have become inactive.

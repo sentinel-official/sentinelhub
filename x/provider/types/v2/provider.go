@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/url"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
 )
 
 func (m *Provider) Validate() error {

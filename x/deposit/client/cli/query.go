@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/deposit/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/deposit/types/v1"
 )
 
 func queryDeposit() *cobra.Command {

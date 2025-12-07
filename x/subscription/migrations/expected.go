@@ -5,13 +5,13 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
-	v3node "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
-	v3plan "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
-	v2provider "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
-	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2"
-	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
+	"github.com/sentinel-official/sentinelhub/v13/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/lease/types/v1"
+	v3node "github.com/sentinel-official/sentinelhub/v13/x/node/types/v3"
+	v3plan "github.com/sentinel-official/sentinelhub/v13/x/plan/types/v3"
+	v2provider "github.com/sentinel-official/sentinelhub/v13/x/provider/types/v2"
+	"github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v2"
+	"github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v3"
 )
 
 type DepositKeeper interface {

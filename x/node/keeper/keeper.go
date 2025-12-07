@@ -8,7 +8,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/node/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/node/types"
 )
 
 type Keeper struct {

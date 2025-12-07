@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/session/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/session/types"
 )
 
 // SetSessionCount sets the count value in the KVStore.

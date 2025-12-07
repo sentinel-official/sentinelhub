@@ -9,9 +9,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/lease/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/lease/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/lease/types/v1"
 )
 
 // HandleQueryLease handles a query to fetch a single lease by ID.

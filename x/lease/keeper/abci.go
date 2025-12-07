@@ -5,9 +5,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	baseutils "github.com/sentinel-official/sentinelhub/v12/utils"
-	"github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	baseutils "github.com/sentinel-official/sentinelhub/v13/utils"
+	"github.com/sentinel-official/sentinelhub/v13/x/lease/types/v1"
 )
 
 // handleInactiveLeases processes all leases that have become inactive at the current block time.

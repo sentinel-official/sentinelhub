@@ -8,7 +8,7 @@ import (
 	ibcporttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types"
 )
 
 type Keeper struct {

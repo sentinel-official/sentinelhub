@@ -3,9 +3,9 @@ package services
 import (
 	sdkmodule "github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/node/keeper"
-	"github.com/sentinel-official/sentinelhub/v12/x/node/services/v3"
-	v3types "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
+	"github.com/sentinel-official/sentinelhub/v13/x/node/keeper"
+	"github.com/sentinel-official/sentinelhub/v13/x/node/services/v3"
+	v3types "github.com/sentinel-official/sentinelhub/v13/x/node/types/v3"
 )
 
 func RegisterServices(configurator sdkmodule.Configurator, k keeper.Keeper) {

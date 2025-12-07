@@ -3,7 +3,7 @@ package migrations
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v3"
+	"github.com/sentinel-official/sentinelhub/v13/x/provider/types/v3"
 )
 
 type ProviderKeeper interface {

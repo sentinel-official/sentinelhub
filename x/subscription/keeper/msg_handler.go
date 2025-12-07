@@ -5,13 +5,13 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
-	baseutils "github.com/sentinel-official/sentinelhub/v12/utils"
-	sessiontypes "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
-	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2"
-	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
+	baseutils "github.com/sentinel-official/sentinelhub/v13/utils"
+	sessiontypes "github.com/sentinel-official/sentinelhub/v13/x/session/types/v3"
+	"github.com/sentinel-official/sentinelhub/v13/x/subscription/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v2"
+	"github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v3"
 )
 
 // HandleMsgCancelSubscription handles a request to cancel an active subscription.

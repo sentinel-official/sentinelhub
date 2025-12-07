@@ -35,11 +35,11 @@ import (
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
 	ibctmmigrations "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint/migrations"
 
-	"github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/poolmanager/client/queryproto"
-	protorevtypes "github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/protorev/types"
-	oraclekeeper "github.com/sentinel-official/sentinelhub/v12/x/oracle/keeper"
-	oracletypes "github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
-	v1oracletypes "github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/third_party/osmosis/x/poolmanager/client/queryproto"
+	protorevtypes "github.com/sentinel-official/sentinelhub/v13/third_party/osmosis/x/protorev/types"
+	oraclekeeper "github.com/sentinel-official/sentinelhub/v13/x/oracle/keeper"
+	oracletypes "github.com/sentinel-official/sentinelhub/v13/x/oracle/types"
+	v1oracletypes "github.com/sentinel-official/sentinelhub/v13/x/oracle/types/v1"
 )
 
 const (

@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/lease/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/lease/types"
 )
 
 // SetLeaseCount stores the lease count in the module's KVStore.

@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/oracle/keeper"
-	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/oracle/keeper"
+	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types/v1"
 )
 
 var (

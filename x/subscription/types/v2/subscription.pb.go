@@ -9,7 +9,7 @@ import (
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
 	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
-	v1 "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	v1 "github.com/sentinel-official/sentinelhub/v13/types/v1"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"

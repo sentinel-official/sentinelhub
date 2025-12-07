@@ -5,8 +5,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibchost "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 
-	protorevtypes "github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/protorev/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1"
+	protorevtypes "github.com/sentinel-official/sentinelhub/v13/third_party/osmosis/x/protorev/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types/v1"
 )
 
 // BeginBlock is called at the beginning of each block to trigger IBC query packets for relevant assets.

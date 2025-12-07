@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v3"
+	"github.com/sentinel-official/sentinelhub/v13/x/subscription/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v3"
 )
 
 // SetSubscription stores a subscription in the module's KVStore.

@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/mint/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/mint/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/mint/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/mint/types/v1"
 )
 
 // SetInflation stores an inflation record in the module's KVStore.

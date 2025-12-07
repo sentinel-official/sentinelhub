@@ -5,13 +5,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
-	depositkeeper "github.com/sentinel-official/sentinelhub/v12/x/deposit/keeper"
-	leasekeeper "github.com/sentinel-official/sentinelhub/v12/x/lease/keeper"
-	nodekeeper "github.com/sentinel-official/sentinelhub/v12/x/node/keeper"
-	plankeeper "github.com/sentinel-official/sentinelhub/v12/x/plan/keeper"
-	providerkeeper "github.com/sentinel-official/sentinelhub/v12/x/provider/keeper"
-	sessionkeeper "github.com/sentinel-official/sentinelhub/v12/x/session/keeper"
-	subscriptionkeeper "github.com/sentinel-official/sentinelhub/v12/x/subscription/keeper"
+	depositkeeper "github.com/sentinel-official/sentinelhub/v13/x/deposit/keeper"
+	leasekeeper "github.com/sentinel-official/sentinelhub/v13/x/lease/keeper"
+	nodekeeper "github.com/sentinel-official/sentinelhub/v13/x/node/keeper"
+	plankeeper "github.com/sentinel-official/sentinelhub/v13/x/plan/keeper"
+	providerkeeper "github.com/sentinel-official/sentinelhub/v13/x/provider/keeper"
+	sessionkeeper "github.com/sentinel-official/sentinelhub/v13/x/session/keeper"
+	subscriptionkeeper "github.com/sentinel-official/sentinelhub/v13/x/subscription/keeper"
 )
 
 type Keeper struct {

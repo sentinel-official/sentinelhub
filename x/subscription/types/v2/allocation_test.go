@@ -5,7 +5,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
 )
 
 func TestAllocation_Validate(t *testing.T) {

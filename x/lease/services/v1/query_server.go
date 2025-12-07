@@ -7,8 +7,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/lease/keeper"
-	"github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/lease/keeper"
+	"github.com/sentinel-official/sentinelhub/v13/x/lease/types/v1"
 )
 
 var (

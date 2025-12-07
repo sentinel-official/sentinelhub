@@ -3,10 +3,10 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	leasetypes "github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
-	nodetypes "github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
-	providertypes "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	leasetypes "github.com/sentinel-official/sentinelhub/v13/x/lease/types/v1"
+	nodetypes "github.com/sentinel-official/sentinelhub/v13/x/node/types/v3"
+	providertypes "github.com/sentinel-official/sentinelhub/v13/x/provider/types/v2"
 )
 
 func (k *Keeper) GetLease(ctx sdk.Context, id uint64) (leasetypes.Lease, bool) {

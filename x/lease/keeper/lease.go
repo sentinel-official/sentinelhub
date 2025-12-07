@@ -7,9 +7,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/lease/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/lease/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/lease/types/v1"
 )
 
 // SetLease stores a lease in the module's KVStore.

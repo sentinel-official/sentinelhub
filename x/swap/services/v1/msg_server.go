@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/swap/keeper"
-	"github.com/sentinel-official/sentinelhub/v12/x/swap/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/swap/keeper"
+	"github.com/sentinel-official/sentinelhub/v13/x/swap/types/v1"
 )
 
 var (

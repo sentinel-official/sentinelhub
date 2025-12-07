@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/swap/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/swap/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/swap/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/swap/types/v1"
 )
 
 func (k *Keeper) HandleMsgSwap(ctx sdk.Context, msg *v1.MsgSwapRequest) (*v1.MsgSwapResponse, error) {

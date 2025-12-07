@@ -9,10 +9,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
-	"github.com/sentinel-official/sentinelhub/v12/x/node/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/node/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/node/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/node/types/v3"
 )
 
 // HandleQueryNode handles a query to fetch a specific node by its bech32 address.

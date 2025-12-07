@@ -1,4 +1,4 @@
-module github.com/sentinel-official/sentinelhub/v12
+module github.com/sentinel-official/sentinelhub/v13
 
 go 1.24.0
 

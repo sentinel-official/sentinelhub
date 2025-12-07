@@ -14,9 +14,9 @@ import (
 	ibcchanneltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	ibchost "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 
-	"github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/poolmanager/client/queryproto"
-	protorevtypes "github.com/sentinel-official/sentinelhub/v12/third_party/osmosis/x/protorev/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/third_party/osmosis/x/poolmanager/client/queryproto"
+	protorevtypes "github.com/sentinel-official/sentinelhub/v13/third_party/osmosis/x/protorev/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types/v1"
 )
 
 // SendQueryPacket serializes query requests and sends them as an IBC packet to a destination chain.

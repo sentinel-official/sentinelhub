@@ -7,8 +7,8 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	sessiontypes "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	sessiontypes "github.com/sentinel-official/sentinelhub/v13/x/session/types/v3"
 )
 
 // Ensure that Session implements the sessiontypes.Session interface.

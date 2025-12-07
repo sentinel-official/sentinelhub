@@ -8,12 +8,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	"github.com/sentinel-official/sentinelhub/v12/types/v1"
-	nodetypes "github.com/sentinel-official/sentinelhub/v12/x/node/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/plan/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v2"
-	"github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	"github.com/sentinel-official/sentinelhub/v13/types/v1"
+	nodetypes "github.com/sentinel-official/sentinelhub/v13/x/node/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/plan/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/plan/types/v2"
+	"github.com/sentinel-official/sentinelhub/v13/x/plan/types/v3"
 )
 
 type Migrator struct {

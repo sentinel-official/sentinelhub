@@ -6,8 +6,8 @@ import (
 	"net"
 	"strconv"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
 )
 
 // GetGigabytePrices returns the node's defined prices per gigabyte.

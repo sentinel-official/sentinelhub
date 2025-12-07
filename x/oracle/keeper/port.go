@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibchost "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 
-	"github.com/sentinel-official/sentinelhub/v12/x/oracle/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types"
 )
 
 // GetPortID returns the portID for the oracle module.

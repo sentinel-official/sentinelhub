@@ -3,11 +3,11 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	base "github.com/sentinel-official/sentinelhub/v12/types"
-	v1base "github.com/sentinel-official/sentinelhub/v12/types/v1"
-	"github.com/sentinel-official/sentinelhub/v12/x/provider/types"
-	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v2"
-	"github.com/sentinel-official/sentinelhub/v12/x/provider/types/v3"
+	base "github.com/sentinel-official/sentinelhub/v13/types"
+	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"
+	"github.com/sentinel-official/sentinelhub/v13/x/provider/types"
+	"github.com/sentinel-official/sentinelhub/v13/x/provider/types/v2"
+	"github.com/sentinel-official/sentinelhub/v13/x/provider/types/v3"
 )
 
 // HandleMsgRegisterProvider handles a request to register a new provider.

@@ -8,7 +8,6 @@ import (
 	sdkmath "cosmossdk.io/math"
 	abcitypes "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	ibcicqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v8/types"
 	ibcclienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	ibcchanneltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"

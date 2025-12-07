@@ -16,8 +16,8 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
 	"github.com/cosmos/cosmos-sdk/client/grpc/node"
-	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/server/api"
@@ -150,7 +150,7 @@ func (a *App) SimulationManager() *sdkmodule.SimulationManager {
 
 func (a *App) RegisterAPIRoutes(server *api.Server, _ serverconfig.APIConfig) {
 	authtx.RegisterGRPCGatewayRoutes(server.ClientCtx, server.GRPCGatewayRouter)
-	tmservice.RegisterGRPCGatewayRoutes(server.ClientCtx, server.GRPCGatewayRouter)
+	cmtservice.RegisterGRPCGatewayRoutes(server.ClientCtx, server.GRPCGatewayRouter)
 	node.RegisterGRPCGatewayRoutes(server.ClientCtx, server.GRPCGatewayRouter)
 	ModuleBasics.RegisterGRPCGatewayRoutes(server.ClientCtx, server.GRPCGatewayRouter)
 }
@@ -160,7 +160,7 @@ func (a *App) RegisterTxService(ctx client.Context) {
 }
 
 func (a *App) RegisterTendermintService(ctx client.Context) {
-	tmservice.RegisterTendermintService(ctx, a.GRPCQueryRouter(), a.InterfaceRegistry, a.Query)
+	cmtservice.RegisterTendermintService(ctx, a.GRPCQueryRouter(), a.InterfaceRegistry, a.Query)
 }
 
 func (a *App) RegisterNodeService(ctx client.Context) {

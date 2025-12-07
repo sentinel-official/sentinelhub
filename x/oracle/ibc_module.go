@@ -4,7 +4,6 @@ import (
 	sdkerrors "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	ibcchanneltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
 	ibcporttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
 	ibchost "github.com/cosmos/ibc-go/v10/modules/core/24-host"

@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	protobuf "github.com/gogo/protobuf/types"
+	protobuf "github.com/cosmos/gogoproto/types"
 
 	"github.com/sentinel-official/sentinelhub/v13/x/session/types"
 )

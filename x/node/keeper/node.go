@@ -6,7 +6,7 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	protobuf "github.com/gogo/protobuf/types"
+	protobuf "github.com/cosmos/gogoproto/types"
 
 	base "github.com/sentinel-official/sentinelhub/v13/types"
 	v1base "github.com/sentinel-official/sentinelhub/v13/types/v1"

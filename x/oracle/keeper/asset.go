@@ -5,8 +5,8 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	protobuf "github.com/cosmos/gogoproto/types"
 	ibchost "github.com/cosmos/ibc-go/v10/modules/core/24-host"
-	protobuf "github.com/gogo/protobuf/types"
 
 	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types"
 	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types/v1"

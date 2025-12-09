@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sentinel-official/sentinelhub/v13/x/deposit/types"
@@ -48,7 +49,7 @@ func (k *Keeper) GetDeposit(ctx sdk.Context, addr sdk.AccAddress) (deposit v1.De
 // GetDeposits retrieves all deposits stored in the module's KVStore.
 func (k *Keeper) GetDeposits(ctx sdk.Context) (items v1.Deposits) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.DepositKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.DepositKeyPrefix)
 
 	defer iterator.Close()
 
@@ -74,7 +75,7 @@ func (k *Keeper) DeleteDeposit(ctx sdk.Context, addr sdk.AccAddress) {
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateDeposits(ctx sdk.Context, fn func(index int, item v1.Deposit) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.DepositKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.DepositKeyPrefix)
 
 	defer iterator.Close()
 

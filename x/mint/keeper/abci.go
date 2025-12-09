@@ -1,13 +1,16 @@
 package keeper
 
 import (
-	abcitypes "github.com/cometbft/cometbft/abci/types"
+	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sentinel-official/sentinelhub/v13/x/mint/types/v1"
 )
 
-func (k *Keeper) BeginBlock(ctx sdk.Context) []abcitypes.ValidatorUpdate {
+func (k *Keeper) BeginBlock(c context.Context) error {
+	ctx := sdk.UnwrapSDKContext(c)
+
 	k.IterateInflations(ctx, func(_ int, item v1.Inflation) bool {
 		if item.Timestamp.After(ctx.BlockTime()) {
 			return true

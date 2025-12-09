@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	confixcmd "cosmossdk.io/tools/confix/cmd"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -11,7 +12,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/debug"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/keys"
+	"github.com/cosmos/cosmos-sdk/client/pruning"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
+	"github.com/cosmos/cosmos-sdk/client/snapshot"
 	"github.com/cosmos/cosmos-sdk/server"
 	authcli "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -40,11 +43,12 @@ func queryCommand() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		authcli.GetAccountCmd(),
-		authcli.QueryTxCmd(),
-		authcli.QueryTxsByEventsCmd(),
-		rpc.BlockCommand(),
 		rpc.ValidatorCommand(),
+		server.QueryBlocksCmd(),
+		server.QueryBlockCmd(),
+		server.QueryBlockResultsCmd(),
+		authcli.QueryTxsByEventsCmd(),
+		authcli.QueryTxCmd(),
 	)
 
 	app.ModuleBasics.AddQueryCommands(cmd)
@@ -116,19 +120,22 @@ func NewRootCmd(homeDir string) *cobra.Command {
 		},
 	}
 
+	creator := appCreator{encCfg: encCfg}
+
 	cmd.AddCommand(
-		clientconfig.Cmd(),
+		confixcmd.ConfigCommand(),
 		debug.Cmd(),
-		genutilcli.InitCmd(app.ModuleBasics, homeDir),
 		genutilcli.GenesisCoreCommand(encCfg.TxConfig, app.ModuleBasics, homeDir),
-		keys.Commands(homeDir),
+		genutilcli.InitCmd(app.ModuleBasics, homeDir),
+		keys.Commands(),
+		pruning.Cmd(creator.NewApp, homeDir),
 		queryCommand(),
-		rpc.StatusCommand(),
+		server.StatusCommand(),
+		snapshot.Cmd(creator.NewApp),
 		tmcli.NewCompletionCmd(cmd, true),
 		txCommand(),
 	)
 
-	creator := appCreator{encCfg: encCfg}
 	server.AddCommands(cmd, homeDir, creator.NewApp, creator.AppExport, moduleInitFlags)
 
 	startCmd, _, err := cmd.Find([]string{"start"})

@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sentinel-official/sentinelhub/v13/x/swap/types"
@@ -41,7 +42,7 @@ func (k *Keeper) HasSwap(ctx sdk.Context, txHash types.EthereumHash) bool {
 func (k *Keeper) GetSwaps(ctx sdk.Context) (items v1.Swaps) {
 	var (
 		store    = k.Store(ctx)
-		iterator = sdk.KVStorePrefixIterator(store, types.SwapKeyPrefix)
+		iterator = storetypes.KVStorePrefixIterator(store, types.SwapKeyPrefix)
 	)
 
 	defer iterator.Close()

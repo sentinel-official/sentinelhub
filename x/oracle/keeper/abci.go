@@ -1,44 +1,39 @@
 package keeper
 
 import (
+	"context"
+
 	abcitypes "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ibchost "github.com/cosmos/ibc-go/v10/modules/core/24-host"
 
 	protorevtypes "github.com/sentinel-official/sentinelhub/v13/third_party/osmosis/x/protorev/types"
 	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types/v1"
 )
 
 // BeginBlock is called at the beginning of each block to trigger IBC query packets for relevant assets.
-func (k *Keeper) BeginBlock(ctx sdk.Context) {
+func (k *Keeper) BeginBlock(c context.Context) error {
+	ctx := sdk.UnwrapSDKContext(c)
+
 	interval := k.GetBlockInterval(ctx)
 	if ctx.BlockHeight()%interval != 0 {
-		return
+		return nil
 	}
 
 	portID := k.GetPortID(ctx)
 	if portID == "" {
 		k.Logger(ctx).Info("PortID is empty, skipping BeginBlock execution")
 
-		return
+		return nil
 	}
 
 	channelID := k.GetChannelID(ctx)
 	if channelID == "" {
 		k.Logger(ctx).Info("ChannelID is empty, skipping BeginBlock execution")
 
-		return
+		return nil
 	}
 
 	timeoutTimestamp := k.GetTimeoutTimestamp(ctx)
-
-	// Get the channel capability to ensure we have the authority to send packets.
-	channelCap, found := k.capability.GetCapability(ctx, ibchost.ChannelCapabilityPath(portID, channelID))
-	if !found {
-		k.Logger(ctx).Info("Channel capability not found, skipping BeginBlock execution")
-
-		return
-	}
 
 	// Iterate over each asset and send a ProtoRevPool query for each.
 	k.IterateAssets(ctx, func(_ int, item v1.Asset) bool {
@@ -54,7 +49,7 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) {
 		}
 
 		// Send the GetProtoRevPool query packet over IBC.
-		sequence, err := k.SendQueryPacket(ctx, channelCap, portID, channelID, timeoutTimestamp, req)
+		sequence, err := k.SendQueryPacket(ctx, portID, channelID, timeoutTimestamp, req)
 		if err != nil {
 			k.Logger(ctx).Error("Failed to send query packet", "asset", item.Denom, "msg", err)
 
@@ -66,4 +61,6 @@ func (k *Keeper) BeginBlock(ctx sdk.Context) {
 
 		return false
 	})
+
+	return nil
 }

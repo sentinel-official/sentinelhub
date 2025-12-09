@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
@@ -141,7 +142,7 @@ func (k *Keeper) GetNode(ctx sdk.Context, addr base.NodeAddress) (node v3.Node, 
 // GetNodes retrieves all nodes stored in the module's KVStore.
 func (k *Keeper) GetNodes(ctx sdk.Context) (items []v3.Node) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.NodeKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.NodeKeyPrefix)
 
 	defer iterator.Close()
 
@@ -159,7 +160,7 @@ func (k *Keeper) GetNodes(ctx sdk.Context) (items []v3.Node) {
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateNodes(ctx sdk.Context, fn func(index int, item v3.Node) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.NodeKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.NodeKeyPrefix)
 
 	defer iterator.Close()
 
@@ -204,7 +205,7 @@ func (k *Keeper) DeleteNodeForInactiveAt(ctx sdk.Context, at time.Time, addr bas
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateNodesForInactiveAt(ctx sdk.Context, at time.Time, fn func(index int, item v3.Node) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := store.Iterator(types.NodeForInactiveAtKeyPrefix, sdk.PrefixEndBytes(types.GetNodeForInactiveAtKeyPrefix(at)))
+	iterator := store.Iterator(types.NodeForInactiveAtKeyPrefix, storetypes.PrefixEndBytes(types.GetNodeForInactiveAtKeyPrefix(at)))
 
 	defer iterator.Close()
 
@@ -250,7 +251,7 @@ func (k *Keeper) DeleteNodeForPlan(ctx sdk.Context, id uint64, addr base.NodeAdd
 // GetNodesForPlan retrieves all nodes associated with a plan stored in the module's KVStore based on the plan ID.
 func (k *Keeper) GetNodesForPlan(ctx sdk.Context, id uint64) (items []v3.Node) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetNodeForPlanKeyPrefix(id))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetNodeForPlanKeyPrefix(id))
 
 	defer iterator.Close()
 

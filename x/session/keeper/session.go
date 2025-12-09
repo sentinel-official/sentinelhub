@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
@@ -58,7 +59,7 @@ func (k *Keeper) DeleteSession(ctx sdk.Context, id uint64) {
 // GetSessions retrieves all sessions stored in the module's KVStore.
 func (k *Keeper) GetSessions(ctx sdk.Context) (items []v3.Session) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.SessionKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.SessionKeyPrefix)
 
 	defer iterator.Close()
 
@@ -82,7 +83,7 @@ func (k *Keeper) GetSessions(ctx sdk.Context) (items []v3.Session) {
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateSessions(ctx sdk.Context, fn func(index int, item v3.Session) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.SessionKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.SessionKeyPrefix)
 
 	defer iterator.Close()
 
@@ -124,7 +125,7 @@ func (k *Keeper) DeleteSessionForAccount(ctx sdk.Context, addr sdk.AccAddress, i
 // GetSessionsForAccount retrieves all sessions associated with a specific account address.
 func (k *Keeper) GetSessionsForAccount(ctx sdk.Context, addr sdk.AccAddress) (items []v3.Session) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetSessionForAccountKeyPrefix(addr))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetSessionForAccountKeyPrefix(addr))
 
 	defer iterator.Close()
 
@@ -160,7 +161,7 @@ func (k *Keeper) DeleteSessionForNode(ctx sdk.Context, addr base.NodeAddress, id
 // GetSessionsForNode retrieves all sessions associated with a specific node address.
 func (k *Keeper) GetSessionsForNode(ctx sdk.Context, addr base.NodeAddress) (items []v3.Session) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetSessionForNodeKeyPrefix(addr))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetSessionForNodeKeyPrefix(addr))
 
 	defer iterator.Close()
 
@@ -180,7 +181,7 @@ func (k *Keeper) GetSessionsForNode(ctx sdk.Context, addr base.NodeAddress) (ite
 // The iteration stops when the provided function returns 'true' or an error occurs.
 func (k *Keeper) IterateSessionsForNode(ctx sdk.Context, addr base.NodeAddress, fn func(int, v3.Session) (bool, error)) error {
 	store := k.Store(ctx)
-	iterator := sdk.KVStoreReversePrefixIterator(store, types.GetSessionForNodeKeyPrefix(addr))
+	iterator := storetypes.KVStoreReversePrefixIterator(store, types.GetSessionForNodeKeyPrefix(addr))
 
 	defer iterator.Close()
 
@@ -226,7 +227,7 @@ func (k *Keeper) DeleteSessionForPlanByNode(ctx sdk.Context, planID uint64, addr
 // The iteration stops when the provided function returns 'true' or an error occurs.
 func (k *Keeper) IterateSessionsForPlanByNode(ctx sdk.Context, id uint64, addr base.NodeAddress, fn func(int, v3.Session) (bool, error)) error {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetSessionForPlanByNodeKeyPrefix(id, addr))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetSessionForPlanByNodeKeyPrefix(id, addr))
 
 	defer iterator.Close()
 
@@ -271,7 +272,7 @@ func (k *Keeper) DeleteSessionForSubscription(ctx sdk.Context, subscriptionID, s
 // GetSessionsForSubscription retrieves all sessions associated with a specific subscription ID.
 func (k *Keeper) GetSessionsForSubscription(ctx sdk.Context, id uint64) (items []v3.Session) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetSessionForSubscriptionKeyPrefix(id))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetSessionForSubscriptionKeyPrefix(id))
 
 	defer iterator.Close()
 
@@ -291,7 +292,7 @@ func (k *Keeper) GetSessionsForSubscription(ctx sdk.Context, id uint64) (items [
 // The iteration stops when the provided function returns 'true' or an error occurs.
 func (k *Keeper) IterateSessionsForSubscription(ctx sdk.Context, id uint64, fn func(int, v3.Session) (bool, error)) error {
 	store := k.Store(ctx)
-	iterator := sdk.KVStoreReversePrefixIterator(store, types.GetSessionForSubscriptionKeyPrefix(id))
+	iterator := storetypes.KVStoreReversePrefixIterator(store, types.GetSessionForSubscriptionKeyPrefix(id))
 
 	defer iterator.Close()
 
@@ -337,7 +338,7 @@ func (k *Keeper) DeleteSessionForAllocation(ctx sdk.Context, subscriptionID uint
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateSessionsForAllocation(ctx sdk.Context, id uint64, addr sdk.AccAddress, fn func(index int, item v3.Session) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStoreReversePrefixIterator(store, types.GetSessionForAllocationKeyPrefix(id, addr))
+	iterator := storetypes.KVStoreReversePrefixIterator(store, types.GetSessionForAllocationKeyPrefix(id, addr))
 
 	defer iterator.Close()
 
@@ -376,7 +377,7 @@ func (k *Keeper) DeleteSessionForInactiveAt(ctx sdk.Context, at time.Time, id ui
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateSessionsForInactiveAt(ctx sdk.Context, at time.Time, fn func(index int, item v3.Session) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := store.Iterator(types.SessionForInactiveAtKeyPrefix, sdk.PrefixEndBytes(types.GetSessionForInactiveAtKeyPrefix(at)))
+	iterator := store.Iterator(types.SessionForInactiveAtKeyPrefix, storetypes.PrefixEndBytes(types.GetSessionForInactiveAtKeyPrefix(at)))
 
 	defer iterator.Close()
 
@@ -397,7 +398,7 @@ func (k *Keeper) IterateSessionsForInactiveAt(ctx sdk.Context, at time.Time, fn 
 // GetLatestSessionForAllocation retrieves the latest session for a given subscription ID and account address.
 func (k *Keeper) GetLatestSessionForAllocation(ctx sdk.Context, subscriptionID uint64, addr sdk.AccAddress) (session v3.Session, found bool) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStoreReversePrefixIterator(store, types.GetSessionForAllocationKeyPrefix(subscriptionID, addr))
+	iterator := storetypes.KVStoreReversePrefixIterator(store, types.GetSessionForAllocationKeyPrefix(subscriptionID, addr))
 
 	defer iterator.Close()
 

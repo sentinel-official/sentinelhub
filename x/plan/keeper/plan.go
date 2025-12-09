@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
@@ -127,7 +128,7 @@ func (k *Keeper) GetPlan(ctx sdk.Context, id uint64) (plan v3.Plan, found bool) 
 // GetPlans retrieves all plans (both active and inactive) from the module's KVStore.
 func (k *Keeper) GetPlans(ctx sdk.Context) (items []v3.Plan) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.PlanKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.PlanKeyPrefix)
 
 	defer iterator.Close()
 
@@ -170,7 +171,7 @@ func (k *Keeper) DeletePlanForNodeByProvider(ctx sdk.Context, nodeAddr base.Node
 // The iteration stops when the provided function returns 'true' or an error occurs.
 func (k *Keeper) IteratePlansForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, fn func(int, v3.Plan) (bool, error)) error {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetPlanForNodeByProviderKeyPrefix(nodeAddr, provAddr))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetPlanForNodeByProviderKeyPrefix(nodeAddr, provAddr))
 
 	defer iterator.Close()
 
@@ -199,7 +200,7 @@ func (k *Keeper) IteratePlansForNodeByProvider(ctx sdk.Context, nodeAddr base.No
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IteratePlansForNode(ctx sdk.Context, addr base.NodeAddress, fn func(index int, item v3.Plan) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetPlanForNodeKeyPrefix(addr))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetPlanForNodeKeyPrefix(addr))
 
 	defer iterator.Close()
 
@@ -237,7 +238,7 @@ func (k *Keeper) DeletePlanForProvider(ctx sdk.Context, addr base.ProvAddress, i
 // GetPlansForProvider retrieves all plans associated with a specific provider address.
 func (k *Keeper) GetPlansForProvider(ctx sdk.Context, addr base.ProvAddress) (items []v3.Plan) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetPlanForProviderKeyPrefix(addr))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetPlanForProviderKeyPrefix(addr))
 
 	defer iterator.Close()
 
@@ -255,7 +256,7 @@ func (k *Keeper) GetPlansForProvider(ctx sdk.Context, addr base.ProvAddress) (it
 
 func (k *Keeper) IteratePlansForProvider(ctx sdk.Context, addr base.ProvAddress, fn func(int, v3.Plan) (bool, error)) error {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetPlanForProviderKeyPrefix(addr))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetPlanForProviderKeyPrefix(addr))
 
 	defer iterator.Close()
 

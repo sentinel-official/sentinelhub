@@ -1,13 +1,14 @@
 package app
 
 import (
+	"cosmossdk.io/core/store"
 	storetypes "cosmossdk.io/store/types"
 	evidencetypes "cosmossdk.io/x/evidence/types"
 	"cosmossdk.io/x/feegrant"
 	nftkeeper "cosmossdk.io/x/nft/keeper"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -39,12 +40,11 @@ type StoreKeys struct {
 
 func NewStoreKeys() StoreKeys {
 	var (
-		kv = sdk.NewKVStoreKeys(
+		kv = storetypes.NewKVStoreKeys(
 			// Cosmos SDK keys
 			authtypes.StoreKey,
 			authzkeeper.StoreKey,
 			banktypes.StoreKey,
-			capabilitytypes.StoreKey,
 			consensustypes.StoreKey,
 			crisistypes.StoreKey,
 			distributiontypes.StoreKey,
@@ -61,7 +61,6 @@ func NewStoreKeys() StoreKeys {
 
 			// Cosmos IBC keys
 			ibcexported.StoreKey,
-			ibcfeetypes.StoreKey,
 			ibcicacontrollertypes.StoreKey,
 			ibcicahosttypes.StoreKey,
 			ibctransfertypes.StoreKey,
@@ -75,10 +74,8 @@ func NewStoreKeys() StoreKeys {
 			// Other keys
 			wasmtypes.StoreKey,
 		)
-		memory = sdk.NewMemoryStoreKeys(
-			capabilitytypes.MemStoreKey,
-		)
-		transient = sdk.NewTransientStoreKeys(
+		memory    = storetypes.NewMemoryStoreKeys()
+		transient = storetypes.NewTransientStoreKeys(
 			paramstypes.TStoreKey,
 		)
 	)
@@ -97,3 +94,7 @@ func (sk *StoreKeys) TransientKeys() map[string]*storetypes.TransientStoreKey { 
 func (sk *StoreKeys) KV(v string) *storetypes.KVStoreKey               { return sk.kv[v] }
 func (sk *StoreKeys) Memory(v string) *storetypes.MemoryStoreKey       { return sk.memory[v] }
 func (sk *StoreKeys) Transient(v string) *storetypes.TransientStoreKey { return sk.transient[v] }
+
+func (sk *StoreKeys) KVStoreService(v string) store.KVStoreService {
+	return runtime.NewKVStoreService(sk.KV(v))
+}

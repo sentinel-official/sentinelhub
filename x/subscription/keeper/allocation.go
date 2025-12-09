@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sentinel-official/sentinelhub/v13/x/subscription/types"
@@ -56,7 +57,7 @@ func (k *Keeper) DeleteAllocation(ctx sdk.Context, id uint64, addr sdk.AccAddres
 // GetAllocationsForSubscription retrieves all allocations for a given subscription ID.
 func (k *Keeper) GetAllocationsForSubscription(ctx sdk.Context, id uint64) (items v2.Allocations) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetAllocationForSubscriptionKeyPrefix(id))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetAllocationForSubscriptionKeyPrefix(id))
 
 	defer iterator.Close()
 
@@ -75,7 +76,7 @@ func (k *Keeper) GetAllocationsForSubscription(ctx sdk.Context, id uint64) (item
 func (k *Keeper) IterateAllocationsForSubscription(ctx sdk.Context, id uint64, fn func(index int, item v2.Allocation) (stop bool)) {
 	store := k.Store(ctx)
 
-	iterator := sdk.KVStorePrefixIterator(store, types.GetAllocationForSubscriptionKeyPrefix(id))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetAllocationForSubscriptionKeyPrefix(id))
 	defer iterator.Close()
 
 	for i := 0; iterator.Valid(); iterator.Next() {

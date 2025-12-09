@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	base "github.com/sentinel-official/sentinelhub/v13/types"
@@ -139,7 +140,7 @@ func (k *Keeper) GetProvider(ctx sdk.Context, addr base.ProvAddress) (provider v
 // GetProviders retrieves all providers from the module's KVStore.
 func (k *Keeper) GetProviders(ctx sdk.Context) (items v2.Providers) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.ProviderKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.ProviderKeyPrefix)
 
 	defer iterator.Close()
 
@@ -156,7 +157,7 @@ func (k *Keeper) GetProviders(ctx sdk.Context) (items v2.Providers) {
 // IterateProviders iterates over all providers in the module's KVStore and performs the specified action.
 func (k *Keeper) IterateProviders(ctx sdk.Context, fn func(index int, item v2.Provider) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.ProviderKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.ProviderKeyPrefix)
 
 	defer iterator.Close()
 

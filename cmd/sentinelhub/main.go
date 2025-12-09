@@ -1,12 +1,10 @@
 package main
 
 import (
-	"errors"
 	"log"
 	"os"
 	"path"
 
-	"github.com/cosmos/cosmos-sdk/server"
 	servercmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
 	base "github.com/sentinel-official/sentinelhub/v13/types"
@@ -34,12 +32,6 @@ func main() {
 
 	cmd := NewRootCmd(homeDir)
 	if err = servercmd.Execute(cmd, "SENTINELHUB", homeDir); err != nil {
-		var e server.ErrorCode
-		switch {
-		case errors.As(err, &e):
-			os.Exit(e.Code)
-		default:
-			os.Exit(1)
-		}
+		os.Exit(1)
 	}
 }

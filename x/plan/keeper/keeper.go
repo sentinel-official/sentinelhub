@@ -1,20 +1,22 @@
 package keeper
 
 import (
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
-	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sentinel-official/sentinelhub/v13/x/plan/types"
 )
 
 type Keeper struct {
-	cdc    codec.BinaryCodec
-	key    storetypes.StoreKey
-	router *baseapp.MsgServiceRouter
+	cdc          codec.BinaryCodec
+	router       *baseapp.MsgServiceRouter
+	storeService store.KVStoreService
 
 	lease        LeaseKeeper
 	node         NodeKeeper
@@ -23,11 +25,11 @@ type Keeper struct {
 	subscription SubscriptionKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, router *baseapp.MsgServiceRouter) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, storeService store.KVStoreService, router *baseapp.MsgServiceRouter) Keeper {
 	return Keeper{
-		cdc:    cdc,
-		key:    key,
-		router: router,
+		cdc:          cdc,
+		router:       router,
+		storeService: storeService,
 	}
 }
 
@@ -41,8 +43,9 @@ func (k *Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+types.ModuleName)
 }
 
-func (k *Keeper) Store(ctx sdk.Context) sdk.KVStore {
+func (k *Keeper) Store(ctx sdk.Context) storetypes.KVStore {
+	kvStore := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	child := types.ModuleName + "/"
 
-	return prefix.NewStore(ctx.KVStore(k.key), []byte(child))
+	return prefix.NewStore(kvStore, []byte(child))
 }

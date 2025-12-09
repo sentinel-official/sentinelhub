@@ -3,6 +3,7 @@ package keeper
 import (
 	"time"
 
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sentinel-official/sentinelhub/v13/x/mint/types"
@@ -45,7 +46,7 @@ func (k *Keeper) DeleteInflation(ctx sdk.Context, t time.Time) {
 // GetInflations retrieves all inflation records stored in the module's KVStore.
 func (k *Keeper) GetInflations(ctx sdk.Context) (items []v1.Inflation) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.InflationKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.InflationKeyPrefix)
 
 	defer iterator.Close()
 
@@ -63,7 +64,7 @@ func (k *Keeper) GetInflations(ctx sdk.Context) (items []v1.Inflation) {
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateInflations(ctx sdk.Context, fn func(index int, item v1.Inflation) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.InflationKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.InflationKeyPrefix)
 
 	defer iterator.Close()
 

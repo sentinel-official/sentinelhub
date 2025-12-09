@@ -27,10 +27,7 @@ var (
 
 	_ sdkmodule.AppModuleGenesis    = AppModule{}
 	_ sdkmodule.AppModuleSimulation = AppModule{}
-	_ sdkmodule.BeginBlockAppModule = AppModule{}
-	_ sdkmodule.EndBlockAppModule   = AppModule{}
 	_ sdkmodule.HasConsensusVersion = AppModule{}
-	_ sdkmodule.HasInvariants       = AppModule{}
 	_ sdkmodule.HasServices         = AppModule{}
 )
 
@@ -81,6 +78,12 @@ func NewAppModule(cdc codec.Codec, k keeper.Keeper) AppModule {
 	}
 }
 
+func (am AppModule) IsOnePerModuleType() { // marker
+}
+
+func (am AppModule) IsAppModule() { // marker
+}
+
 func (am AppModule) InitGenesis(ctx sdk.Context, jsonCodec codec.JSONCodec, message json.RawMessage) []abcitypes.ValidatorUpdate {
 	var state v1.GenesisState
 	jsonCodec.MustUnmarshalJSON(message, &state)
@@ -95,23 +98,15 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, jsonCodec codec.JSONCodec) js
 	return jsonCodec.MustMarshalJSON(state)
 }
 
-func (am AppModule) BeginBlock(_ sdk.Context, _ abcitypes.RequestBeginBlock) {}
-
-func (am AppModule) EndBlock(_ sdk.Context, _ abcitypes.RequestEndBlock) []abcitypes.ValidatorUpdate {
-	return nil
-}
-
 func (AppModule) GenerateGenesisState(_ *sdkmodule.SimulationState) {}
 
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+func (am AppModule) RegisterStoreDecoder(_ sdksimulation.StoreDecoderRegistry) {}
 
 func (am AppModule) WeightedOperations(_ sdkmodule.SimulationState) []sdksimulation.WeightedOperation {
 	return nil
 }
 
 func (am AppModule) ConsensusVersion() uint64 { return 1 }
-
-func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 func (am AppModule) RegisterServices(configurator sdkmodule.Configurator) {
 	services.RegisterServices(configurator, am.keeper)

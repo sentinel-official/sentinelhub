@@ -1,15 +1,16 @@
 package keeper
 
 import (
+	"context"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/sentinel-official/sentinelhub/v13/x/session/types/v3"
 )
 
 type AccountKeeper interface {
-	GetAccount(ctx sdk.Context, address sdk.AccAddress) authtypes.AccountI
+	GetAccount(ctx context.Context, address sdk.AccAddress) sdk.AccountI
 }
 
 type BankKeeper interface {

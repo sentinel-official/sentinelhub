@@ -1,9 +1,11 @@
 package keeper
 
 import (
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
-	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
@@ -12,21 +14,24 @@ import (
 )
 
 type Keeper struct {
-	cdc    codec.BinaryCodec
-	key    storetypes.StoreKey
-	params paramstypes.Subspace
+	cdc          codec.BinaryCodec
+	params       paramstypes.Subspace
+	storeService store.KVStoreService
 
 	account AccountKeeper
 	bank    BankKeeper
 }
 
-func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, params paramstypes.Subspace, account AccountKeeper, bank BankKeeper) Keeper {
+func NewKeeper(
+	cdc codec.BinaryCodec, storeService store.KVStoreService, params paramstypes.Subspace, account AccountKeeper,
+	bank BankKeeper,
+) Keeper {
 	return Keeper{
-		cdc:     cdc,
-		key:     key,
-		params:  params.WithKeyTable(v1.ParamsKeyTable()),
-		account: account,
-		bank:    bank,
+		cdc:          cdc,
+		params:       params.WithKeyTable(v1.ParamsKeyTable()),
+		storeService: storeService,
+		account:      account,
+		bank:         bank,
 	}
 }
 
@@ -34,6 +39,6 @@ func (k *Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+types.ModuleName)
 }
 
-func (k *Keeper) Store(ctx sdk.Context) sdk.KVStore {
-	return ctx.KVStore(k.key)
+func (k *Keeper) Store(ctx sdk.Context) storetypes.KVStore {
+	return runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 }

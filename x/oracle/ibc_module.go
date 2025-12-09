@@ -6,7 +6,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibcchanneltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
 	ibcporttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
-	ibchost "github.com/cosmos/ibc-go/v10/modules/core/24-host"
 	ibcerrors "github.com/cosmos/ibc-go/v10/modules/core/errors"
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 
@@ -24,8 +23,8 @@ type IBCModule struct {
 }
 
 func (im IBCModule) OnChanOpenInit(
-	ctx sdk.Context, _ ibcchanneltypes.Order, _ []string, portID, channelID string,
-	channelCap *capabilitytypes.Capability, _ ibcchanneltypes.Counterparty, version string,
+	ctx sdk.Context, _ ibcchanneltypes.Order, _ []string, portID, channelID string, _ ibcchanneltypes.Counterparty,
+	version string,
 ) (string, error) {
 	if version != types.Version {
 		return "", types.NewErrorInvalidVersion(version, types.Version)
@@ -36,17 +35,12 @@ func (im IBCModule) OnChanOpenInit(
 		return "", types.NewErrorInvalidPort(portID, boundPortID)
 	}
 
-	capPath := ibchost.ChannelCapabilityPath(portID, channelID)
-	if err := im.keeper.ClaimCapability(ctx, channelCap, capPath); err != nil {
-		return "", err
-	}
-
 	return types.Version, nil
 }
 
 func (im IBCModule) OnChanOpenTry(
-	ctx sdk.Context, _ ibcchanneltypes.Order, _ []string, portID, channelID string,
-	channelCap *capabilitytypes.Capability, _ ibcchanneltypes.Counterparty, counterpartyVersion string,
+	ctx sdk.Context, _ ibcchanneltypes.Order, _ []string, portID, channelID string, _ ibcchanneltypes.Counterparty,
+	counterpartyVersion string,
 ) (string, error) {
 	if counterpartyVersion != types.Version {
 		return "", types.NewErrorInvalidCounterpartyVersion(counterpartyVersion, types.Version)
@@ -55,13 +49,6 @@ func (im IBCModule) OnChanOpenTry(
 	boundPortID := im.keeper.GetPortID(ctx)
 	if portID != boundPortID {
 		return "", types.NewErrorInvalidPort(portID, boundPortID)
-	}
-
-	capPath := ibchost.ChannelCapabilityPath(portID, channelID)
-	if !im.keeper.AuthenticateCapability(ctx, channelCap, capPath) {
-		if err := im.keeper.ClaimCapability(ctx, channelCap, capPath); err != nil {
-			return "", err
-		}
 	}
 
 	return types.Version, nil
@@ -87,12 +74,14 @@ func (im IBCModule) OnChanCloseConfirm(_ sdk.Context, _, _ string) error {
 	return nil
 }
 
-func (im IBCModule) OnRecvPacket(_ sdk.Context, _ ibcchanneltypes.Packet, _ sdk.AccAddress) ibcexported.Acknowledgement {
+func (im IBCModule) OnRecvPacket(
+	_ sdk.Context, _ string, _ ibcchanneltypes.Packet, _ sdk.AccAddress,
+) ibcexported.Acknowledgement {
 	return ibcchanneltypes.NewErrorAcknowledgement(sdkerrors.Wrap(ibcerrors.ErrInvalidRequest, "oracle module can not receive the packets"))
 }
 
 func (im IBCModule) OnAcknowledgementPacket(
-	ctx sdk.Context, packet ibcchanneltypes.Packet, acknowledgement []byte, _ sdk.AccAddress,
+	ctx sdk.Context, _ string, packet ibcchanneltypes.Packet, acknowledgement []byte, _ sdk.AccAddress,
 ) error {
 	var ack ibcchanneltypes.Acknowledgement
 	if err := im.cdc.UnmarshalJSON(acknowledgement, &ack); err != nil {
@@ -102,6 +91,6 @@ func (im IBCModule) OnAcknowledgementPacket(
 	return im.keeper.OnAcknowledgementPacket(ctx, packet, ack)
 }
 
-func (im IBCModule) OnTimeoutPacket(ctx sdk.Context, packet ibcchanneltypes.Packet, _ sdk.AccAddress) error {
+func (im IBCModule) OnTimeoutPacket(ctx sdk.Context, _ string, packet ibcchanneltypes.Packet, _ sdk.AccAddress) error {
 	return im.keeper.OnTimeoutPacket(ctx, packet)
 }

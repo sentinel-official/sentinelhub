@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"cosmossdk.io/core/appmodule"
 	abcitypes "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -31,7 +32,6 @@ import (
 	v3subscriptiontypes "github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v3"
 	"github.com/sentinel-official/sentinelhub/v13/x/vpn/client/cli"
 	"github.com/sentinel-official/sentinelhub/v13/x/vpn/keeper"
-	"github.com/sentinel-official/sentinelhub/v13/x/vpn/migrations"
 	"github.com/sentinel-official/sentinelhub/v13/x/vpn/services"
 	"github.com/sentinel-official/sentinelhub/v13/x/vpn/types"
 	"github.com/sentinel-official/sentinelhub/v13/x/vpn/types/v1"
@@ -43,10 +43,8 @@ var (
 
 	_ sdkmodule.AppModuleGenesis    = AppModule{}
 	_ sdkmodule.AppModuleSimulation = AppModule{}
-	_ sdkmodule.BeginBlockAppModule = AppModule{}
-	_ sdkmodule.EndBlockAppModule   = AppModule{}
+	_ appmodule.HasBeginBlocker     = AppModule{}
 	_ sdkmodule.HasConsensusVersion = AppModule{}
-	_ sdkmodule.HasInvariants       = AppModule{}
 	_ sdkmodule.HasServices         = AppModule{}
 )
 
@@ -117,6 +115,12 @@ func NewAppModule(cdc codec.Codec, account keeper.AccountKeeper, bank keeper.Ban
 	}
 }
 
+func (am AppModule) IsOnePerModuleType() { // marker
+}
+
+func (am AppModule) IsAppModule() { // marker
+}
+
 func (am AppModule) InitGenesis(ctx sdk.Context, jsonCodec codec.JSONCodec, message json.RawMessage) []abcitypes.ValidatorUpdate {
 	var state v1.GenesisState
 	jsonCodec.MustUnmarshalJSON(message, &state)
@@ -133,29 +137,18 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, jsonCodec codec.JSONCodec) js
 
 func (am AppModule) GenerateGenesisState(_ *sdkmodule.SimulationState) {}
 
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+func (am AppModule) RegisterStoreDecoder(_ sdksimulation.StoreDecoderRegistry) {}
 
 func (am AppModule) WeightedOperations(_ sdkmodule.SimulationState) []sdksimulation.WeightedOperation {
 	return nil
 }
 
-func (am AppModule) BeginBlock(ctx sdk.Context, _ abcitypes.RequestBeginBlock) {
-	am.keeper.BeginBlock(ctx)
-}
-
-func (am AppModule) EndBlock(_ sdk.Context, _ abcitypes.RequestEndBlock) []abcitypes.ValidatorUpdate {
-	return nil
+func (am AppModule) BeginBlock(ctx context.Context) error {
+	return am.keeper.BeginBlock(ctx)
 }
 
 func (am AppModule) ConsensusVersion() uint64 { return 4 }
 
-func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
-
 func (am AppModule) RegisterServices(configurator sdkmodule.Configurator) {
 	services.RegisterServices(configurator, am.keeper)
-
-	m := migrations.NewMigrator(am.cdc, am.keeper)
-	if err := configurator.RegisterMigration(types.ModuleName, 3, m.Migrate); err != nil {
-		panic(err)
-	}
 }

@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibchost "github.com/cosmos/ibc-go/v10/modules/core/24-host"
 	protobuf "github.com/gogo/protobuf/types"
@@ -56,7 +57,7 @@ func (k *Keeper) DeleteAsset(ctx sdk.Context, denom string) {
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateAssets(ctx sdk.Context, fn func(int, v1.Asset) bool) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.AssetKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.AssetKeyPrefix)
 
 	defer iterator.Close()
 

@@ -1,15 +1,16 @@
 package keeper
 
 import (
+	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 type AccountKeeper interface {
-	GetAccount(ctx sdk.Context, address sdk.AccAddress) authtypes.AccountI
+	GetAccount(ctx context.Context, address sdk.AccAddress) sdk.AccountI
 }
 
 type BankKeeper interface {
-	MintCoins(ctx sdk.Context, name string, coins sdk.Coins) error
-	SendCoinsFromModuleToAccount(ctx sdk.Context, name string, address sdk.AccAddress, coins sdk.Coins) error
+	MintCoins(ctx context.Context, name string, coins sdk.Coins) error
+	SendCoinsFromModuleToAccount(ctx context.Context, name string, address sdk.AccAddress, coins sdk.Coins) error
 }

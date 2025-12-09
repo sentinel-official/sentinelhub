@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
@@ -56,7 +57,7 @@ func (k *Keeper) DeleteLease(ctx sdk.Context, id uint64) {
 // GetLeases retrieves all leases stored in the module's KVStore.
 func (k *Keeper) GetLeases(ctx sdk.Context) (items []v1.Lease) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.LeaseKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.LeaseKeyPrefix)
 
 	defer iterator.Close()
 
@@ -74,7 +75,7 @@ func (k *Keeper) GetLeases(ctx sdk.Context) (items []v1.Lease) {
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateLeases(ctx sdk.Context, fn func(index int, item v1.Lease) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.LeaseKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.LeaseKeyPrefix)
 
 	defer iterator.Close()
 
@@ -119,7 +120,7 @@ func (k *Keeper) DeleteLeaseForNodeByProvider(ctx sdk.Context, nodeAddr base.Nod
 // and calls the provided function for each lease. The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateLeasesForNodeByProvider(ctx sdk.Context, nodeAddr base.NodeAddress, provAddr base.ProvAddress, fn func(index int, item v1.Lease) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetLeaseForNodeByProviderKeyPrefix(nodeAddr, provAddr))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetLeaseForNodeByProviderKeyPrefix(nodeAddr, provAddr))
 
 	defer iterator.Close()
 
@@ -155,7 +156,7 @@ func (k *Keeper) HasAnyLeaseForNodeByProvider(ctx sdk.Context, nodeAddr base.Nod
 // The iteration stops when the provided function returns 'true' or an error occurs.
 func (k *Keeper) IterateLeasesForNode(ctx sdk.Context, addr base.NodeAddress, fn func(int, v1.Lease) (bool, error)) error {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetLeaseForNodeKeyPrefix(addr))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetLeaseForNodeKeyPrefix(addr))
 
 	defer iterator.Close()
 
@@ -209,7 +210,7 @@ func (k *Keeper) DeleteLeaseForProvider(ctx sdk.Context, addr base.ProvAddress, 
 // The iteration stops when the provided function returns 'true' or an error occurs.
 func (k *Keeper) IterateLeasesForProvider(ctx sdk.Context, addr base.ProvAddress, fn func(int, v1.Lease) (bool, error)) error {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetLeaseForProviderKeyPrefix(addr))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetLeaseForProviderKeyPrefix(addr))
 
 	defer iterator.Close()
 
@@ -263,7 +264,7 @@ func (k *Keeper) DeleteLeaseForInactiveAt(ctx sdk.Context, at time.Time, id uint
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateLeasesForInactiveAt(ctx sdk.Context, at time.Time, fn func(index int, item v1.Lease) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := store.Iterator(types.LeaseForInactiveAtKeyPrefix, sdk.PrefixEndBytes(types.GetLeaseForInactiveAtKeyPrefix(at)))
+	iterator := store.Iterator(types.LeaseForInactiveAtKeyPrefix, storetypes.PrefixEndBytes(types.GetLeaseForInactiveAtKeyPrefix(at)))
 
 	defer iterator.Close()
 
@@ -310,7 +311,7 @@ func (k *Keeper) DeleteLeaseForPayoutAt(ctx sdk.Context, at time.Time, id uint64
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateLeasesForPayoutAt(ctx sdk.Context, at time.Time, fn func(index int, item v1.Lease) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := store.Iterator(types.LeaseForPayoutAtKeyPrefix, sdk.PrefixEndBytes(types.GetLeaseForPayoutAtKeyPrefix(at)))
+	iterator := store.Iterator(types.LeaseForPayoutAtKeyPrefix, storetypes.PrefixEndBytes(types.GetLeaseForPayoutAtKeyPrefix(at)))
 
 	defer iterator.Close()
 
@@ -357,7 +358,7 @@ func (k *Keeper) DeleteLeaseForRenewalAt(ctx sdk.Context, at time.Time, id uint6
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateLeasesForRenewalAt(ctx sdk.Context, at time.Time, fn func(index int, item v1.Lease) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := store.Iterator(types.LeaseForRenewalAtKeyPrefix, sdk.PrefixEndBytes(types.GetLeaseForRenewalAtKeyPrefix(at)))
+	iterator := store.Iterator(types.LeaseForRenewalAtKeyPrefix, storetypes.PrefixEndBytes(types.GetLeaseForRenewalAtKeyPrefix(at)))
 
 	defer iterator.Close()
 

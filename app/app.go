@@ -4,16 +4,16 @@ import (
 	"encoding/json"
 	"io"
 
+	tmlog "cosmossdk.io/log"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	tmdb "github.com/cometbft/cometbft-db"
 	abcitypes "github.com/cometbft/cometbft/abci/types"
 	tmjson "github.com/cometbft/cometbft/libs/json"
-	tmlog "github.com/cometbft/cometbft/libs/log"
 	tmos "github.com/cometbft/cometbft/libs/os"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	tmdb "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
@@ -62,7 +62,7 @@ func NewApp(
 	baseApp.SetVersion(version)
 	baseApp.SetInterfaceRegistry(encCfg.InterfaceRegistry)
 
-	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	wasmConfig, err := wasm.ReadNodeConfig(appOpts)
 	if err != nil {
 		panic("failed to read the wasm config: " + err.Error())
 	}
@@ -70,11 +70,10 @@ func NewApp(
 	var (
 		storeKeys = NewStoreKeys()
 		keepers   = NewKeepers(
-			baseApp, bech32Prefix, BlockedAccAddrs(), encCfg, homeDir, invCheckPeriod, storeKeys,
-			ModuleAccPerms(), skipUpgradeHeights, wasmConfig, wasmOpts,
+			baseApp, BlockedAccAddrs(), encCfg, homeDir, storeKeys, logger, ModuleAccPerms(), skipUpgradeHeights,
+			wasmConfig, wasmOpts,
 		)
-		mm = NewModuleManager(baseApp.DeliverTx, encCfg, keepers, baseApp.MsgServiceRouter(), skipGenesisInvariants)
-		sm = NewSimulationManager(encCfg, keepers, baseApp.MsgServiceRouter())
+		mm = NewModuleManager(baseApp, encCfg, keepers, baseApp.MsgServiceRouter(), skipGenesisInvariants)
 	)
 
 	app := &App{
@@ -83,13 +82,12 @@ func NewApp(
 		Keepers:        keepers,
 		StoreKeys:      storeKeys,
 		mm:             mm,
-		sm:             sm,
 	}
 
-	app.mm.RegisterInvariants(keepers.CrisisKeeper)
-
 	configurator := sdkmodule.NewConfigurator(encCfg.Codec, app.MsgServiceRouter(), app.GRPCQueryRouter())
-	app.mm.RegisterServices(configurator)
+	if err := app.mm.RegisterServices(configurator); err != nil {
+		panic("registering services: " + err.Error())
+	}
 
 	app.MountKVStores(app.KVKeys())
 	app.MountMemoryStores(app.MemoryKeys())
@@ -104,12 +102,12 @@ func NewApp(
 	app.RegisterSnapshotExtensions()
 
 	if loadLatest {
-		if err = app.LoadLatestVersion(); err != nil {
+		if err := app.LoadLatestVersion(); err != nil {
 			tmos.Exit("failed to load the latest version: " + err.Error())
 		}
 
 		ctx := app.NewUncachedContext(true, tmproto.Header{})
-		if err = app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
+		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
 			tmos.Exit("failed to initialize the pinned codes: " + err.Error())
 		}
 	}
@@ -121,15 +119,15 @@ func (a *App) LegacyAmino() *codec.LegacyAmino {
 	return a.Amino
 }
 
-func (a *App) BeginBlocker(ctx sdk.Context, req abcitypes.RequestBeginBlock) abcitypes.ResponseBeginBlock {
-	return a.mm.BeginBlock(ctx, req)
+func (a *App) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
+	return a.mm.BeginBlock(ctx)
 }
 
-func (a *App) EndBlocker(ctx sdk.Context, req abcitypes.RequestEndBlock) abcitypes.ResponseEndBlock {
-	return a.mm.EndBlock(ctx, req)
+func (a *App) EndBlocker(ctx sdk.Context) (sdk.EndBlock, error) {
+	return a.mm.EndBlock(ctx)
 }
 
-func (a *App) InitChainer(ctx sdk.Context, req abcitypes.RequestInitChain) abcitypes.ResponseInitChain {
+func (a *App) InitChainer(ctx sdk.Context, req *abcitypes.RequestInitChain) (*abcitypes.ResponseInitChain, error) {
 	var state map[string]json.RawMessage
 	if err := tmjson.Unmarshal(req.AppStateBytes, &state); err != nil {
 		panic("failed to unmarshal the app state: " + err.Error())
@@ -163,8 +161,8 @@ func (a *App) RegisterTendermintService(ctx client.Context) {
 	cmtservice.RegisterTendermintService(ctx, a.GRPCQueryRouter(), a.InterfaceRegistry, a.Query)
 }
 
-func (a *App) RegisterNodeService(ctx client.Context) {
-	node.RegisterNodeService(ctx, a.GRPCQueryRouter())
+func (a *App) RegisterNodeService(ctx client.Context, cfg serverconfig.Config) {
+	node.RegisterNodeService(ctx, a.GRPCQueryRouter(), cfg)
 }
 
 func (a *App) ModuleAccountAddrs() map[string]bool {
@@ -178,7 +176,7 @@ func (a *App) ModuleAccountAddrs() map[string]bool {
 	return addrs
 }
 
-func (a *App) SetupAnteHandler(wasmConfig wasmtypes.WasmConfig) {
+func (a *App) SetupAnteHandler(wasmConfig wasmtypes.NodeConfig) {
 	handler, err := ante.NewHandler(
 		ante.HandlerOptions{
 			HandlerOptions: authante.HandlerOptions{
@@ -188,7 +186,7 @@ func (a *App) SetupAnteHandler(wasmConfig wasmtypes.WasmConfig) {
 				SignModeHandler: a.TxConfig.SignModeHandler(),
 				SigGasConsumer:  authante.DefaultSigVerificationGasConsumer,
 			},
-			TxCounterStoreKey: a.KV(wasmtypes.StoreKey),
+			TxCounterStoreKey: a.KVStoreService(wasmtypes.StoreKey),
 			IBCKeeper:         a.IBCKeeper,
 			WasmConfig:        wasmConfig,
 		},
@@ -220,7 +218,7 @@ func (a *App) SetUpgradeStoreLoader() {
 func (a *App) SetUpgradeHandler(configurator sdkmodule.Configurator) {
 	a.UpgradeKeeper.SetUpgradeHandler(
 		UpgradeName,
-		UpgradeHandler(a.Codec, a.mm, configurator, a.Keepers, a.KV(upgradetypes.StoreKey)),
+		UpgradeHandler(a.mm, configurator),
 	)
 }
 

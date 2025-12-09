@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	protobuf "github.com/gogo/protobuf/types"
 
@@ -47,7 +48,7 @@ func (k *Keeper) DeleteSubscription(ctx sdk.Context, id uint64) {
 // GetSubscriptions retrieves all subscriptions from the module's KVStore.
 func (k *Keeper) GetSubscriptions(ctx sdk.Context) (items []v3.Subscription) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.SubscriptionKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.SubscriptionKeyPrefix)
 
 	defer iterator.Close()
 
@@ -65,7 +66,7 @@ func (k *Keeper) GetSubscriptions(ctx sdk.Context) (items []v3.Subscription) {
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateSubscriptions(ctx sdk.Context, fn func(index int, item v3.Subscription) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.SubscriptionKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.SubscriptionKeyPrefix)
 
 	defer iterator.Close()
 
@@ -109,7 +110,7 @@ func (k *Keeper) DeleteSubscriptionForAccount(ctx sdk.Context, addr sdk.AccAddre
 // GetSubscriptionsForAccount retrieves all subscriptions associated with a specific account address.
 func (k *Keeper) GetSubscriptionsForAccount(ctx sdk.Context, addr sdk.AccAddress) (items []v3.Subscription) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetSubscriptionForAccountKeyPrefix(addr))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetSubscriptionForAccountKeyPrefix(addr))
 
 	defer iterator.Close()
 
@@ -153,7 +154,7 @@ func (k *Keeper) DeleteSubscriptionForPlan(ctx sdk.Context, planID, subscription
 // GetSubscriptionsForPlan retrieves all subscriptions associated with a specific plan ID.
 func (k *Keeper) GetSubscriptionsForPlan(ctx sdk.Context, id uint64) (items []v3.Subscription) {
 	store := k.Store(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetSubscriptionForPlanKeyPrefix(id))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetSubscriptionForPlanKeyPrefix(id))
 
 	defer iterator.Close()
 
@@ -198,7 +199,7 @@ func (k *Keeper) DeleteSubscriptionForInactiveAt(ctx sdk.Context, at time.Time, 
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateSubscriptionsForInactiveAt(ctx sdk.Context, at time.Time, fn func(index int, item v3.Subscription) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := store.Iterator(types.SubscriptionForInactiveAtKeyPrefix, sdk.PrefixEndBytes(types.GetSubscriptionForInactiveAtKeyPrefix(at)))
+	iterator := store.Iterator(types.SubscriptionForInactiveAtKeyPrefix, storetypes.PrefixEndBytes(types.GetSubscriptionForInactiveAtKeyPrefix(at)))
 
 	defer iterator.Close()
 
@@ -245,7 +246,7 @@ func (k *Keeper) DeleteSubscriptionForRenewalAt(ctx sdk.Context, at time.Time, i
 // The iteration stops when the provided function returns 'true'.
 func (k *Keeper) IterateSubscriptionsForRenewalAt(ctx sdk.Context, at time.Time, fn func(index int, item v3.Subscription) (stop bool)) {
 	store := k.Store(ctx)
-	iterator := store.Iterator(types.SubscriptionForRenewalAtKeyPrefix, sdk.PrefixEndBytes(types.GetSubscriptionForRenewalAtKeyPrefix(at)))
+	iterator := store.Iterator(types.SubscriptionForRenewalAtKeyPrefix, storetypes.PrefixEndBytes(types.GetSubscriptionForRenewalAtKeyPrefix(at)))
 
 	defer iterator.Close()
 

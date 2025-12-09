@@ -3,9 +3,9 @@ package main
 import (
 	"io"
 
+	"cosmossdk.io/log"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	tmdb "github.com/cometbft/cometbft-db"
-	tmlog "github.com/cometbft/cometbft/libs/log"
+	tmdb "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
@@ -23,7 +23,7 @@ type appCreator struct {
 }
 
 func (ac appCreator) NewApp(
-	logger tmlog.Logger, db tmdb.DB, traceWriter io.Writer, appOpts servertypes.AppOptions,
+	logger log.Logger, db tmdb.DB, traceWriter io.Writer, appOpts servertypes.AppOptions,
 ) servertypes.Application {
 	baseAppOpts := server.DefaultBaseappOptions(appOpts)
 
@@ -46,7 +46,7 @@ func (ac appCreator) NewApp(
 }
 
 func (ac appCreator) AppExport(
-	logger tmlog.Logger, db tmdb.DB, traceWriter io.Writer, height int64, forZeroHeight bool, jailWhitelist []string,
+	logger log.Logger, db tmdb.DB, traceWriter io.Writer, height int64, forZeroHeight bool, jailWhitelist []string,
 	appOpts servertypes.AppOptions, modulesToExport []string,
 ) (servertypes.ExportedApp, error) {
 	v := app.NewApp(

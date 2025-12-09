@@ -1,6 +1,7 @@
 package app
 
 import (
+	"cosmossdk.io/core/genesis"
 	"cosmossdk.io/x/evidence"
 	evidencetypes "cosmossdk.io/x/evidence/types"
 	"cosmossdk.io/x/feegrant"
@@ -11,7 +12,6 @@ import (
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	abcitypes "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdkmodule "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
@@ -71,7 +71,6 @@ var (
 		authvesting.AppModuleBasic{},
 		authzmodule.AppModuleBasic{},
 		bank.AppModuleBasic{},
-		capability.AppModuleBasic{},
 		consensus.AppModuleBasic{},
 		crisis.AppModuleBasic{},
 		distribution.AppModuleBasic{},
@@ -94,7 +93,6 @@ var (
 		// Cosmos IBC module basics
 		ibc.AppModuleBasic{},
 		ibcsolomachine.AppModuleBasic{},
-		ibcfee.AppModuleBasic{},
 		ibcica.AppModuleBasic{},
 		ibctm.AppModuleBasic{},
 		ibctransfer.AppModuleBasic{},
@@ -123,7 +121,6 @@ func ModuleAccPerms() map[string][]string {
 
 		// Cosmos IBC module account permissions
 		ibcicatypes.ModuleName:      nil,
-		ibcfeetypes.ModuleName:      nil,
 		ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 
 		// Sentinel Hub module account permissions
@@ -149,8 +146,8 @@ func BlockedAccAddrs() map[string]bool {
 }
 
 func NewModuleManager(
-	deliverTxFunc func(abcitypes.RequestDeliverTx) abcitypes.ResponseDeliverTx, encCfg EncodingConfig, k Keepers,
-	msgRouter *baseapp.MsgServiceRouter, skipGenesisInvariants bool,
+	deliverTxFunc genesis.TxHandler, encCfg EncodingConfig, k Keepers, msgRouter *baseapp.MsgServiceRouter,
+	skipGenesisInvariants bool,
 ) *sdkmodule.Manager {
 	manager := sdkmodule.NewManager(
 		// Cosmos SDK modules
@@ -158,9 +155,7 @@ func NewModuleManager(
 		authvesting.NewAppModule(k.AccountKeeper, k.BankKeeper),
 		authzmodule.NewAppModule(encCfg.Codec, k.AuthzKeeper, k.AccountKeeper, k.BankKeeper, encCfg.InterfaceRegistry),
 		bank.NewAppModule(encCfg.Codec, k.BankKeeper, k.AccountKeeper, k.Subspace(banktypes.ModuleName)),
-		capability.NewAppModule(encCfg.Codec, *k.CapabilityKeeper, false),
 		consensus.NewAppModule(encCfg.Codec, k.ConsensusKeeper),
-		crisis.NewAppModule(k.CrisisKeeper, skipGenesisInvariants, k.Subspace(crisistypes.ModuleName)),
 		distribution.NewAppModule(
 			encCfg.Codec, k.DistributionKeeper, k.AccountKeeper, k.BankKeeper, k.StakingKeeper,
 			k.Subspace(distributiontypes.ModuleName),
@@ -175,15 +170,14 @@ func NewModuleManager(
 		params.NewAppModule(k.ParamsKeeper),
 		slashing.NewAppModule(
 			encCfg.Codec, k.SlashingKeeper, k.AccountKeeper, k.BankKeeper, k.StakingKeeper,
-			k.Subspace(slashingtypes.ModuleName),
+			k.Subspace(slashingtypes.ModuleName), encCfg.InterfaceRegistry,
 		),
 		staking.NewAppModule(
 			encCfg.Codec, k.StakingKeeper, k.AccountKeeper, k.BankKeeper, k.Subspace(stakingtypes.ModuleName),
 		),
-		upgrade.NewAppModule(k.UpgradeKeeper),
+		upgrade.NewAppModule(k.UpgradeKeeper, k.AccountKeeper.AddressCodec()),
 
 		// Cosmos IBC modules
-		ibcfee.NewAppModule(k.IBCFeeKeeper),
 		ibcica.NewAppModule(&k.IBCICAControllerKeeper, &k.IBCICAHostKeeper),
 		ibc.NewAppModule(k.IBCKeeper),
 		ibctransfer.NewAppModule(k.IBCTransferKeeper),
@@ -204,7 +198,6 @@ func NewModuleManager(
 	manager.SetOrderBeginBlockers(
 		// Cosmos SDK modules
 		upgradetypes.ModuleName,
-		capabilitytypes.ModuleName,
 		customminttypes.ModuleName, // Sentinel Hub module
 		minttypes.ModuleName,
 		distributiontypes.ModuleName,
@@ -228,7 +221,6 @@ func NewModuleManager(
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		ibcicatypes.ModuleName,
-		ibcfeetypes.ModuleName,
 
 		// Sentinel Hub modules
 		swaptypes.ModuleName,
@@ -243,7 +235,6 @@ func NewModuleManager(
 		crisistypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
-		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distributiontypes.ModuleName,
@@ -264,7 +255,6 @@ func NewModuleManager(
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		ibcicatypes.ModuleName,
-		ibcfeetypes.ModuleName,
 
 		// Sentinel Hub modules
 		customminttypes.ModuleName,
@@ -277,7 +267,6 @@ func NewModuleManager(
 	)
 	manager.SetOrderInitGenesis(
 		// Cosmos SDK modules
-		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distributiontypes.ModuleName,
@@ -301,7 +290,6 @@ func NewModuleManager(
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		ibcicatypes.ModuleName,
-		ibcfeetypes.ModuleName,
 
 		// Sentinel Hub modules
 		customminttypes.ModuleName,
@@ -314,51 +302,4 @@ func NewModuleManager(
 	)
 
 	return manager
-}
-
-func NewSimulationManager(
-	encCfg EncodingConfig, k Keepers, msgRouter *baseapp.MsgServiceRouter,
-) *sdkmodule.SimulationManager {
-	return sdkmodule.NewSimulationManager(
-		// Cosmos SDK modules
-		auth.NewAppModule(encCfg.Codec, k.AccountKeeper, nil, k.Subspace(authtypes.ModuleName)),
-		authzmodule.NewAppModule(encCfg.Codec, k.AuthzKeeper, k.AccountKeeper, k.BankKeeper, encCfg.InterfaceRegistry),
-		bank.NewAppModule(encCfg.Codec, k.BankKeeper, k.AccountKeeper, k.Subspace(banktypes.ModuleName)),
-		capability.NewAppModule(encCfg.Codec, *k.CapabilityKeeper, false),
-		distribution.NewAppModule(
-			encCfg.Codec, k.DistributionKeeper, k.AccountKeeper, k.BankKeeper, k.StakingKeeper,
-			k.Subspace(distributiontypes.ModuleName),
-		),
-		evidence.NewAppModule(k.EvidenceKeeper),
-		feegrantmodule.NewAppModule(encCfg.Codec, k.AccountKeeper, k.BankKeeper, k.FeeGrantKeeper, encCfg.InterfaceRegistry),
-		gov.NewAppModule(encCfg.Codec, k.GovKeeper, k.AccountKeeper, k.BankKeeper, k.Subspace(govtypes.ModuleName)),
-		groupmodule.NewAppModule(encCfg.Codec, k.GroupKeeper, k.AccountKeeper, k.BankKeeper, encCfg.InterfaceRegistry),
-		mint.NewAppModule(encCfg.Codec, k.MintKeeper, k.AccountKeeper, nil, k.Subspace(minttypes.ModuleName)),
-		nftmodule.NewAppModule(encCfg.Codec, k.NFTKeeper, k.AccountKeeper, k.BankKeeper, encCfg.InterfaceRegistry),
-		params.NewAppModule(k.ParamsKeeper),
-		slashing.NewAppModule(
-			encCfg.Codec, k.SlashingKeeper, k.AccountKeeper, k.BankKeeper, k.StakingKeeper,
-			k.Subspace(slashingtypes.ModuleName),
-		),
-		staking.NewAppModule(
-			encCfg.Codec, k.StakingKeeper, k.AccountKeeper, k.BankKeeper, k.Subspace(stakingtypes.ModuleName),
-		),
-
-		// Cosmos IBC modules
-		ibcfee.NewAppModule(k.IBCFeeKeeper),
-		ibc.NewAppModule(k.IBCKeeper),
-		ibctransfer.NewAppModule(k.IBCTransferKeeper),
-
-		// Sentinel Hub modules
-		custommint.NewAppModule(encCfg.Codec, k.CustomMintKeeper),
-		oracle.NewAppModule(encCfg.Codec, k.OracleKeeper),
-		swap.NewAppModule(encCfg.Codec, k.SwapKeeper),
-		vpn.NewAppModule(encCfg.Codec, k.AccountKeeper, k.BankKeeper, k.VPNKeeper),
-
-		// Other modules
-		wasm.NewAppModule(
-			encCfg.Codec, &k.WasmKeeper, k.StakingKeeper, k.AccountKeeper, k.BankKeeper, msgRouter,
-			k.Subspace(wasmtypes.ModuleName),
-		),
-	)
 }

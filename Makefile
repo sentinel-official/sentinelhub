@@ -80,6 +80,6 @@ build-image: ## Build Docker image
 .PHONY: tools
 tools: ## Install development tools
 	go install github.com/bufbuild/buf/cmd/buf@v1.57.0
-	go install github.com/cosmos/gogoproto/protoc-gen-gocosmos@v1.7.0
+	go install github.com/cosmos/gogoproto/protoc-gen-gocosmos@v1.7.2
 	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.5.0
 	go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway@v1.16.0

@@ -7,7 +7,7 @@ import "google/api/annotations.proto";
 import "sentinel/plan/v3/plan.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/plan/types/v3";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 

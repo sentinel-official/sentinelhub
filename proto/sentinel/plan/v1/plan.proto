@@ -7,7 +7,7 @@ import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v1";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/plan/types/v1";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 

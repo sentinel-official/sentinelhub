@@ -3,7 +3,7 @@ package sentinel.subscription.v2;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/sentinel-official/sentinelhub/v12/x/subscription/types/v2";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v2";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 

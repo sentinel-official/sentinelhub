@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "sentinel/provider/v3/params.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v3";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/provider/types/v3";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 

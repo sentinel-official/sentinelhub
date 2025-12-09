@@ -23,7 +23,7 @@ message Plan {
     (gogoproto.stdduration) = true
   ];
   string bytes = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   sentinel.types.v1.Status status = 6;

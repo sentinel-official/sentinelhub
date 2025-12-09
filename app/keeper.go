@@ -258,10 +258,12 @@ func NewKeepers(
 	k.GovKeeper.SetLegacyRouter(govRouter)
 
 	// Cosmos IBC port router
-	var ibcICAControllerIBCModule ibcporttypes.IBCModule
-	var ibcICAHostIBCModule ibcporttypes.IBCModule
-	var ibcTransferIBCModule ibcporttypes.IBCModule
-	var wasmIBCModule ibcporttypes.IBCModule
+	var (
+		ibcICAControllerIBCModule ibcporttypes.IBCModule
+		ibcICAHostIBCModule       ibcporttypes.IBCModule
+		ibcTransferIBCModule      ibcporttypes.IBCModule
+		wasmIBCModule             ibcporttypes.IBCModule
+	)
 
 	ibcICAControllerIBCModule = ibcicacontroller.NewIBCMiddleware(k.IBCICAControllerKeeper)
 

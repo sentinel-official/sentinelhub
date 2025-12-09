@@ -21,7 +21,7 @@ message MsgAddRequest {
     (gogoproto.nullable) = false
   ];
   string bytes = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 }

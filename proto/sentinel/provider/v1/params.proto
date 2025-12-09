@@ -11,7 +11,7 @@ option (gogoproto.goproto_getters_all) = false;
 message Params {
   cosmos.base.v1beta1.Coin deposit = 1 [(gogoproto.nullable) = false];
   string staking_share = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 }

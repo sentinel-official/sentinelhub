@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"os"
 
+	"cosmossdk.io/log"
 	confixcmd "cosmossdk.io/tools/confix/cmd"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
+	tmdb "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
 	clientconfig "github.com/cosmos/cosmos-sdk/client/config"
 	"github.com/cosmos/cosmos-sdk/client/debug"
@@ -15,10 +17,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/pruning"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/client/snapshot"
+	"github.com/cosmos/cosmos-sdk/codec/address"
 	"github.com/cosmos/cosmos-sdk/server"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	authcli "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -27,7 +30,6 @@ import (
 )
 
 func moduleInitFlags(cmd *cobra.Command) {
-	crisis.AddModuleInitFlags(cmd)
 	wasm.AddModuleInitFlags(cmd)
 	cmd.Flags().Bool(flagSkipOverwriteConfig, false, "Skip overwriting config with recommended values")
 }
@@ -50,8 +52,6 @@ func queryCommand() *cobra.Command {
 		authcli.QueryTxsByEventsCmd(),
 		authcli.QueryTxCmd(),
 	)
-
-	app.ModuleBasics.AddQueryCommands(cmd)
 
 	return cmd
 }
@@ -76,28 +76,52 @@ func txCommand() *cobra.Command {
 		authcli.GetValidateSignaturesCommand(),
 	)
 
-	app.ModuleBasics.AddTxCommands(cmd)
 	cmd.PersistentFlags().String(flags.FlagChainID, "", "The network chain ID")
 
 	return cmd
 }
 
 func NewRootCmd(homeDir string) *cobra.Command {
-	encCfg := app.DefaultEncodingConfig()
+	ac := appCreator{}
+
+	tmpDir, err := os.MkdirTemp("", "")
+	if err != nil {
+		panic(err)
+	}
+
+	defer func() {
+		if err := os.RemoveAll(tmpDir); err != nil {
+			panic(err)
+		}
+	}()
+
+	tmpOpts := viper.New()
+	tmpOpts.Set(flags.FlagHome, tmpDir)
+
+	tmpApp := app.NewApp(tmpOpts, tmdb.NewMemDB(), tmpDir, true, log.NewNopLogger(), nil, nil, nil)
+
+	defer func() {
+		if err := tmpApp.Close(); err != nil {
+			panic(err)
+		}
+	}()
+
+	clientCtx := client.Context{}.
+		WithAccountRetriever(authtypes.AccountRetriever{}).
+		WithCodec(tmpApp.Codec).
+		WithHomeDir(homeDir).
+		WithInput(os.Stdin).
+		WithInterfaceRegistry(tmpApp.InterfaceRegistry).
+		WithLegacyAmino(tmpApp.Amino).
+		WithTxConfig(tmpApp.TxConfig).
+		WithViper("")
+
 	cmd := &cobra.Command{
 		Use:          "sentinelhub",
 		Short:        "Sentinel Hub application",
 		SilenceUsage: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) (err error) {
-			clientCtx := client.Context{}.
-				WithAccountRetriever(authtypes.AccountRetriever{}).
-				WithCodec(encCfg.Codec).
-				WithHomeDir(homeDir).
-				WithInput(os.Stdin).
-				WithInterfaceRegistry(encCfg.InterfaceRegistry).
-				WithLegacyAmino(encCfg.Amino).
-				WithTxConfig(encCfg.TxConfig).
-				WithViper("")
+			clientCtx = clientCtx.WithCmdContext(cmd.Context())
 
 			clientCtx, err = client.ReadPersistentCommandFlags(clientCtx, cmd.Flags())
 			if err != nil {
@@ -120,23 +144,31 @@ func NewRootCmd(homeDir string) *cobra.Command {
 		},
 	}
 
-	creator := appCreator{encCfg: encCfg}
-
 	cmd.AddCommand(
 		confixcmd.ConfigCommand(),
 		debug.Cmd(),
-		genutilcli.GenesisCoreCommand(encCfg.TxConfig, app.ModuleBasics, homeDir),
-		genutilcli.InitCmd(app.ModuleBasics, homeDir),
+		genutilcli.GenesisCoreCommand(tmpApp.TxConfig, tmpApp.BasicManager, homeDir),
+		genutilcli.InitCmd(tmpApp.BasicManager, homeDir),
 		keys.Commands(),
-		pruning.Cmd(creator.NewApp, homeDir),
+		pruning.Cmd(ac.NewApp, homeDir),
 		queryCommand(),
 		server.StatusCommand(),
-		snapshot.Cmd(creator.NewApp),
+		snapshot.Cmd(ac.NewApp),
 		tmcli.NewCompletionCmd(cmd, true),
 		txCommand(),
 	)
 
-	server.AddCommands(cmd, homeDir, creator.NewApp, creator.AppExport, moduleInitFlags)
+	server.AddCommands(cmd, homeDir, ac.NewApp, ac.AppExport, moduleInitFlags)
+
+	autoCliOpts := tmpApp.AutoCliOpts()
+	autoCliOpts.AddressCodec = address.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix())
+	autoCliOpts.ValidatorAddressCodec = address.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix())
+	autoCliOpts.ConsensusAddressCodec = address.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix())
+	autoCliOpts.ClientCtx = clientCtx
+
+	if err := autoCliOpts.EnhanceRootCommand(cmd); err != nil {
+		panic(err)
+	}
 
 	startCmd, _, err := cmd.Find([]string{"start"})
 	if err != nil {

@@ -1,11 +1,15 @@
 package app
 
 import (
+	"cosmossdk.io/x/tx/signing"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/address"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	standard "github.com/cosmos/cosmos-sdk/std"
+	"github.com/cosmos/cosmos-sdk/std"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
+	"github.com/cosmos/gogoproto/proto"
 )
 
 type EncodingConfig struct {
@@ -16,27 +20,40 @@ type EncodingConfig struct {
 }
 
 func NewEncodingConfig() EncodingConfig {
-	var (
-		amino             = codec.NewLegacyAmino()
-		interfaceRegistry = codectypes.NewInterfaceRegistry()
-		cdc               = codec.NewProtoCodec(interfaceRegistry)
-		txConfig          = authtx.NewTxConfig(cdc, authtx.DefaultSignModes)
+	amino := codec.NewLegacyAmino()
+
+	interfaceRegistry, err := codectypes.NewInterfaceRegistryWithOptions(
+		codectypes.InterfaceRegistryOptions{
+			ProtoFiles: proto.HybridResolver,
+			SigningOptions: signing.Options{
+				AddressCodec: address.Bech32Codec{
+					Bech32Prefix: sdk.GetConfig().GetBech32AccountAddrPrefix(),
+				},
+				ValidatorAddressCodec: address.Bech32Codec{
+					Bech32Prefix: sdk.GetConfig().GetBech32ValidatorAddrPrefix(),
+				},
+			},
+		},
 	)
+	if err != nil {
+		panic(err)
+	}
+
+	cdc := codec.NewProtoCodec(interfaceRegistry)
+	txConfig := authtx.NewTxConfig(cdc, authtx.DefaultSignModes)
 
 	return EncodingConfig{
-		Amino:             amino,
-		Codec:             cdc,
 		InterfaceRegistry: interfaceRegistry,
+		Codec:             cdc,
 		TxConfig:          txConfig,
+		Amino:             amino,
 	}
 }
 
 func DefaultEncodingConfig() EncodingConfig {
 	v := NewEncodingConfig()
-	standard.RegisterLegacyAminoCodec(v.Amino)
-	standard.RegisterInterfaces(v.InterfaceRegistry)
-	ModuleBasics.RegisterLegacyAminoCodec(v.Amino)
-	ModuleBasics.RegisterInterfaces(v.InterfaceRegistry)
+	std.RegisterLegacyAminoCodec(v.Amino)
+	std.RegisterInterfaces(v.InterfaceRegistry)
 
 	return v
 }

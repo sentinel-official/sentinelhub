@@ -9,18 +9,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/cosmos/cosmos-sdk/x/crisis"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 
 	"github.com/sentinel-official/sentinelhub/v13/app"
-	base "github.com/sentinel-official/sentinelhub/v13/types"
 )
 
-type appCreator struct {
-	encCfg app.EncodingConfig
-}
+type appCreator struct{}
 
 func (ac appCreator) NewApp(
 	logger log.Logger, db tmdb.DB, traceWriter io.Writer, appOpts servertypes.AppOptions,
@@ -38,9 +33,7 @@ func (ac appCreator) NewApp(
 	}
 
 	return app.NewApp(
-		appOpts, base.Bech32MainPrefix, db, ac.encCfg, cast.ToString(appOpts.Get(flags.FlagHome)),
-		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)), true, logger,
-		cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants)), traceWriter, version.Version,
+		appOpts, db, cast.ToString(appOpts.Get(flags.FlagHome)), true, logger, traceWriter,
 		skipUpgradeHeights, wasmOpts, baseAppOpts...,
 	)
 }
@@ -50,11 +43,15 @@ func (ac appCreator) AppExport(
 	appOpts servertypes.AppOptions, modulesToExport []string,
 ) (servertypes.ExportedApp, error) {
 	v := app.NewApp(
-		appOpts, base.Bech32MainPrefix, db, ac.encCfg, cast.ToString(appOpts.Get(flags.FlagHome)),
-		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)), height == -1, logger,
-		cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants)), traceWriter, version.Version,
+		appOpts, db, cast.ToString(appOpts.Get(flags.FlagHome)), height == -1, logger, traceWriter,
 		map[int64]bool{}, nil,
 	)
+
+	defer func() {
+		if err := v.Close(); err != nil {
+			panic(err)
+		}
+	}()
 
 	if height != -1 {
 		if err := v.LoadHeight(height); err != nil {

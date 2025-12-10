@@ -24,7 +24,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/consensus"
 	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	"github.com/cosmos/cosmos-sdk/x/distribution"
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -50,8 +49,6 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
-	ibcsolomachine "github.com/cosmos/ibc-go/v10/modules/light-clients/06-solomachine"
-	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
 
 	deposittypes "github.com/sentinel-official/sentinelhub/v13/x/deposit/types"
 	custommint "github.com/sentinel-official/sentinelhub/v13/x/mint"
@@ -64,49 +61,23 @@ import (
 	vpntypes "github.com/sentinel-official/sentinelhub/v13/x/vpn/types"
 )
 
-var (
-	ModuleBasics = sdkmodule.NewBasicManager(
-		// Cosmos SDK module basics
-		auth.AppModuleBasic{},
-		authvesting.AppModuleBasic{},
-		authzmodule.AppModuleBasic{},
-		bank.AppModuleBasic{},
-		consensus.AppModuleBasic{},
-		crisis.AppModuleBasic{},
-		distribution.AppModuleBasic{},
-		evidence.AppModuleBasic{},
-		feegrantmodule.AppModuleBasic{},
-		genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
-		gov.NewAppModuleBasic(
-			[]govclient.ProposalHandler{
-				paramsclient.ProposalHandler,
-			},
-		),
-		groupmodule.AppModuleBasic{},
-		mint.AppModuleBasic{},
-		nftmodule.AppModuleBasic{},
-		params.AppModuleBasic{},
-		slashing.AppModuleBasic{},
-		staking.AppModuleBasic{},
-		upgrade.AppModuleBasic{},
-
-		// Cosmos IBC module basics
-		ibc.AppModuleBasic{},
-		ibcsolomachine.AppModuleBasic{},
-		ibcica.AppModuleBasic{},
-		ibctm.AppModuleBasic{},
-		ibctransfer.AppModuleBasic{},
-
-		// Sentinel Hub module basics
-		custommint.AppModuleBasic{},
-		oracle.AppModuleBasic{},
-		swap.AppModuleBasic{},
-		vpn.AppModuleBasic{},
-
-		// Other module basics
-		wasm.AppModuleBasic{},
+func NewModuleBasicManager(encCfg EncodingConfig, mm *sdkmodule.Manager) sdkmodule.BasicManager {
+	bm := sdkmodule.NewBasicManagerFromManager(
+		mm,
+		map[string]sdkmodule.AppModuleBasic{
+			genutiltypes.ModuleName: genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
+			govtypes.ModuleName: gov.NewAppModuleBasic(
+				[]govclient.ProposalHandler{
+					paramsclient.ProposalHandler,
+				},
+			),
+		},
 	)
-)
+	bm.RegisterLegacyAminoCodec(encCfg.Amino)
+	bm.RegisterInterfaces(encCfg.InterfaceRegistry)
+
+	return bm
+}
 
 func ModuleAccPerms() map[string][]string {
 	return map[string][]string{
@@ -147,7 +118,6 @@ func BlockedAccAddrs() map[string]bool {
 
 func NewModuleManager(
 	deliverTxFunc genesis.TxHandler, encCfg EncodingConfig, k Keepers, msgRouter *baseapp.MsgServiceRouter,
-	skipGenesisInvariants bool,
 ) *sdkmodule.Manager {
 	manager := sdkmodule.NewManager(
 		// Cosmos SDK modules

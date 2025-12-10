@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io"
 
+	"cosmossdk.io/client/v2/autocli"
+	"cosmossdk.io/core/appmodule"
 	tmlog "cosmossdk.io/log"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/CosmWasm/wasmd/x/wasm"
@@ -25,7 +27,9 @@ import (
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkmodule "github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/version"
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
+	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
@@ -43,23 +47,24 @@ var (
 
 type App struct {
 	*baseapp.BaseApp
+	sdkmodule.BasicManager
 	EncodingConfig
 	Keepers
 	StoreKeys
 
 	mm *sdkmodule.Manager
-	sm *sdkmodule.SimulationManager
 }
 
 func NewApp(
-	appOpts servertypes.AppOptions, bech32Prefix string, db tmdb.DB, encCfg EncodingConfig, homeDir string,
-	invCheckPeriod uint, loadLatest bool, logger tmlog.Logger, skipGenesisInvariants bool,
-	traceWriter io.Writer, version string, skipUpgradeHeights map[int64]bool, wasmOpts []wasmkeeper.Option,
+	appOpts servertypes.AppOptions, db tmdb.DB, homeDir string, loadLatest bool, logger tmlog.Logger,
+	traceWriter io.Writer, skipUpgradeHeights map[int64]bool, wasmOpts []wasmkeeper.Option,
 	baseAppOpts ...func(*baseapp.BaseApp),
 ) *App {
+	encCfg := DefaultEncodingConfig()
+
 	baseApp := baseapp.NewBaseApp(appName, logger, db, encCfg.TxConfig.TxDecoder(), baseAppOpts...)
 	baseApp.SetCommitMultiStoreTracer(traceWriter)
-	baseApp.SetVersion(version)
+	baseApp.SetVersion(version.Version)
 	baseApp.SetInterfaceRegistry(encCfg.InterfaceRegistry)
 
 	wasmConfig, err := wasm.ReadNodeConfig(appOpts)
@@ -73,11 +78,13 @@ func NewApp(
 			baseApp, BlockedAccAddrs(), encCfg, homeDir, storeKeys, logger, ModuleAccPerms(), skipUpgradeHeights,
 			wasmConfig, wasmOpts,
 		)
-		mm = NewModuleManager(baseApp, encCfg, keepers, baseApp.MsgServiceRouter(), skipGenesisInvariants)
+		mm = NewModuleManager(baseApp, encCfg, keepers, baseApp.MsgServiceRouter())
+		bm = NewModuleBasicManager(encCfg, mm)
 	)
 
 	app := &App{
 		BaseApp:        baseApp,
+		BasicManager:   bm,
 		EncodingConfig: encCfg,
 		Keepers:        keepers,
 		StoreKeys:      storeKeys,
@@ -143,14 +150,14 @@ func (a *App) LoadHeight(height int64) error {
 }
 
 func (a *App) SimulationManager() *sdkmodule.SimulationManager {
-	return a.sm
+	return nil
 }
 
 func (a *App) RegisterAPIRoutes(server *api.Server, _ serverconfig.APIConfig) {
 	authtx.RegisterGRPCGatewayRoutes(server.ClientCtx, server.GRPCGatewayRouter)
 	cmtservice.RegisterGRPCGatewayRoutes(server.ClientCtx, server.GRPCGatewayRouter)
 	node.RegisterGRPCGatewayRoutes(server.ClientCtx, server.GRPCGatewayRouter)
-	ModuleBasics.RegisterGRPCGatewayRoutes(server.ClientCtx, server.GRPCGatewayRouter)
+	a.RegisterGRPCGatewayRoutes(server.ClientCtx, server.GRPCGatewayRouter)
 }
 
 func (a *App) RegisterTxService(ctx client.Context) {
@@ -229,5 +236,25 @@ func (a *App) RegisterSnapshotExtensions() {
 		); err != nil {
 			panic("failed to register the snapshot extension: " + err.Error())
 		}
+	}
+}
+
+func (a *App) AutoCliOpts() autocli.AppOptions {
+	modules := make(map[string]appmodule.AppModule, 0)
+
+	for _, m := range a.mm.Modules {
+		if moduleWithName, ok := m.(sdkmodule.HasName); ok {
+			moduleName := moduleWithName.Name()
+			if appModule, ok := moduleWithName.(appmodule.AppModule); ok {
+				modules[moduleName] = appModule
+			}
+		}
+	}
+
+	return autocli.AppOptions{
+		Modules:               modules,
+		AddressCodec:          authcodec.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix()),
+		ValidatorAddressCodec: authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+		ConsensusAddressCodec: authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	}
 }

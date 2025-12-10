@@ -1,7 +1,7 @@
 package types
 
 import (
-	ibcicqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v8/types"
+	ibcicqtypes "github.com/sentinel-official/sentinelhub/v13/third_party/ibc-apps/modules/async-icq/types"
 )
 
 const (

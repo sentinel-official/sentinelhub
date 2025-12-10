@@ -2,6 +2,8 @@ version: v2
 modules:
   - path: proto
     name: buf.build/sentinel-official/sentinelhub
+  - path: third_party/ibc-apps/proto
+    name: buf.build/sentinel-official/ibc-apps
   - path: third_party/osmosis/proto
     name: buf.build/sentinel-official/osmosis
 deps:

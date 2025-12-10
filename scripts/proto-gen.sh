@@ -4,6 +4,12 @@ set -euo pipefail
 
 project_dir=$(pwd)
 
+cd "${project_dir}/third_party/ibc-apps/proto/" && \
+buf generate && \
+cd ../ && \
+cp -r github.com/sentinel-official/sentinelhub/v13/third_party/ibc-apps/* ./ && \
+rm -rf github.com/
+
 cd "${project_dir}/third_party/osmosis/proto/" && \
 buf generate && \
 cd ../ && \

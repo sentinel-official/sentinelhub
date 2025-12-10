@@ -1,0 +1,24 @@
+syntax = "proto3";
+package icq.v1;
+
+import "gogoproto/gogo.proto";
+import "tendermint/abci/types.proto";
+
+option go_package = "github.com/sentinel-official/sentinelhub/v13/third_party/ibc-apps/modules/async-icq/types";
+
+message InterchainQueryPacketData {
+  bytes data = 1;
+  string memo = 2;
+}
+
+message InterchainQueryPacketAck {
+  bytes data = 1;
+}
+
+message CosmosQuery {
+  repeated tendermint.abci.RequestQuery requests = 1 [(gogoproto.nullable) = false];
+}
+
+message CosmosResponse {
+  repeated tendermint.abci.ResponseQuery responses = 1 [(gogoproto.nullable) = false];
+}

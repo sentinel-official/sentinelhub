@@ -71,7 +71,7 @@ proto-gen: ## Generate protobuf code
 
 .PHONY: proto-lint
 proto-lint: ## Lint protobuf definitions
-	@find proto -name *.proto -exec buf format -w {} \;
+	@find . -name *.proto -exec buf format -w {} \;
 
 .PHONY: build-image
 build-image: ## Build Docker image

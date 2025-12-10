@@ -8,10 +8,10 @@ import (
 	sdkmath "cosmossdk.io/math"
 	abcitypes "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ibcicqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v8/types"
 	ibcclienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	ibcchanneltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
 
+	ibcicqtypes "github.com/sentinel-official/sentinelhub/v13/third_party/ibc-apps/modules/async-icq/types"
 	"github.com/sentinel-official/sentinelhub/v13/third_party/osmosis/x/poolmanager/client/queryproto"
 	protorevtypes "github.com/sentinel-official/sentinelhub/v13/third_party/osmosis/x/protorev/types"
 	"github.com/sentinel-official/sentinelhub/v13/x/oracle/types/v1"

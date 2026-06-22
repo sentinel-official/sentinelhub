@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Buf Action
         uses: bufbuild/buf-action@fd21066df7214747548607aaa45548ba2b9bc1ff #v1.4.0

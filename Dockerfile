@@ -33,7 +33,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     STATIC=true make --jobs="$(nproc)" build
 
 # Runtime stage
-FROM alpine:3.23
+FROM alpine:3.24
 
 # Copy the built binaries from build stage
 COPY --from=build /root/bin/sentinelhub /usr/local/bin/sentinelhub
